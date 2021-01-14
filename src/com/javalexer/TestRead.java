@@ -16,11 +16,21 @@ public class TestRead {
 
     private int bloop = 4;
 
-    private String getAValueIf() {
+    private String /*//*/ getAValueIf() {
         if (true) {
             if (true) {
-                return "Value";
-            }
+                // blah blah balh private public
+                return "Value"; /*
+
+                jalkjdslkajlfj
+                lkajsdflka //   ///
+                aldsfj'
+                * /
+
+                jkajls;f
+
+                */
+            /**/}
         }
         return "Value";
     }
