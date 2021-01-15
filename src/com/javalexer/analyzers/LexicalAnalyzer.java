@@ -1,5 +1,8 @@
 package com.javalexer.analyzers;
 
+import com.javalexer.enums.CodeFilter;
+import com.javalexer.enums.CodeType;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -13,11 +16,6 @@ public class LexicalAnalyzer {
     private static final String NEW_LINE = System.getProperty("line.separator");
     private static final String BLANK_SPACE = "\\s";
 
-    // Regex Expressions
-    private static final String FIND_BRACES = "(?<=\\{)|(?<=\\})";
-    private static final String FIND_SEMI_COL = "(?<=\\;)";
-    private static final String IGNORE_DOUBLE_QUOTES = "(?=([^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*$)";
-    private static final String IGNORE_SINGLE_QUOTES = "(?=([^\\\']*\\\'[^\\\']*\\\')*[^\\\']*$)";
     private static String[] splitFileArray;
 
     private char c = ' ';
@@ -35,9 +33,9 @@ public class LexicalAnalyzer {
         // Remove White Space and New Line Characters
         fileAsString = fileAsString.trim().replaceAll(BLANK_SPACE + "|" + NEW_LINE, "");
         // Split by braces and semicolons, but ignore braces inside literals inside all double and single quotes.
-        return fileAsString.split("(" + FIND_BRACES + "|" + FIND_SEMI_COL + ")"
-                + IGNORE_DOUBLE_QUOTES
-                + IGNORE_SINGLE_QUOTES);
+        return fileAsString.split("(" + CodeFilter.FIND_BRACES.get() + "|" + CodeFilter.FIND_SEMI_COL.get() + ")"
+                + CodeFilter.IGNORE_DOUBLE_QUOTES.get()
+                + CodeFilter.IGNORE_SINGLE_QUOTES.get());
     }
 
     /**
@@ -61,7 +59,7 @@ public class LexicalAnalyzer {
             checkIntegerLiterals();
 
             if (c == '=') {
-                tokens.add("assignment, " + c);
+                tokens.add(CodeType.ASSIGNMENT + ", " + c);
             } else if (c == '{') {
                 System.out.println(level);
                 level++;
@@ -98,9 +96,9 @@ public class LexicalAnalyzer {
             token.append(c);
             if (c == temp) {
                 if (temp == '\'') {
-                    tokens.add("char, " + token.toString());
+                    tokens.add(CodeType.CHAR + ", " + token.toString());
                 } else if (temp == '"') {
-                    tokens.add("String, " + token.toString());
+                    tokens.add(CodeType.STRING + ", " + token.toString());
                 }
                 return;
             }
