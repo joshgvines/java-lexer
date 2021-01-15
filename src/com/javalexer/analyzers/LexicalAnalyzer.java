@@ -1,7 +1,8 @@
 package com.javalexer.analyzers;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -19,7 +20,14 @@ public class LexicalAnalyzer {
     private static final String IGNORE_SINGLE_QUOTES = "(?=([^\\\']*\\\'[^\\\']*\\\')*[^\\\']*$)";
     private static String[] splitFileArray;
 
-    public String[] formatAndSplit(String fileAsString) {
+    private char c = ' ';
+    private int r = -1;
+    private StringReader sr = null;
+    private StringBuilder token;
+    private List<String> tokens = new ArrayList<>();
+    private int level = 0;
+
+    private String[] formatAndSplit(String fileAsString) {
         // Remove Multi Line Comments
         fileAsString = fileAsString.replaceAll("(?s)/\\*.*?\\*/", "");
         // Remove Single Line Comments
@@ -32,21 +40,70 @@ public class LexicalAnalyzer {
                 + IGNORE_SINGLE_QUOTES);
     }
 
-    public List<String> tokenize(String[] splitFileArray) {
-        List<String> tokens = new ArrayList<>();
-        int level = 0;
-        // Node Builder Loop
+    /**
+     * @param fileAsString
+     * @return
+     */
+    public List<String> tokenize(String fileAsString) throws IOException {
+        String[] splitFileArray = formatAndSplit(fileAsString);
         for (String codeString : splitFileArray) {
-            if (codeString.contains("{")) {
-                for (char i : codeString.toCharArray())
-
-                level++;
-            } else if (codeString.contains("}")) {
-                level--;
-            }
-            tokens.add(codeString);
+            sr = new StringReader(codeString);
+            readCode();
         }
         return tokens;
+    }
+
+    public void readCode() throws IOException {
+        while ((r = sr.read()) != -1) {
+            c = (char) r;
+            checkCharacterLiterals();
+            checkIntegerLiterals();
+
+            if (c == '{') {
+                System.out.println(level);
+                level++;
+            }
+            if (c == '}') {
+                level--;
+            }
+            System.out.print(c);
+        }
+        sr.close();
+        level = 0;
+    }
+
+    private boolean checkCharacterLiterals() throws IOException {
+        if (c == '"' || c == '\'') {
+            appendUntil(c);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkIntegerLiterals() throws IOException {
+        if (Character.isDigit(c)) {
+            appendUntil(';');
+            return true;
+        }
+        return false;
+    }
+
+    private void appendUntil(char temp) throws IOException {
+        token = new StringBuilder();
+        token.append(c);
+        while ((r = sr.read()) != -1) {
+            c = (char) r;
+            token.append(c);
+            if (c == temp) {
+                if (temp == '\'') {
+                    tokens.add("char, " + token.toString());
+                } else if (temp == '"') {
+                    tokens.add("String, " + token.toString());
+                }
+                return;
+            }
+        }
+
     }
 
 }
