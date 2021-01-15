@@ -56,17 +56,19 @@ public class LexicalAnalyzer {
     public void readCode() throws IOException {
         while ((r = sr.read()) != -1) {
             c = (char) r;
+
             checkCharacterLiterals();
             checkIntegerLiterals();
 
-            if (c == '{') {
+            if (c == '=') {
+                tokens.add("assignment, " + c);
+            } else if (c == '{') {
                 System.out.println(level);
                 level++;
-            }
-            if (c == '}') {
+            } else if (c == '}') {
                 level--;
             }
-            System.out.print(c);
+//            System.out.print(c);
         }
         sr.close();
         level = 0;
