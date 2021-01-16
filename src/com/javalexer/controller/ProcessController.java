@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ProcessController {
 
-    public void runJavaLexer() throws IOException {
+    public void runJavaLexer() throws Exception {
         JavaFileStreamReader jfs = new JavaFileStreamReader();
         String fileAsString = jfs.readFileToString("src/com/javalexer/TestRead.java");
         if (!fileAsString.isEmpty()) {
@@ -17,7 +17,7 @@ public class ProcessController {
         }
     }
 
-    private void runLexicalAnalysis(String fileAsString) throws IOException {
+    private void runLexicalAnalysis(String fileAsString) throws Exception {
         LexicalAnalyzer la = new LexicalAnalyzer();
         List<Token> tokens = la.tokenize(fileAsString);
 

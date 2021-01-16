@@ -38,11 +38,7 @@ public class LexicalAnalyzer {
                 + CodeFilter.IGNORE_SINGLE_QUOTES.get());
     }
 
-    /**
-     * @param fileAsString
-     * @return
-     */
-    public List<Token> tokenize(String fileAsString) throws IOException {
+    public List<Token> tokenize(String fileAsString) throws Exception {
         String[] splitFileArray = formatAndSplit(fileAsString);
         for (String codeString : splitFileArray) {
             sr = new StringReader(codeString);
@@ -51,11 +47,11 @@ public class LexicalAnalyzer {
         return tokens;
     }
 
-    public void readCode() throws IOException {
+    public void readCode() throws Exception {
         while ((r = sr.read()) != -1) {
             c = (char) r;
 
-            isLiteral();
+            isTextLiteral();
 
             if (isOperator()) {
 
@@ -66,12 +62,10 @@ public class LexicalAnalyzer {
             } else if (c == '}') {
                 level--;
             }
-//            System.out.print(c);
         }
         sr.close();
         level = 0;
     }
-
 
     private boolean isOperator() {
         if (c == '=') {
@@ -88,27 +82,26 @@ public class LexicalAnalyzer {
         return false;
     }
 
-    private boolean isLiteral() throws IOException {
-        if (c == '"')  {
-            return appendUntil("\"");
-        }
-        if (c == '\'') {
-            return appendUntil("'");
+    private boolean isTextLiteral() throws Exception {
+        if (c == '"') {
+            return appendUntil("\"", TokenType.STRING);
+        } else if (c == '\'') {
+            return appendUntil("'", TokenType.CHAR);
         }
         return false;
     }
 
-    private boolean appendUntil(String temp) throws IOException {
+    private boolean appendUntil(String temp, TokenType tokenType) throws Exception {
         tokenString = new StringBuilder();
         tokenString.append(c);
         while ((r = sr.read()) != -1) {
             c = (char) r;
             tokenString.append(c);
-            if (temp.equals(c+"")) {
-                return addLiteralType(temp);
+            if (temp.equals(c + "")) {
+                return tokens.add(new Token(tokenType, tokenString.toString()));
             }
         }
-        return false;
+        throw new Exception("Expected " + temp);
     }
 
     private boolean appendNumberUntil() throws IOException {
@@ -120,15 +113,6 @@ public class LexicalAnalyzer {
                 return tokens.add(new Token(TokenType.INT, tokenString.toString()));
             }
             tokenString.append(c);
-        }
-        return false;
-    }
-
-    private boolean addLiteralType(String temp) {
-        if (temp.equals("'")) {
-            return tokens.add(new Token(TokenType.CHAR, tokenString.toString()));
-        } else if (temp.equals("\"")) {
-            return tokens.add(new Token(TokenType.STRING, tokenString.toString()));
         }
         return false;
     }
