@@ -1,7 +1,7 @@
 package com.javalexer.analyzers;
 
 import com.javalexer.enums.CodeFilter;
-import com.javalexer.enums.CodeType;
+import com.javalexer.enums.TokenType;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -21,8 +21,8 @@ public class LexicalAnalyzer {
     private char c = ' ';
     private int r = -1;
     private StringReader sr = null;
-    private StringBuilder token;
-    private List<String> tokens = new ArrayList<>();
+    private StringBuilder tokenString;
+    private List<Token> tokens = new ArrayList<>();
     private int level = 0;
 
     private String[] formatAndSplit(String fileAsString) {
@@ -31,7 +31,7 @@ public class LexicalAnalyzer {
         // Remove Single Line Comments
         fileAsString = fileAsString.replaceAll("//(.*?)" + NEW_LINE, "");
         // Remove White Space and New Line Characters
-        fileAsString = fileAsString.trim().replaceAll(BLANK_SPACE + "|" + NEW_LINE, "");
+        //fileAsString = fileAsString.trim().replaceAll(BLANK_SPACE + "|" + NEW_LINE, "");
         // Split by braces and semicolons, but ignore braces inside literals inside all double and single quotes.
         return fileAsString.split("(" + CodeFilter.FIND_BRACES.get() + "|" + CodeFilter.FIND_SEMI_COL.get() + ")"
                 + CodeFilter.IGNORE_DOUBLE_QUOTES.get()
@@ -42,7 +42,7 @@ public class LexicalAnalyzer {
      * @param fileAsString
      * @return
      */
-    public List<String> tokenize(String fileAsString) throws IOException {
+    public List<Token> tokenize(String fileAsString) throws IOException {
         String[] splitFileArray = formatAndSplit(fileAsString);
         for (String codeString : splitFileArray) {
             sr = new StringReader(codeString);
@@ -55,13 +55,13 @@ public class LexicalAnalyzer {
         while ((r = sr.read()) != -1) {
             c = (char) r;
 
-            checkCharacterLiterals();
-            checkIntegerLiterals();
+            isLiteral();
 
-            if (c == '=') {
-                tokens.add(CodeType.ASSIGNMENT + ", " + c);
+            if (isOperator()) {
+
+            } else if (Character.isDigit(c)) {
+                appendNumberUntil();
             } else if (c == '{') {
-                System.out.println(level);
                 level++;
             } else if (c == '}') {
                 level--;
@@ -72,38 +72,65 @@ public class LexicalAnalyzer {
         level = 0;
     }
 
-    private boolean checkCharacterLiterals() throws IOException {
-        if (c == '"' || c == '\'') {
-            appendUntil(c);
-            return true;
+
+    private boolean isOperator() {
+        if (c == '=') {
+            return tokens.add(new Token(TokenType.ASSIGNMENT, "="));
+        } else if (c == '+') {
+            return tokens.add(new Token(TokenType.PLUS, "+"));
+        } else if (c == '-') {
+            return tokens.add(new Token(TokenType.MINUS, "-"));
+        } else if (c == '(') {
+            return tokens.add(new Token(TokenType.LEFT_PAREN, "("));
+        } else if (c == ')') {
+            return tokens.add(new Token(TokenType.RIGHT_PAREN, ")"));
         }
         return false;
     }
 
-    private boolean checkIntegerLiterals() throws IOException {
-        if (Character.isDigit(c)) {
-            appendUntil(';');
-            return true;
+    private boolean isLiteral() throws IOException {
+        if (c == '"')  {
+            return appendUntil("\"");
+        }
+        if (c == '\'') {
+            return appendUntil("'");
         }
         return false;
     }
 
-    private void appendUntil(char temp) throws IOException {
-        token = new StringBuilder();
-        token.append(c);
+    private boolean appendUntil(String temp) throws IOException {
+        tokenString = new StringBuilder();
+        tokenString.append(c);
         while ((r = sr.read()) != -1) {
             c = (char) r;
-            token.append(c);
-            if (c == temp) {
-                if (temp == '\'') {
-                    tokens.add(CodeType.CHAR + ", " + token.toString());
-                } else if (temp == '"') {
-                    tokens.add(CodeType.STRING + ", " + token.toString());
-                }
-                return;
+            tokenString.append(c);
+            if (temp.equals(c+"")) {
+                return addLiteralType(temp);
             }
         }
+        return false;
+    }
 
+    private boolean appendNumberUntil() throws IOException {
+        tokenString = new StringBuilder();
+        tokenString.append(c);
+        while ((r = sr.read()) != -1) {
+            c = (char) r;
+            if (!Character.isDigit(c)) {
+                return tokens.add(new Token(TokenType.INT, tokenString.toString()));
+            }
+            tokenString.append(c);
+        }
+        return false;
+    }
+
+    private boolean addLiteralType(String temp) {
+        if (temp.equals("'")) {
+            return tokens.add(new Token(TokenType.CHAR, tokenString.toString()));
+        } else if (temp.equals("\"")) {
+            return tokens.add(new Token(TokenType.STRING, tokenString.toString()));
+        }
+        return false;
     }
 
 }

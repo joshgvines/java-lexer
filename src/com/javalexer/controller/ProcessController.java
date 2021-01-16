@@ -1,6 +1,7 @@
 package com.javalexer.controller;
 
 import com.javalexer.analyzers.LexicalAnalyzer;
+import com.javalexer.analyzers.Token;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,9 +19,9 @@ public class ProcessController {
 
     private void runLexicalAnalysis(String fileAsString) throws IOException {
         LexicalAnalyzer la = new LexicalAnalyzer();
-        List<String> tokens = la.tokenize(fileAsString);
+        List<Token> tokens = la.tokenize(fileAsString);
 
-        for (String token : tokens) {
+        for (Token token : tokens) {
             System.out.println(token);
         }
 

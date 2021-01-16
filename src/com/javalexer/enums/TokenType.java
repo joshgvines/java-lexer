@@ -1,22 +1,26 @@
 package com.javalexer.enums;
 
 /**
- * Defines All Token Types Used In Lexer.
+ * Defines Token Types Used In Lexer.
  */
-public enum CodeType {
+public enum TokenType {
 
     // TokenTypes
+    WHITESPACE,
+
     STRING,
     CHAR,
 
     INT,
     DOUBLE,
 
+    LEFT_PAREN,
+    RIGHT_PAREN,
+
     ASSIGNMENT,
 
     PLUS,
     MINUS,
     MULTIPLY,
-    DIVIDE
-
+    DIVIDE;
 }
