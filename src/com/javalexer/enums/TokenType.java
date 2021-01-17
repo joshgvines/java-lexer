@@ -11,6 +11,7 @@ public enum TokenType {
     STRING,
     CHAR,
 
+    NUMBER,
     INT,
     DOUBLE,
 

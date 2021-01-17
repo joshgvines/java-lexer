@@ -18,33 +18,44 @@ public class LexicalAnalyzer {
     private int level = 0;
     private int currentPosition = 0;
 
-    public List<Token> tokenize(String fileAsString) throws Exception {
+    public List<Token> lex(String fileAsString) throws Exception {
         fileAsString = fileAsString.replaceAll(CodeFilter.MULTI_COMMENT.get(), "");
         fileAsString = fileAsString.replaceAll(CodeFilter.SINGLE_COMMENT.get() + NEW_LINE, "");
         sr = new StringReader(fileAsString);
         while ((r = sr.read()) != -1) {
             c = (char) r;
-            if (whitespace());
+            if (c == ' ') tokens.add(new Token(TokenType.WHITESPACE, " ", currentPosition++));
             if (c == '{') tokens.add(new Token(TokenType.LEFT_BRACE, "{", currentPosition++));
-            else if (c == '}') tokens.add(new Token(TokenType.RIGHT_BRACE, "}", currentPosition++));
-            else if (c == '=') tokens.add(new Token(TokenType.ASSIGNMENT, "=", currentPosition++));
-            else if (c == '+') tokens.add(new Token(TokenType.PLUS, "+", currentPosition++));
-            else if (c == '-') tokens.add(new Token(TokenType.MINUS, "-", currentPosition++));
-            else if (c == '(') tokens.add(new Token(TokenType.LEFT_PAREN, "(", currentPosition++));
-            else if (c == ')') tokens.add(new Token(TokenType.RIGHT_PAREN, ")", currentPosition++));
-            else if (c == '"') appendUntil("\"", TokenType.STRING);
-            else if (c == '\'') appendUntil("'", TokenType.CHAR);
-            else if (Character.isDigit(c)) appendUntil(" ", TokenType.INT);
+            if (c == '}') tokens.add(new Token(TokenType.RIGHT_BRACE, "}", currentPosition++));
+            if (c == '=') tokens.add(new Token(TokenType.ASSIGNMENT, "=", currentPosition++));
+            if (c == '+') tokens.add(new Token(TokenType.PLUS, "+", currentPosition++));
+            if (c == '/') tokens.add(new Token(TokenType.PLUS, "+", currentPosition++));
+            if (c == '*') tokens.add(new Token(TokenType.PLUS, "+", currentPosition++));
+            if (c == '-') tokens.add(new Token(TokenType.MINUS, "-", currentPosition++));
+            if (c == '(') tokens.add(new Token(TokenType.LEFT_PAREN, "(", currentPosition++));
+            if (c == ')') tokens.add(new Token(TokenType.RIGHT_PAREN, ")", currentPosition++));
+            if (c == '"') appendUntil("\"", TokenType.STRING);
+            if (c == '\'') appendUntil("'", TokenType.CHAR);
+            if (Character.isDigit(c)) appendNumberUntil(" ", TokenType.NUMBER);
         }
         sr.close();
         return tokens;
     }
 
-    private boolean whitespace() {
-        if (c == ' ') {
-            return tokens.add(new Token(TokenType.WHITESPACE, " ", currentPosition++));
+    private boolean appendNumberUntil(String temp, TokenType tokenType) throws Exception {
+        tokenString = new StringBuilder();
+        tokenString.append(c);
+        while ((r = sr.read()) != -1) {
+            c = (char) r;
+            if ((c+"").equals(" ")) {
+                tokens.add(new Token(TokenType.NUMBER, tokenString.toString(), currentPosition++));
+                return tokens.add(new Token(TokenType.WHITESPACE, " ", currentPosition++));
+            } else if (!Character.isDigit(c)) {
+                return tokens.add(new Token(TokenType.NUMBER, tokenString.toString(), currentPosition++));
+            }
+            tokenString.append(c);
         }
-        return false;
+        return tokens.add(new Token(TokenType.NUMBER, tokenString.toString(), currentPosition++));
     }
 
     private boolean appendUntil(String temp, TokenType tokenType) throws Exception {
@@ -53,16 +64,13 @@ public class LexicalAnalyzer {
         while ((r = sr.read()) != -1) {
             c = (char) r;
             if ((temp.equals(c + "")) || (";".equals(c + ""))) {
-                if (whitespace()) {
-
-                }
-                if (tokenType != TokenType.INT) {
-                    tokenString.append(c);
-                }
+                tokenString.append(c);
                 return tokens.add(new Token(tokenType, tokenString.toString(), currentPosition++));
+            } else if (" ".equals(c + "")) {
+                tokens.add(new Token(TokenType.WHITESPACE, " ", currentPosition++));
             }
             tokenString.append(c);
         }
-        throw new Exception("Expected " + temp);
+        return tokens.add(new Token(tokenType, tokenString.toString(), currentPosition++));
     }
 }

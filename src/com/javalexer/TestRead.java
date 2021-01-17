@@ -7,6 +7,8 @@ public class TestRead {
 
     int num = 3 + 56;
 
+    double doubNum = 45.567;
+
     public void hello() {
         System.out.println("Hello}");
         System.out.println('}');
@@ -18,7 +20,7 @@ public class TestRead {
         if (true) {
             if (true) {
 
-                int number = 5 - 2;
+                int number = 5-2;
 
                 // blah blah balh private public
                 return "Value" + "yes"; /*
