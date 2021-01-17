@@ -24,6 +24,7 @@ public class LexicalAnalyzer {
         sr = new StringReader(fileAsString);
         while ((r = sr.read()) != -1) {
             c = (char) r;
+            if (whitespace());
             if (c == '{') tokens.add(new Token(TokenType.LEFT_BRACE, "{", currentPosition++));
             else if (c == '}') tokens.add(new Token(TokenType.RIGHT_BRACE, "}", currentPosition++));
             else if (c == '=') tokens.add(new Token(TokenType.ASSIGNMENT, "=", currentPosition++));
@@ -31,12 +32,19 @@ public class LexicalAnalyzer {
             else if (c == '-') tokens.add(new Token(TokenType.MINUS, "-", currentPosition++));
             else if (c == '(') tokens.add(new Token(TokenType.LEFT_PAREN, "(", currentPosition++));
             else if (c == ')') tokens.add(new Token(TokenType.RIGHT_PAREN, ")", currentPosition++));
-            else if (Character.isDigit(c)) appendNumberUntil();
             else if (c == '"') appendUntil("\"", TokenType.STRING);
             else if (c == '\'') appendUntil("'", TokenType.CHAR);
+            else if (Character.isDigit(c)) appendUntil(" ", TokenType.INT);
         }
         sr.close();
         return tokens;
+    }
+
+    private boolean whitespace() {
+        if (c == ' ') {
+            return tokens.add(new Token(TokenType.WHITESPACE, " ", currentPosition++));
+        }
+        return false;
     }
 
     private boolean appendUntil(String temp, TokenType tokenType) throws Exception {
@@ -44,24 +52,17 @@ public class LexicalAnalyzer {
         tokenString.append(c);
         while ((r = sr.read()) != -1) {
             c = (char) r;
-            tokenString.append(c);
-            if (temp.equals(c + "")) {
+            if ((temp.equals(c + "")) || (";".equals(c + ""))) {
+                if (whitespace()) {
+
+                }
+                if (tokenType != TokenType.INT) {
+                    tokenString.append(c);
+                }
                 return tokens.add(new Token(tokenType, tokenString.toString(), currentPosition++));
             }
-        }
-        throw new Exception("Expected " + temp);
-    }
-
-    private boolean appendNumberUntil() throws IOException {
-        tokenString = new StringBuilder();
-        tokenString.append(c);
-        while ((r = sr.read()) != -1) {
-            c = (char) r;
-            if (!Character.isDigit(c)) {
-                return tokens.add(new Token(TokenType.INT, tokenString.toString(), currentPosition++));
-            }
             tokenString.append(c);
         }
-        return false;
+        throw new Exception("Expected " + temp);
     }
 }
