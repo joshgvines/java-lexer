@@ -6,10 +6,12 @@ package com.javalexer.enums;
 public enum CodeFilter {
 
     // Regex Expressions
-    FIND_BRACES("(?<=\\{)|(?<=\\})"),
-    FIND_SEMI_COL("(?<=\\;)"),
-    IGNORE_DOUBLE_QUOTES("(?=([^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*$)"),
-    IGNORE_SINGLE_QUOTES("(?=([^\\\']*\\\'[^\\\']*\\\')*[^\\\']*$)");
+    BRACES("(?<=\\{)|(?<=\\})"),
+    SEMI_COL("(?<=\\;)"),
+    SINGLE_COMMENT("//(.*?)"),
+    MULTI_COMMENT("(?s)/\\*.*?\\*/"),
+    IGNORE_DOUBLE_QUOTE("(?=([^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*$)"),
+    IGNORE_SINGLE_QUOTE("(?=([^\\\']*\\\'[^\\\']*\\\')*[^\\\']*$)");
 
     private String filter;
 

@@ -5,7 +5,7 @@ public class TestRead {
     public String hello;
     private String hi = "hello";
 
-    int num = 3 + 5;
+    int num = 3 + 56;
 
     public void hello() {
         System.out.println("Hello}");

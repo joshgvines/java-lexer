@@ -4,17 +4,21 @@ import com.javalexer.enums.TokenType;
 
 public class Token {
 
-    private TokenType tokenType;
-    private String token;
+    public TokenType tokenType;
+    public String token;
+    public int position;
 
-    public Token(TokenType tokenType, String token) {
+    public Token(TokenType tokenType, String token, int position) {
         this.tokenType = tokenType;
         this.token = token;
+        this.position = position;
     }
 
     @Override
     public String toString() {
-        return tokenType.toString() + ", " + token;
+        String specifiers = "%-15s %-10s %-5s";
+        String out = String.format(specifiers, tokenType.toString(), position, token);
+        return out;
     }
 
 }
