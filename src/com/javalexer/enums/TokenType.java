@@ -26,5 +26,7 @@ public enum TokenType {
     PLUS,
     MINUS,
     MULTIPLY,
-    DIVIDE;
+    DIVIDE,
+
+    END;
 }

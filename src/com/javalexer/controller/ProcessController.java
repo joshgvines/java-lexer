@@ -14,6 +14,7 @@ public class ProcessController {
             runLexicalAnalysis(fileAsString);
         }
     }
+
     public void runJavaLexer(String toLex) throws Exception {
         runLexicalAnalysis(toLex);
     }
