@@ -2,6 +2,7 @@ package com.javalexer.controller;
 
 import com.javalexer.analyzers.LexicalAnalyzer;
 import com.javalexer.analyzers.Token;
+import com.javalexer.parsing.Parser;
 
 import java.util.List;
 
@@ -21,12 +22,12 @@ public class ProcessController {
 
     private void runLexicalAnalysis(String fileAsString) throws Exception {
         LexicalAnalyzer la = new LexicalAnalyzer();
-        List<Token> tokens = la.lex(fileAsString);
+        parseTokens(la.lex(fileAsString));
+    }
 
-        for (Token token : tokens) {
-            System.out.println(token);
-        }
-
+    private void parseTokens(List<Token> tokens) {
+        Parser parser = new Parser();
+        parser.parse(tokens);
     }
 
 }
