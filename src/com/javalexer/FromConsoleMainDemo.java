@@ -11,6 +11,7 @@ public class FromConsoleMainDemo {
 
     public static void main(String[] args) throws Exception {
         while (true) {
+            System.out.print("> ");
             String input = sc.nextLine();
             if (input.equals("/exit")) {
                 System.exit(0);
