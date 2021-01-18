@@ -34,16 +34,16 @@ public class LexicalAnalyzer {
         if (c == '"') { appendUntil("\"", TokenType.STRING);
         } else if (c == '\'') { appendUntil("'", TokenType.CHAR);
         } else if (Character.isDigit(c)) { appendNumberUntil(" ", TokenType.NUMBER);
-        } else if (c == ' ') { tokens.add(new Token(TokenType.WHITESPACE, " ", currentPosition++));
-        } else if (c == '{') { tokens.add(new Token(TokenType.LEFT_BRACE, "{", currentPosition++));
-        } else if (c == '}') { tokens.add(new Token(TokenType.RIGHT_BRACE, "}", currentPosition++));
-        } else if (c == '=') { tokens.add(new Token(TokenType.ASSIGNMENT, "=", currentPosition++));
+        } else if (c == ' ') { tokens.add(new Token(TokenType.SPACE, " ", currentPosition++));
+        } else if (c == '{') { tokens.add(new Token(TokenType.LBRACE, "{", currentPosition++));
+        } else if (c == '}') { tokens.add(new Token(TokenType.RBRACE, "}", currentPosition++));
+        } else if (c == '=') { tokens.add(new Token(TokenType.ASSIGN, "=", currentPosition++));
         } else if (c == '+') { tokens.add(new Token(TokenType.PLUS, "+", currentPosition++));
-        } else if (c == '/') { tokens.add(new Token(TokenType.PLUS, "/", currentPosition++));
-        } else if (c == '*') { tokens.add(new Token(TokenType.PLUS, "*", currentPosition++));
+        } else if (c == '/') { tokens.add(new Token(TokenType.DIVIDE, "/", currentPosition++));
+        } else if (c == '*') { tokens.add(new Token(TokenType.STAR, "*", currentPosition++));
         } else if (c == '-') { tokens.add(new Token(TokenType.MINUS, "-", currentPosition++));
-        } else if (c == '(') { tokens.add(new Token(TokenType.LEFT_PAREN, "(", currentPosition++));
-        } else if (c == ')') { tokens.add(new Token(TokenType.RIGHT_PAREN, ")", currentPosition++)); }
+        } else if (c == '(') { tokens.add(new Token(TokenType.LPAREN, "(", currentPosition++));
+        } else if (c == ')') { tokens.add(new Token(TokenType.RPAREN, ")", currentPosition++)); }
     }
 
     private void appendNumberUntil(String temp, TokenType tokenType) throws Exception {
@@ -70,7 +70,7 @@ public class LexicalAnalyzer {
                 tokenString.append(c);
                 return tokens.add(new Token(tokenType, tokenString.toString(), currentPosition++));
             } else if (" ".equals(c + "")) {
-                tokens.add(new Token(TokenType.WHITESPACE, " ", currentPosition++));
+                tokens.add(new Token(TokenType.SPACE, " ", currentPosition++));
             }
             tokenString.append(c);
         }

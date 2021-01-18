@@ -6,7 +6,7 @@ package com.javalexer.enums;
 public enum TokenType {
 
     // TokenTypes
-    WHITESPACE,
+    SPACE,
 
     STRING,
     CHAR,
@@ -15,17 +15,17 @@ public enum TokenType {
     INT,
     DOUBLE,
 
-    LEFT_PAREN,
-    RIGHT_PAREN,
+    LPAREN,
+    RPAREN,
 
-    LEFT_BRACE,
-    RIGHT_BRACE,
+    LBRACE,
+    RBRACE,
 
-    ASSIGNMENT,
+    ASSIGN,
 
     PLUS,
     MINUS,
-    MULTIPLY,
+    STAR,
     DIVIDE,
 
     END;
