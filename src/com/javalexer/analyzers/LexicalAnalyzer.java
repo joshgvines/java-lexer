@@ -2,6 +2,7 @@ package com.javalexer.analyzers;
 
 import com.javalexer.enums.CodeFilter;
 import com.javalexer.enums.TokenType;
+import com.sun.jdi.IntegerValue;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class LexicalAnalyzer {
         } else if (c == '}') { tokens.add(new Token(TokenType.RBRACE, "}", currentPosition++));
         } else if (c == '=') { tokens.add(new Token(TokenType.ASSIGN, "=", currentPosition++));
         } else if (c == '+') { tokens.add(new Token(TokenType.PLUS, "+", currentPosition++));
-        } else if (c == '/') { tokens.add(new Token(TokenType.DIVIDE, "/", currentPosition++));
+        } else if (c == '/') { tokens.add(new Token(TokenType.SLASH, "/", currentPosition++));
         } else if (c == '*') { tokens.add(new Token(TokenType.STAR, "*", currentPosition++));
         } else if (c == '-') { tokens.add(new Token(TokenType.MINUS, "-", currentPosition++));
         } else if (c == '(') { tokens.add(new Token(TokenType.LPAREN, "(", currentPosition++));
@@ -55,6 +56,9 @@ public class LexicalAnalyzer {
                 tokens.add(new Token(TokenType.NUMBER, tokenString.toString(), currentPosition++));
                 filter();
                 return;
+            }
+            if (tokenString.length() > 8) {
+                throw new Exception("Number was to large");
             }
             tokenString.append(c);
         }

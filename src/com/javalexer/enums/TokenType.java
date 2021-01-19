@@ -26,7 +26,7 @@ public enum TokenType {
     PLUS,
     MINUS,
     STAR,
-    DIVIDE,
+    SLASH,
 
     END;
 }

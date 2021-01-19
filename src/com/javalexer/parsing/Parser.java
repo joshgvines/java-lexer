@@ -4,66 +4,47 @@ import com.javalexer.analyzers.Token;
 import com.javalexer.enums.TokenType;
 
 import java.util.List;
+import java.util.Stack;
+
+import static com.javalexer.enums.TokenType.*;
 
 public class Parser {
 
+    Stack<String> values = new Stack<>();
+    Stack<String> ops = new Stack<>();
+
     public void parse(List<Token> tokens) {
 
-        /*
-        ├──
-        │
-        └──
-         */
-        CodeTree codeTree = new CodeTree();
+        ExpressionTree expressionTree = new ExpressionTree(null);
 
-        for (Token token : tokens) {
-            if (token.tokenType.equals(TokenType.NUMBER)) {
-                codeTree.add(new Node());
+        int level = 0;
+        for (int i = 0; i < tokens.size(); i++) {
+
+            Token token = tokens.get(i);
+            System.out.println(token.toString());
+            TokenType tokenType = token.tokenType;
+
+            if (tokenType == SPACE) {
+                continue;
             }
-            if (isOperator(token.token)) {
-                codeTree.add(new Node(token.token, new Node(), null));
+
+            if (tokenType == LPAREN) {
+                level++;
+                ops.push(token.token);
+            } else if (tokenType == RPAREN) {
+                level--;
+                ops.push(token.token);
+            } else if (tokenType == NUMBER) {
+                values.push(token.token);
+            } else if (isOperator(tokenType)) {
+                ops.push(token.token);
             }
         }
 
-        Node anode = codeTree.root;
-        while (codeTree.currentNode.right != null) {
-            anode = anode.right;
-            System.out.println(anode.token);
-        }
-
-    }
-    private boolean isOperator(String c) {
-        return (c.equals('*') || c.equals('/') || c.equals('+') || c.equals('-') || c.equals('%'));
+        expressionTree.evaluate();
     }
 
-    private class Node {
-        String token;
-        Node left;
-        Node right;
-
-        Node() {
-        }
-
-        Node(String token, Node right, Node left) {
-            this.token = token;
-            this.right = right;
-            this.left = left;
-        }
+    private boolean isOperator(TokenType type) {
+        return (type == STAR || type == SLASH || type == PLUS || type == MINUS);
     }
-
-    private class CodeTree {
-        Node root;
-        Node currentNode;
-
-        CodeTree() {
-            root = new Node();
-            currentNode = root;
-        }
-
-        void add(Node node) {
-            currentNode.right = node;
-            currentNode = node;
-        }
-    }
-
 }
