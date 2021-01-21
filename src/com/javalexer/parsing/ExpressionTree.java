@@ -48,7 +48,7 @@ public class ExpressionTree {
         return result;
     }
 
-    private double compute(String operator, double a, double b) {
+    public double compute(String operator, double a, double b) {
         switch (operator) {
             case "+": return a + b;
             case "-": return a - b;

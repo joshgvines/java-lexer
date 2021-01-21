@@ -16,8 +16,11 @@ public class Token {
 
     @Override
     public String toString() {
-        String specifiers = "%-15s %-10s %-5s";
-        String out = String.format(specifiers, tokenType.toString(), position, token);
+        String specifiers = "%-14s %-10s %-5s";
+        String out = String.format(specifiers,
+                "Typ: "+tokenType.toString(),
+                "Pos: "+position,
+                "Val: "+token);
         return out;
     }
 

@@ -25,7 +25,7 @@ public class ProcessController {
         parseTokens(la.lex(fileAsString));
     }
 
-    private void parseTokens(List<Token> tokens) {
+    private void parseTokens(List<Token> tokens) throws Exception {
         Parser parser = new Parser();
         parser.parse(tokens);
     }
