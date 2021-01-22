@@ -2,6 +2,7 @@ package com.javalexer.controller;
 
 import com.javalexer.analyzers.LexicalAnalyzer;
 import com.javalexer.analyzers.Token;
+import com.javalexer.parsing.ExperimentalParser;
 import com.javalexer.parsing.Parser;
 
 import java.util.List;
@@ -27,6 +28,8 @@ public class ProcessController {
 
     private void parseTokens(List<Token> tokens) throws Exception {
         Parser parser = new Parser();
+        ExperimentalParser ep = new ExperimentalParser();
+       //ep.parse(tokens);
         parser.parse(tokens);
     }
 

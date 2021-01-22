@@ -43,7 +43,7 @@ public class ExperimentalParser {
             if ((nextOperator != null && prevOperator != null
                     && precedence >= precedence(nextOperator)
                     && precedence > precedence(prevOperator))
-                    || (O == 0) ||  nextOperator == null) {
+                    || (O == 0) || nextOperator == null) {
                 nodes.add(new BinaryNode(thisValue, thisOperator, nextValue, precedence));
             } else if (prevOperator != null && nextOperator != null
                     && precedence <= precedence(prevOperator)
@@ -66,34 +66,25 @@ public class ExperimentalParser {
 
     private void printAll() throws Exception {
         BinaryNode currentNode = null;
-        BinaryNode tempNode, epicNode = null;
+        BinaryNode tempNode, root = null;
         for (BinaryNode node : nodes) {
-            if (currentNode == null && node.precedence == 1) {
-                currentNode = node;
-            } else if (node.precedence == 1) {
-                tempNode = decideNode(currentNode, node);
-                if (tempNode != null) {
-                    currentNode = tempNode;
-                }
-            }
-        }
-        for (BinaryNode node : nodes) {
-            if (node.precedence == 0) {
-                tempNode = decideNode(currentNode, node);
-                if (tempNode != null) {
-                    currentNode = tempNode;
-                }
+            if (currentNode == null) {
+                root = currentNode = node;
+            } else if (isLeaf(currentNode)) {
+                currentNode = decideNode(root, node);
+            } else {
+                currentNode = decideNode(currentNode, node);
             }
         }
         bloop(currentNode);
     }
 
-    String test = "|__";
+    String test = "|-";
     private String bloop(BinaryNode root) {
 
         if (root.left != null) {
             if (isLeaf(root.left)) {
-                System.out.println(test + "__" + bloop(root.left));
+                System.out.println("|    |___" + bloop(root.left));
             } else {
                 System.out.println(test + bloop(root.left));
             }
@@ -101,7 +92,7 @@ public class ExperimentalParser {
 
         if (root.right != null) {
             if (isLeaf(root.right)) {
-                System.out.println(test + "__" + bloop(root.right));
+                System.out.println("|    |___" + bloop(root.right));
             } else {
                 System.out.println(test + bloop(root.right));
             }
@@ -130,7 +121,7 @@ public class ExperimentalParser {
         } else {
             //throw new Exception("How???");
         }
-        return null;
+        return nodeA;
     }
 
     private class BinaryNode {
