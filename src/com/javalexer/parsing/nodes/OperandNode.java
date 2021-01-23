@@ -5,7 +5,7 @@ import com.javalexer.analyzers.Token;
 /**
  * An OperandNode cannot have a right or left node, it must always be a leaf.
  */
-public class OperandNode implements Node {
+public class OperandNode implements MyNode {
 
     private Token operand;
 

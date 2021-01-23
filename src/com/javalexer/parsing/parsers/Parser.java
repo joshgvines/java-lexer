@@ -23,13 +23,13 @@ public class Parser {
     public void parse(List<Token> tokens) throws Exception {
         for (int i = 0; i < tokens.size(); i++) {
             Token token = tokens.get(i);
-            if (token.tokenType == SPACE) {
+            if (token.type == SPACE) {
                 continue;
-            } else if (token.tokenType == NUMBER) {
+            } else if (token.type == NUMBER) {
                 vals.push(token);
-            } else if (isOperator(token.tokenType)) {
+            } else if (isOperator(token.type)) {
                 Token look = null;
-                while (look == null || look.tokenType != NUMBER) {
+                while (look == null || look.type != NUMBER) {
                     look = tokens.get(++i);
                 }
                 vals.push(look);
@@ -87,7 +87,7 @@ public class Parser {
     }
 
     private int precedence(Token token) throws Exception {
-        switch (token.tokenType) {
+        switch (token.type) {
             case SLASH: case STAR: return 1;
             case PLUS: case MINUS: return 0;
             default: return -1;

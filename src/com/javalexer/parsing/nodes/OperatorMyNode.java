@@ -5,33 +5,33 @@ import com.javalexer.analyzers.Token;
 /**
  * An OperatorNode has a right and left node, both of which can be an OperandNode or another OperatorNode.
  */
-public class OperatorNode implements Node {
+public class OperatorMyNode implements MyNode {
 
-    private Node right, left;
+    private MyNode right, left;
     private Token operator;
 
-    public OperatorNode() {
+    public OperatorMyNode() {
     }
 
-    public OperatorNode(Token operator, Node right, Node left) {
+    public OperatorMyNode(Token operator, MyNode right, MyNode left) {
         this.operator = operator;
         this.right = right;
         this.left = left;
     }
 
-    public Node getRight() {
+    public MyNode getRight() {
         return right;
     }
 
-    public Node getLeft() {
+    public MyNode getLeft() {
         return left;
     }
 
-    public void setRight(Node right) {
+    public void setRight(MyNode right) {
         this.right = right;
     }
 
-    public void setLeft(Node left) {
+    public void setLeft(MyNode left) {
         this.left = left;
     }
 
@@ -45,11 +45,15 @@ public class OperatorNode implements Node {
         this.operator = operator;
     }
 
+    public Token[] getChildren() {
+        return new Token[] { left.getData(), operator, right.getData() };
+    }
+
     @Override
     public String toString() {
         return String.format("%-14s %-10s %-5s",
-                "OperatorNode: [ " + operator.tokenType + ", ",
-                right.getData().tokenType, left.getData().tokenType);
+                "OperatorNode: [ " + operator.type + ", ",
+                right.getData().type, left.getData().type);
     }
 
 }

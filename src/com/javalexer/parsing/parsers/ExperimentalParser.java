@@ -18,8 +18,8 @@ public class ExperimentalParser {
         List<Token> vas = new ArrayList<>();
         List<Token> ops = new ArrayList<>();
         for (Token token : tokens) {
-            TokenType type = token.tokenType;
-            if (token.tokenType == NUMBER) {
+            TokenType type = token.type;
+            if (token.type == NUMBER) {
                 vas.add(token);
             } else if (type == STAR || type == SLASH || type == PLUS || type == MINUS) {
                 ops.add(token);
@@ -57,7 +57,7 @@ public class ExperimentalParser {
     }
 
     private int precedence(Token token) throws Exception {
-        switch (token.tokenType) {
+        switch (token.type) {
             case SLASH: case STAR: return 1;
             case PLUS: case MINUS: return 0;
             default: return -1;

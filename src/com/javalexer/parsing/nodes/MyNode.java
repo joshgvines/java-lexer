@@ -2,7 +2,7 @@ package com.javalexer.parsing.nodes;
 
 import com.javalexer.analyzers.Token;
 
-public interface Node {
+public interface MyNode {
 
     Token getData();
 

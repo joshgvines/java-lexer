@@ -13,10 +13,8 @@ public class InfixParserMainDemo {
         LexicalAnalyzer la = new LexicalAnalyzer();
         List<Token> tokenList = la.lex("1 + 2 + 3 - 1");
 
-        if (tokenList != null) {
-            InfixParser infixParser = new InfixParser(tokenList);
-            infixParser.printAllTokens();
-        }
+        InfixParser infixParser = new InfixParser(tokenList);
+        infixParser.parse();
 
     }
 
