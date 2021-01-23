@@ -1,7 +1,8 @@
-package com.javalexer.parsing;
+package com.javalexer.parsing.parsers;
 
 import com.javalexer.analyzers.Token;
 import com.javalexer.enums.TokenType;
+import com.javalexer.parsing.ExpressionTree;
 
 import java.util.List;
 import java.util.Stack;

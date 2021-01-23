@@ -34,7 +34,7 @@ public class LexicalAnalyzer {
     private void filter() throws Exception {
         if (c == '"') { appendUntil("\"", TokenType.STRING);
         } else if (c == '\'') { appendUntil("'", TokenType.CHAR);
-        } else if (Character.isDigit(c)) { appendNumberUntil(" ", TokenType.NUMBER);
+        } else if (Character.isDigit(c)) { appendNumberUntil();
         } else if (c == ' ') { tokens.add(new Token(TokenType.SPACE, " ", currentPosition++));
         } else if (c == '{') { tokens.add(new Token(TokenType.LBRACE, "{", currentPosition++));
         } else if (c == '}') { tokens.add(new Token(TokenType.RBRACE, "}", currentPosition++));
@@ -47,17 +47,26 @@ public class LexicalAnalyzer {
         } else if (c == ')') { tokens.add(new Token(TokenType.RPAREN, ")", currentPosition++)); }
     }
 
-    private void appendNumberUntil(String temp, TokenType tokenType) throws Exception {
+    /**
+     * You are going to need a peek() function and better error handling eventually, don't forget.
+     * @throws Exception
+     */
+    private void appendNumberUntil() throws Exception {
         tokenString = new StringBuilder();
         tokenString.append(c);
+        boolean isDouble = false;
         while ((r = sr.read()) != -1) {
             c = (char) r;
-            if (!Character.isDigit(c) && !(c + "").equals(".")) {
+            if (!Character.isDigit(c) && c != '.') {
                 tokens.add(new Token(TokenType.NUMBER, tokenString.toString(), currentPosition++));
                 filter();
                 return;
             }
-            if (tokenString.length() > 8) {
+            if (c == '.') {
+                isDouble = true;
+            }
+            if ((tokenString.length() > 8 && !isDouble)
+                    || (tokenString.length() > 12 && isDouble)) {
                 throw new Exception("Number was to large");
             }
             tokenString.append(c);
@@ -65,15 +74,15 @@ public class LexicalAnalyzer {
         tokens.add(new Token(TokenType.NUMBER, tokenString.toString(), currentPosition++));
     }
 
-    private boolean appendUntil(String temp, TokenType tokenType) throws Exception {
+    private boolean appendUntil(String key, TokenType tokenType) throws Exception {
         tokenString = new StringBuilder();
         tokenString.append(c);
         while ((r = sr.read()) != -1) {
             c = (char) r;
-            if ((temp.equals(c + "")) || (";".equals(c + ""))) {
+            if (key.equals(c) || (";").equals(c)) {
                 tokenString.append(c);
                 return tokens.add(new Token(tokenType, tokenString.toString(), currentPosition++));
-            } else if (" ".equals(c + "")) {
+            } else if ((" ").equals(c)) {
                 tokens.add(new Token(TokenType.SPACE, " ", currentPosition++));
             }
             tokenString.append(c);

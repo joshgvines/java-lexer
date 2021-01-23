@@ -2,8 +2,8 @@ package com.javalexer.controller;
 
 import com.javalexer.analyzers.LexicalAnalyzer;
 import com.javalexer.analyzers.Token;
-import com.javalexer.parsing.ExperimentalParser;
-import com.javalexer.parsing.Parser;
+import com.javalexer.parsing.parsers.ExperimentalParser;
+import com.javalexer.parsing.parsers.Parser;
 
 import java.util.List;
 
