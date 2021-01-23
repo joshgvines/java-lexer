@@ -44,7 +44,8 @@ public class LexicalAnalyzer {
         } else if (c == '*') { tokens.add(new Token(TokenType.STAR, "*", currentPosition++));
         } else if (c == '-') { tokens.add(new Token(TokenType.MINUS, "-", currentPosition++));
         } else if (c == '(') { tokens.add(new Token(TokenType.LPAREN, "(", currentPosition++));
-        } else if (c == ')') { tokens.add(new Token(TokenType.RPAREN, ")", currentPosition++)); }
+        } else if (c == ')') { tokens.add(new Token(TokenType.RPAREN, ")", currentPosition++));
+        } else { tokens.add(new Token(TokenType.UNKNOWN, null, currentPosition++)); }
     }
 
     /**

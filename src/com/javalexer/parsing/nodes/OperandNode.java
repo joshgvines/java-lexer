@@ -2,17 +2,17 @@ package com.javalexer.parsing.nodes;
 
 import com.javalexer.analyzers.Token;
 
+import java.util.List;
+
 /**
  * An OperandNode cannot have a right or left node, it must always be a leaf.
  */
-public class OperandNode implements MyNode {
+public class OperandNode extends MyNode {
 
     private Token operand;
 
-    public OperandNode() {
-    }
-
     public OperandNode(Token operand) {
+        super(operand);
         this.operand = operand;
     }
 
@@ -26,9 +26,15 @@ public class OperandNode implements MyNode {
         this.operand = operand;
     }
 
+
+    @Override
+    public List<MyNode> getChildren() {
+        return null;
+    }
+
     @Override
     public String toString() {
-        return "OperandNode: [ " + operand.toString() + " ] ";
+        return "OperandNode:[ " + operand + " ]";
     }
 
 }

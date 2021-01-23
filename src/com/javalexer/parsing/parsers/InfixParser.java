@@ -4,7 +4,7 @@ import com.javalexer.analyzers.Token;
 import com.javalexer.enums.TokenType;
 import com.javalexer.parsing.nodes.MyNode;
 import com.javalexer.parsing.nodes.OperandNode;
-import com.javalexer.parsing.nodes.OperatorMyNode;
+import com.javalexer.parsing.nodes.OperatorNode;
 
 import java.util.List;
 
@@ -20,14 +20,13 @@ public class InfixParser {
 
     public InfixParser(final List<Token> tokens) {
         this.tokens = tokens;
-        current = peek(0);
     }
 
     private Token match(TokenType type) {
         if (current.type == type) {
             return nextToken();
         }
-        return new Token(type, null, position);
+        return current;
     }
 
     private OperandNode primaryExpression() {
@@ -37,13 +36,11 @@ public class InfixParser {
 
     public MyNode parse() {
         Token operator;
-        System.out.println(current);
-        MyNode left = primaryExpression();
-        while (peek(1).type == PLUS || peek(1).type == MINUS) {
+        MyNode left = new OperandNode(nextToken());
+        while(peek(1).type == PLUS || peek(1).type == MINUS) {
             operator = nextToken();
-            System.out.println(operator);
-            MyNode right = primaryExpression();
-            left = new OperatorMyNode(operator, left, right);
+            MyNode right = new OperandNode(nextToken());
+            left = new OperatorNode(left, operator, right);;
         }
         return left;
     }
@@ -57,12 +54,12 @@ public class InfixParser {
     }
 
     private Token nextToken() {
-        // Ignore spaces
-        while ((current = tokens.get(position++)).type == SPACE) ;
+        while ((current = tokens.get(position++)).type == SPACE);
         if (current.type == END) {
             position = 0;
             return null;
         }
+        System.out.println(current);
         return current;
     }
 

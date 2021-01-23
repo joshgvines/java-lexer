@@ -28,5 +28,7 @@ public enum TokenType {
     STAR,
     SLASH,
 
+    UNKNOWN,
+
     END;
 }
