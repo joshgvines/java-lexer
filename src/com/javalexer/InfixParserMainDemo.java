@@ -2,6 +2,7 @@ package com.javalexer;
 
 import com.javalexer.analyzers.LexicalAnalyzer;
 import com.javalexer.analyzers.Token;
+import com.javalexer.enums.TokenType;
 import com.javalexer.parsing.nodes.MyNode;
 import com.javalexer.parsing.nodes.OperatorNode;
 import com.javalexer.parsing.parsers.InfixParser;
@@ -13,12 +14,11 @@ public class InfixParserMainDemo {
 
     public static void main(String[] args) throws Exception {
         LexicalAnalyzer la = new LexicalAnalyzer();
-        List<Token> tokenList = la.lex("1 + 2 + 3");
+        List<Token> tokenList = la.lex("1 + 2 + 3 - 4 + 43");
 
         InfixParser infixParser = new InfixParser(tokenList);
         MyNode root = infixParser.parse();
 
-        System.out.println(root.getData());
         traverse(root);
 
     }
@@ -28,9 +28,12 @@ public class InfixParserMainDemo {
         List<MyNode> children = root.getChildren();
 //        System.out.println(root.getData());
         if (children != null){
+            System.out.println(indent + root.getData());
             for (MyNode node : children) {
                 indent = indent + " ";
-                System.out.println(indent + node);
+                if ( node.getData().type == TokenType.NUMBER) {
+                    System.out.println(indent + node);
+                }
                 traverse(node);
             }
         }
