@@ -17,19 +17,13 @@ public class OperandNode extends MyNode {
     }
 
     @Override
-    public Token getData() {
+    public Token data() {
         return operand;
     }
 
     @Override
     public void setData(Token operand) {
         this.operand = operand;
-    }
-
-
-    @Override
-    public List<MyNode> getChildren() {
-        return null;
     }
 
     @Override

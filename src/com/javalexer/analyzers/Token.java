@@ -5,12 +5,12 @@ import com.javalexer.enums.TokenType;
 public class Token {
 
     public TokenType type;
-    public String token;
+    public String value;
     public int position;
 
-    public Token(TokenType type, String token, int position) {
+    public Token(TokenType type, String value, int position) {
         this.type = type;
-        this.token = token;
+        this.value = value;
         this.position = position;
     }
 
@@ -19,7 +19,7 @@ public class Token {
         return String.format("%-14s %-10s %-5s",
                 "Typ: "+ type.toString(),
                 "Pos: "+position,
-                "Val: "+token);
+                "Val: "+ value);
     }
 
 }

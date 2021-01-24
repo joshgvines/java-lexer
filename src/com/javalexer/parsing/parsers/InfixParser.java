@@ -59,7 +59,6 @@ public class InfixParser {
             position = 0;
             return null;
         }
-        System.out.println(current);
         return current;
     }
 

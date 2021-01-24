@@ -21,7 +21,7 @@ public abstract class MyNode {
         this.left = left;
     }
 
-    public Token getData() {
+    public Token data() {
         return data;
     }
 
@@ -35,13 +35,6 @@ public abstract class MyNode {
 
     public void setData(Token data) {
         this.data = data;
-    }
-
-    public List<MyNode> getChildren() {
-        List<MyNode> children = new ArrayList<>(3);
-        children.add(left);
-        children.add(right);
-        return children;
     }
 
 }

@@ -2,8 +2,6 @@ package com.javalexer.parsing.nodes;
 
 import com.javalexer.analyzers.Token;
 
-import java.util.List;
-
 /**
  * An OperatorNode has a right and left node, both of which can be an OperandNode or another OperatorNode.
  */
@@ -22,20 +20,15 @@ public class OperatorNode extends MyNode {
     }
 
     @Override
-    public List<MyNode> getChildren() {
-        return super.getChildren();
-    }
-
-    @Override
-    public Token getData() {
-        return super.getData();
+    public Token data() {
+        return super.data();
     }
 
     @Override
     public String toString() {
         return String.format("%-14s %-10s %-5s",
                 "{ OperatorNode [ left:" + super.getLeft(),
-                "Operator: [ "+super.getData()+ " ] ",
+                "Operator: [ "+super.data()+ " ] ",
                 "right:" + super.getRight() + " ] }");
     }
 

@@ -73,7 +73,7 @@ public class ExpressionTree {
         }
 
         String getData() {
-            return data.token;
+            return data.value;
         }
 
         boolean isLeaf() {
