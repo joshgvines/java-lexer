@@ -2,6 +2,7 @@ package com.javalexer.controller;
 
 import com.javalexer.analyzers.LexicalAnalyzer;
 import com.javalexer.analyzers.Token;
+import com.javalexer.diagnostics.Diagnostics;
 import com.javalexer.parsing.trees.InfixExpressionTree;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class ProcessController {
         if (infixExpressionTree.buildTree(tokens)) {
             System.out.println(infixExpressionTree.evaluate());
         }
+        Diagnostics.printDiagnostics();
     }
 
 }

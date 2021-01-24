@@ -6,6 +6,7 @@ import com.javalexer.parsing.nodes.AbsBinaryNode;
 import com.javalexer.parsing.nodes.OperandNode;
 import com.javalexer.parsing.nodes.OperatorNode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.javalexer.enums.TokenType.*;
@@ -15,6 +16,7 @@ import static com.javalexer.enums.TokenType.*;
  */
 public class InfixParser {
     private final List<Token> tokens;
+    private List<String> diagnostics = new ArrayList<>();
     private int position = 0;
     private Token current;
 

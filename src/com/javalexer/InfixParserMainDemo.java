@@ -29,7 +29,7 @@ public class InfixParserMainDemo {
     }
 
     /**
-     * Inorder
+     * Inorder traversal output function.
      * @param node
      */
     private static void traverseInfix(AbsBinaryNode node) {
@@ -41,7 +41,7 @@ public class InfixParserMainDemo {
     }
 
     /**
-     * ...
+     * Postorder traversal output function.
      * @param node
      */
     private static void traversePostfix(AbsBinaryNode node) {
@@ -53,7 +53,7 @@ public class InfixParserMainDemo {
     }
 
     /**
-     * ...
+     * Preorder traversal output function.
      * @param node
      */
     private static void traversePrefix(AbsBinaryNode node) {

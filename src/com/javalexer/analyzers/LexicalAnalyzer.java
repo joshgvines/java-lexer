@@ -1,5 +1,6 @@
 package com.javalexer.analyzers;
 
+import com.javalexer.diagnostics.Diagnostics;
 import com.javalexer.enums.CodeFilter;
 import com.javalexer.enums.TokenType;
 import com.sun.jdi.IntegerValue;
@@ -45,7 +46,10 @@ public class LexicalAnalyzer {
         } else if (c == '-') { tokens.add(new Token(TokenType.MINUS, "-", currentPosition++));
         } else if (c == '(') { tokens.add(new Token(TokenType.LPAREN, "(", currentPosition++));
         } else if (c == ')') { tokens.add(new Token(TokenType.RPAREN, ")", currentPosition++));
-        } else { tokens.add(new Token(TokenType.UNKNOWN, null, currentPosition++)); }
+        } else {
+            tokens.add(new Token(TokenType.UNKNOWN, null, currentPosition++));
+            Diagnostics.addLexicalDiagnostic("Found Unknown Token: " + tokens.get(tokens.size()));
+        }
     }
 
     /**
