@@ -2,20 +2,17 @@ package com.javalexer.parsing.nodes;
 
 import com.javalexer.analyzers.Token;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public abstract class MyNode {
+public abstract class AbsBinaryNode {
 
     private Token data;
-    private MyNode left;
-    private MyNode right;
+    private AbsBinaryNode left;
+    private AbsBinaryNode right;
 
-    public MyNode(Token data) {
+    public AbsBinaryNode(Token data) {
         this.data = data;
     }
 
-    public MyNode(MyNode left, Token data, MyNode right) {
+    public AbsBinaryNode(AbsBinaryNode left, Token data, AbsBinaryNode right) {
         this.right = right;
         this.data = data;
         this.left = left;
@@ -25,11 +22,11 @@ public abstract class MyNode {
         return data;
     }
 
-    public MyNode getLeft() {
+    public AbsBinaryNode getLeft() {
         return left;
     }
 
-    public MyNode getRight() {
+    public AbsBinaryNode getRight() {
         return right;
     }
 

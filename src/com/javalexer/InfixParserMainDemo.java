@@ -2,64 +2,66 @@ package com.javalexer;
 
 import com.javalexer.analyzers.LexicalAnalyzer;
 import com.javalexer.analyzers.Token;
-import com.javalexer.parsing.nodes.MyNode;
-import com.javalexer.parsing.nodes.OperandNode;
-import com.javalexer.parsing.nodes.OperatorNode;
+import com.javalexer.parsing.nodes.AbsBinaryNode;
 import com.javalexer.parsing.parsers.InfixParser;
 
 import java.util.List;
-import java.util.Spliterator;
 
-import static com.javalexer.enums.TokenType.*;
-
+/**
+ * Note: still learning, these solutions could be MISLEADING or WRONG!!!
+ */
 public class InfixParserMainDemo {
 
     public static void main(String[] args) throws Exception {
         LexicalAnalyzer la = new LexicalAnalyzer();
-        List<Token> tokenList = la.lex("500 - 43 + 90 - 30 + 54 - 3 + 40000");
+        //List<Token> tokenList = la.lex("50 - 43 + 90 - 30 + 54");
+        List<Token> tokenList = la.lex("2 - 3 + 4 + 5");
 
         InfixParser infixParser = new InfixParser(tokenList);
-        MyNode root = infixParser.parse();
+        AbsBinaryNode root = infixParser.parse();
 
-        //traverse(root);
-        //System.out.println(infixTraversal(root));
+        System.out.println("\nInfix:");
+        traverseInfix(root);
+        System.out.println("\nPostfix:");
+        traversePostfix(root);
+        System.out.println("\nPrefix:");
+        traversePrefix(root);
     }
 
-    /*
-     *  ├──
-     *  │
-     *  └──
+    /**
+     * Inorder
+     * @param node
      */
-    static String indent = "└──";
-    static String space = "";
-    static String indicator = "└──";
-
-    private static void traverse(MyNode node) {
-
+    private static void traverseInfix(AbsBinaryNode node) {
         if (node != null) {
-
-
-            if (node instanceof OperatorNode) {
-                System.out.println(space + indent + node.data());
-                space = space + "    ";
-            } else {
-                System.out.println(space + indicator + node.data());
-            }
-
-            MyNode right = node.getRight();
-            traverse(right);
-
-            MyNode left = node.getLeft();
-            traverse(left);
-
-//            double a = Double.parseDouble(left.data().value);
-//            double b = Double.parseDouble(right.data().value);
-//            System.out.println(evaluate(root.data(), a, b));
+            traverseInfix(node.getLeft());
+            System.out.println(node.data());
+            traverseInfix(node.getRight());
         }
-
     }
 
+    /**
+     * ...
+     * @param node
+     */
+    private static void traversePostfix(AbsBinaryNode node) {
+        if (node != null) {
+            traversePostfix(node.getLeft());
+            traversePostfix(node.getRight());
+            System.out.println(node.data());
+        }
+    }
 
+    /**
+     * ...
+     * @param node
+     */
+    private static void traversePrefix(AbsBinaryNode node) {
+        if (node != null) {
+            System.out.println(node.data());
+            traversePrefix(node.getRight());
+            traversePrefix(node.getLeft());
 
-
+        }
+    }
 }

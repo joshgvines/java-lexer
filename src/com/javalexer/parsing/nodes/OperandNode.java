@@ -2,12 +2,10 @@ package com.javalexer.parsing.nodes;
 
 import com.javalexer.analyzers.Token;
 
-import java.util.List;
-
 /**
  * An OperandNode cannot have a right or left node, it must always be a leaf.
  */
-public class OperandNode extends MyNode {
+public class OperandNode extends AbsBinaryNode {
 
     private Token operand;
 

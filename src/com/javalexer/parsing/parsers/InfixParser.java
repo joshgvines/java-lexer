@@ -2,7 +2,7 @@ package com.javalexer.parsing.parsers;
 
 import com.javalexer.analyzers.Token;
 import com.javalexer.enums.TokenType;
-import com.javalexer.parsing.nodes.MyNode;
+import com.javalexer.parsing.nodes.AbsBinaryNode;
 import com.javalexer.parsing.nodes.OperandNode;
 import com.javalexer.parsing.nodes.OperatorNode;
 
@@ -34,12 +34,12 @@ public class InfixParser {
         return new OperandNode(numberToken);
     }
 
-    public MyNode parse() {
+    public AbsBinaryNode parse() {
         Token operator;
-        MyNode left = new OperandNode(nextToken());
+        AbsBinaryNode left = new OperandNode(nextToken());
         while(peek(1).type == PLUS || peek(1).type == MINUS) {
             operator = nextToken();
-            MyNode right = new OperandNode(nextToken());
+            AbsBinaryNode right = new OperandNode(nextToken());
             left = new OperatorNode(left, operator, right);;
         }
         return left;

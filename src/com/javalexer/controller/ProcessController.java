@@ -2,11 +2,7 @@ package com.javalexer.controller;
 
 import com.javalexer.analyzers.LexicalAnalyzer;
 import com.javalexer.analyzers.Token;
-import com.javalexer.parsing.nodes.MyNode;
-import com.javalexer.parsing.nodes.OperandNode;
-import com.javalexer.parsing.parsers.ExperimentalParser;
-import com.javalexer.parsing.parsers.InfixParser;
-import com.javalexer.parsing.parsers.Parser;
+import com.javalexer.parsing.trees.InfixExpressionTree;
 
 import java.util.List;
 
@@ -26,50 +22,14 @@ public class ProcessController {
 
     private void runLexicalAnalysis(String fileAsString) throws Exception {
         LexicalAnalyzer la = new LexicalAnalyzer();
-        parseTokens(la.lex(fileAsString));
+        runParserTree(la.lex(fileAsString));
     }
 
-    /**
-     * YES!!!
-     * @param tokens
-     * @throws Exception
-     */
-    private void parseTokens(List<Token> tokens) throws Exception {
-        InfixParser ip = new InfixParser(tokens);
-        MyNode root = ip.parse();
-
-        System.out.println(infixTraversal(root));
-    }
-
-    private double infixTraversal(MyNode node) {
-        double result;
-        if (node == null) {
-            result = 0;
-        } else if (node instanceof OperandNode) {
-            result = Double.parseDouble(node.data().value);
-        } else {
-            double a = infixTraversal(node.getLeft());
-            double b = infixTraversal(node.getRight());
-            result = evaluate(node.data(), a, b);
+    private void runParserTree(List<Token> tokens) throws Exception {
+        InfixExpressionTree infixExpressionTree = new InfixExpressionTree();
+        if (infixExpressionTree.buildTree(tokens)) {
+            System.out.println(infixExpressionTree.evaluate());
         }
-        return result;
-    }
-
-    private double evaluate(Token operator, double a, double b) {
-        switch (operator.type) {
-            case PLUS:
-                return a + b;
-            case MINUS:
-                return a - b;
-            case STAR:
-                return a * b;
-            case SLASH:
-                if (b == 0) {
-                    throw new UnsupportedOperationException("Cannot divide by zero");
-                }
-                return a / b;
-        }
-        return 0;
     }
 
 }

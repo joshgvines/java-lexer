@@ -1,8 +1,6 @@
 package com.javalexer;
 
 import com.javalexer.controller.ProcessController;
-import com.javalexer.parsing.BinaryNode;
-import com.javalexer.parsing.ExperimentalTree;
 
 import java.util.Scanner;
 
