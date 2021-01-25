@@ -2,9 +2,7 @@ package com.javalexer.parsing.parsers;
 
 import com.javalexer.analyzers.Token;
 import com.javalexer.enums.TokenType;
-import com.javalexer.parsing.nodes.AbsBinaryNode;
-import com.javalexer.parsing.nodes.OperandNode;
-import com.javalexer.parsing.nodes.OperatorNode;
+import com.javalexer.parsing.nodes.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +10,7 @@ import java.util.List;
 import static com.javalexer.enums.TokenType.*;
 
 /**
- * Parse infix expressions into an infix expression tree.
+ * Parse infix expressions into an expression tree.
  */
 public class InfixParser {
     private final List<Token> tokens;
@@ -37,16 +35,15 @@ public class InfixParser {
     }
 
     public AbsBinaryNode parse() {
-        AbsBinaryNode left = new OperandNode(nextToken());
-        return parseTerm(left);
+        return parseTerm();
     }
 
-    private AbsBinaryNode parseTerm(AbsBinaryNode left) {
+    private AbsBinaryNode parseTerm() {
         Token operator;
-
+        AbsBinaryNode left = new OperandNode(nextToken());
         while(peek(1).type == PLUS || peek(1).type == MINUS) {
             operator = nextToken();
-            AbsBinaryNode right = parseFactor(left);
+            AbsBinaryNode right = new OperandNode(nextToken());
             left = new OperatorNode(left, operator, right);
         }
         return left;
@@ -57,7 +54,7 @@ public class InfixParser {
         //AbsBinaryNode left = new OperandNode(nextToken());
         while(peek(1).type == SLASH || peek(1).type == STAR) {
             operator = nextToken();
-            AbsBinaryNode right = new OperandNode(nextToken());
+            AbsBinaryNode right = primaryExpression();
             left = new OperatorNode(left, operator, right);
         }
         return left;

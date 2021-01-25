@@ -2,20 +2,23 @@ package com.javalexer;
 
 import com.javalexer.analyzers.LexicalAnalyzer;
 import com.javalexer.analyzers.Token;
+import com.javalexer.enums.TokenType;
 import com.javalexer.parsing.nodes.AbsBinaryNode;
 import com.javalexer.parsing.parsers.InfixParser;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
- * Note: still learning, these solutions could be MISLEADING or WRONG!!!
+ * Note: Still learning, these solutions could be MISLEADING or WRONG!!!
  */
 public class InfixParserMainDemo {
 
     public static void main(String[] args) throws Exception {
+        String expression = "2 - 3 + 4 + 5 + 43";
         LexicalAnalyzer la = new LexicalAnalyzer();
-        //List<Token> tokenList = la.lex("50 - 43 + 90 - 30 + 54");
-        List<Token> tokenList = la.lex("2 - 3 + 4 + 5 + 43");
+        List<Token> tokenList = la.lex(expression);
 
         InfixParser infixParser = new InfixParser(tokenList);
         AbsBinaryNode root = infixParser.parse();
@@ -24,8 +27,11 @@ public class InfixParserMainDemo {
         traverseInfix(root);
         System.out.println("\nPostfix:");
         traversePostfix(root);
-//        System.out.println("\nPrefix:");
-//        traversePrefix(root);
+
+        System.out.println("\nPrefix:");
+        infixParser = new InfixParser(reverseForPrefixDemo(tokenList));
+        AbsBinaryNode rootForPrefix = infixParser.parse();
+        traversePrefix(rootForPrefix);
     }
 
     /**
@@ -60,14 +66,31 @@ public class InfixParserMainDemo {
      * Step 2: Obtain the postfix expression of the modified expression i.e CB*A+.
      * Step 3: Reverse the postfix expression. Hence in our example prefix is +A*BC.
      * TODO: I may not implement a reversed tree for prefix demo.
+     * I have noticed MANY of the online infix to prefix converters are incorrect.
+     * Here is an example of one I use to check my output, which I believe to be correct:
+     * https://www.web4college.com/converters/infix-to-postfix-prefix.php
      * @param node
      */
     private static void traversePrefix(AbsBinaryNode node) {
-//        if (node != null) {
-//            System.out.println(node.data());
-//            traversePrefix(node.getRight());
-//            traversePrefix(node.getLeft());
-//
-//        }
+        if (node != null) {
+            System.out.println(node.data());
+            traversePrefix(node.getRight());
+            traversePrefix(node.getLeft());
+        }
+    }
+
+    private static List<Token> reverseForPrefixDemo(List<Token> tokens) {
+        List<Token> reversedTokens = new ArrayList<>();
+        Token tempEnd = null;
+        for (int i = tokens.size()-1; i >= 0; i--) {
+            Token t = tokens.get(i);
+            if (t.type != TokenType.END) {
+                reversedTokens.add(t);
+            } else {
+                tempEnd = t;
+            }
+        }
+        reversedTokens.add(tempEnd);
+        return reversedTokens;
     }
 }
