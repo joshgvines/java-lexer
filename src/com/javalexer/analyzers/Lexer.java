@@ -1,15 +1,18 @@
 package com.javalexer.analyzers;
 
 import com.javalexer.diagnostics.Diagnostics;
-import com.javalexer.enums.CodeFilter;
+
+import static com.javalexer.enums.TokenType.*;
+
 import com.javalexer.enums.TokenType;
-import com.sun.jdi.IntegerValue;
 
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LexicalAnalyzer {
+import static com.javalexer.enums.CodeFilter.*;
+
+public class Lexer {
     private static final String NEW_LINE = System.getProperty("line.separator");
     private char c = ' ';
     private int r = -1;
@@ -17,37 +20,37 @@ public class LexicalAnalyzer {
     private StringBuilder tokenString;
     private List<Token> tokens = new ArrayList<>();
     private int level = 0;
-    private int currentPosition = 0;
+    private int position = 0;
 
     public List<Token> lex(String fileAsString) throws Exception {
-        fileAsString = fileAsString.replaceAll(CodeFilter.MULTI_COMMENT.get(), "");
-        fileAsString = fileAsString.replaceAll(CodeFilter.SINGLE_COMMENT.get() + NEW_LINE, "");
+        fileAsString = fileAsString.replaceAll(MULTI_COMMENT.get(), "");
+        fileAsString = fileAsString.replaceAll(SINGLE_COMMENT.get() + NEW_LINE, "");
         sr = new StringReader(fileAsString);
         while ((r = sr.read()) != -1) {
             c = (char) r;
-            filter();
+            characterTokenFilter();
         }
-        tokens.add(new Token(TokenType.END, "/0", -1));
+        tokens.add(new Token(END, "/0", -1));
         sr.close();
         return tokens;
     }
 
-    private void filter() throws Exception {
-        if (c == '"') { appendUntil("\"", TokenType.STRING);
-        } else if (c == '\'') { appendUntil("'", TokenType.CHAR);
+    private void characterTokenFilter() throws Exception {
+        if (c == '"') { appendUntil("\"", STRING);
+        } else if (c == '\'') { appendUntil("'", CHAR);
         } else if (Character.isDigit(c)) { appendNumberUntil();
-        } else if (c == ' ') { tokens.add(new Token(TokenType.SPACE, " ", currentPosition++));
-        } else if (c == '{') { tokens.add(new Token(TokenType.LBRACE, "{", currentPosition++));
-        } else if (c == '}') { tokens.add(new Token(TokenType.RBRACE, "}", currentPosition++));
-        } else if (c == '=') { tokens.add(new Token(TokenType.ASSIGN, "=", currentPosition++));
-        } else if (c == '+') { tokens.add(new Token(TokenType.PLUS, "+", currentPosition++));
-        } else if (c == '/') { tokens.add(new Token(TokenType.SLASH, "/", currentPosition++));
-        } else if (c == '*') { tokens.add(new Token(TokenType.STAR, "*", currentPosition++));
-        } else if (c == '-') { tokens.add(new Token(TokenType.MINUS, "-", currentPosition++));
-        } else if (c == '(') { tokens.add(new Token(TokenType.LPAREN, "(", currentPosition++));
-        } else if (c == ')') { tokens.add(new Token(TokenType.RPAREN, ")", currentPosition++));
+        } else if (c == ' ') { tokens.add(new Token(SPACE, " ", position++));
+        } else if (c == '{') { tokens.add(new Token(LBRACE, "{", position++));
+        } else if (c == '}') { tokens.add(new Token(RBRACE, "}", position++));
+        } else if (c == '=') { tokens.add(new Token(ASSIGN, "=", position++));
+        } else if (c == '+') { tokens.add(new Token(PLUS, "+", position++));
+        } else if (c == '/') { tokens.add(new Token(SLASH, "/", position++));
+        } else if (c == '*') { tokens.add(new Token(STAR, "*", position++));
+        } else if (c == '-') { tokens.add(new Token(MINUS, "-", position++));
+        } else if (c == '(') { tokens.add(new Token(LPAREN, "(", position++));
+        } else if (c == ')') { tokens.add(new Token(RPAREN, ")", position++));
         } else {
-            tokens.add(new Token(TokenType.UNKNOWN, null, currentPosition++));
+            tokens.add(new Token(UNKNOWN, null, position++));
             Diagnostics.addLexicalDiagnostic("Found Unknown Token: " + tokens.get(tokens.size()));
         }
     }
@@ -63,8 +66,8 @@ public class LexicalAnalyzer {
         while ((r = sr.read()) != -1) {
             c = (char) r;
             if (!Character.isDigit(c) && c != '.') {
-                tokens.add(new Token(TokenType.NUMBER, tokenString.toString(), currentPosition++));
-                filter();
+                tokens.add(new Token(NUMBER, tokenString.toString(), position++));
+                characterTokenFilter();
                 return;
             }
             if (c == '.') {
@@ -76,7 +79,7 @@ public class LexicalAnalyzer {
             }
             tokenString.append(c);
         }
-        tokens.add(new Token(TokenType.NUMBER, tokenString.toString(), currentPosition++));
+        tokens.add(new Token(NUMBER, tokenString.toString(), position++));
     }
 
     private boolean appendUntil(String key, TokenType tokenType) throws Exception {
@@ -86,12 +89,12 @@ public class LexicalAnalyzer {
             c = (char) r;
             if (key.equals(c) || (";").equals(c)) {
                 tokenString.append(c);
-                return tokens.add(new Token(tokenType, tokenString.toString(), currentPosition++));
+                return tokens.add(new Token(tokenType, tokenString.toString(), position++));
             } else if ((" ").equals(c)) {
-                tokens.add(new Token(TokenType.SPACE, " ", currentPosition++));
+                tokens.add(new Token(SPACE, " ", position++));
             }
             tokenString.append(c);
         }
-        return tokens.add(new Token(tokenType, tokenString.toString(), currentPosition++));
+        return tokens.add(new Token(tokenType, tokenString.toString(), position++));
     }
 }

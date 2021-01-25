@@ -22,39 +22,27 @@ public class InfixParser {
         this.tokens = tokens;
     }
 
-    private Token match(TokenType type) {
-        if (current.type == type) {
-            return nextToken();
-        }
-        return current;
-    }
-
-    private OperandNode primaryExpression() {
-        Token numberToken = match(NUMBER);
-        return new OperandNode(numberToken);
-    }
-
     public AbsBinaryNode parse() {
         return parseTerm();
     }
 
     private AbsBinaryNode parseTerm() {
         Token operator;
-        AbsBinaryNode left = new OperandNode(nextToken());
+        AbsBinaryNode left = parseFactor();
         while(peek(1).type == PLUS || peek(1).type == MINUS) {
             operator = nextToken();
-            AbsBinaryNode right = new OperandNode(nextToken());
+            AbsBinaryNode right = parseFactor();
             left = new OperatorNode(left, operator, right);
         }
         return left;
     }
 
-    private AbsBinaryNode parseFactor(AbsBinaryNode left) {
+    private AbsBinaryNode parseFactor() {
         Token operator;
-        //AbsBinaryNode left = new OperandNode(nextToken());
+        AbsBinaryNode left = new OperandNode(nextToken());
         while(peek(1).type == SLASH || peek(1).type == STAR) {
             operator = nextToken();
-            AbsBinaryNode right = primaryExpression();
+            AbsBinaryNode right =  new OperandNode(nextToken());
             left = new OperatorNode(left, operator, right);
         }
         return left;
@@ -68,6 +56,18 @@ public class InfixParser {
         return tokens.get(i);
     }
 
+    private OperandNode primaryExpression() {
+        Token numberToken = match(NUMBER);
+        return new OperandNode(numberToken);
+    }
+
+    private Token match(TokenType type) {
+        if (current.type == type) {
+            return nextToken();
+        }
+        return current;
+    }
+
     private Token nextToken() {
         while ((current = tokens.get(position++)).type == SPACE);
         if (current.type == END) {
@@ -75,13 +75,6 @@ public class InfixParser {
             return null;
         }
         return current;
-    }
-
-    public void printAllTokens() {
-        Token current;
-        while ((current = nextToken()) != null) {
-            System.out.println(current);
-        }
     }
 
 }

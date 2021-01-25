@@ -1,15 +1,16 @@
-package com.javalexer.parsing;
+package com.javalexer.parsing.trees;
 
 import com.javalexer.analyzers.Token;
 
-public class ExpressionTree {
+public class ExperimentalExpressionTree {
     private ExpressionNode root;
 
-    public ExpressionTree(Token rootData) {
+    public ExperimentalExpressionTree(Token rootData) {
         this(rootData, null, null);
     }
 
-    public ExpressionTree(Token rootData, ExpressionTree leftEt, ExpressionTree rightEt) {
+    public ExperimentalExpressionTree(
+            Token rootData, ExperimentalExpressionTree leftEt, ExperimentalExpressionTree rightEt) {
 //        initializeTree(rootData, leftEt, rightEt);
     }
 

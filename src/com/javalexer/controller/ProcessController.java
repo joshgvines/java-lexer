@@ -1,6 +1,6 @@
 package com.javalexer.controller;
 
-import com.javalexer.analyzers.LexicalAnalyzer;
+import com.javalexer.analyzers.Lexer;
 import com.javalexer.analyzers.Token;
 import com.javalexer.diagnostics.Diagnostics;
 import com.javalexer.parsing.trees.InfixExpressionTree;
@@ -22,7 +22,7 @@ public class ProcessController {
     }
 
     private void runLexicalAnalysis(String fileAsString) throws Exception {
-        LexicalAnalyzer la = new LexicalAnalyzer();
+        Lexer la = new Lexer();
         runParserTree(la.lex(fileAsString));
     }
 

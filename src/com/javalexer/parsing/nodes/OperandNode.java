@@ -26,7 +26,7 @@ public class OperandNode extends AbsBinaryNode {
 
     @Override
     public String toString() {
-        return "OperandNode:[ " + operand + " ]";
+        return "OperandNode:[ " + operand + " ] ";
     }
 
 }

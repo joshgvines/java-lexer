@@ -28,7 +28,7 @@ public class OperatorNode extends AbsBinaryNode {
     public String toString() {
         return String.format("%-14s %-10s %-5s",
                 "{ OperatorNode [ left:" + super.getLeft(),
-                "Operator: [ "+super.data()+ " ] ",
+                "Operator: [ " + super.data() + " ] ",
                 "right:" + super.getRight() + " ] }");
     }
 
