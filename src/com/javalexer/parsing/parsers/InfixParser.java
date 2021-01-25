@@ -37,12 +37,28 @@ public class InfixParser {
     }
 
     public AbsBinaryNode parse() {
-        Token operator;
         AbsBinaryNode left = new OperandNode(nextToken());
+        return parseTerm(left);
+    }
+
+    private AbsBinaryNode parseTerm(AbsBinaryNode left) {
+        Token operator;
+
         while(peek(1).type == PLUS || peek(1).type == MINUS) {
             operator = nextToken();
+            AbsBinaryNode right = parseFactor(left);
+            left = new OperatorNode(left, operator, right);
+        }
+        return left;
+    }
+
+    private AbsBinaryNode parseFactor(AbsBinaryNode left) {
+        Token operator;
+        //AbsBinaryNode left = new OperandNode(nextToken());
+        while(peek(1).type == SLASH || peek(1).type == STAR) {
+            operator = nextToken();
             AbsBinaryNode right = new OperandNode(nextToken());
-            left = new OperatorNode(left, operator, right);;
+            left = new OperatorNode(left, operator, right);
         }
         return left;
     }
