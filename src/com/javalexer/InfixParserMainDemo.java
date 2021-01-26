@@ -20,7 +20,7 @@ public class InfixParserMainDemo {
         List<Token> tokenList = la.lex(expression);
 
         InfixParser infixParser = new InfixParser(tokenList);
-        AbsBinaryNode root = infixParser.parse();
+        AbsBinaryNode root = infixParser.parseForRoot();
 
         System.out.println("\nInfix:");
         traverseInfix(root);
@@ -29,7 +29,7 @@ public class InfixParserMainDemo {
 
         System.out.println("\nPrefix:");
         infixParser = new InfixParser(reverseForPrefixDemo(tokenList));
-        AbsBinaryNode rootForPrefix = infixParser.parse();
+        AbsBinaryNode rootForPrefix = infixParser.parseForRoot();
         traversePrefix(rootForPrefix);
     }
 
