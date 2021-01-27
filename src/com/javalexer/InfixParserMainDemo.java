@@ -16,6 +16,8 @@ public class InfixParserMainDemo {
 
     public static void main(String[] args) throws Exception {
         String expression = "2 - 3 * 4 + 5 + 43";
+        // TODO: Traversal demos are not working with parentheses yet.
+        //String expression = "2 - 3 * (4 + 5) + 43";
         Lexer la = new Lexer();
         List<Token> tokenList = la.lex(expression);
 

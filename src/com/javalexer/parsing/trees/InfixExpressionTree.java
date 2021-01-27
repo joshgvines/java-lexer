@@ -2,7 +2,7 @@ package com.javalexer.parsing.trees;
 
 import com.javalexer.analyzers.Token;
 import com.javalexer.parsing.nodes.AbsBinaryNode;
-import com.javalexer.parsing.nodes.OperandNode;
+import com.javalexer.parsing.nodes.NumberNode;
 import com.javalexer.parsing.nodes.ParenthesesExpressionNode;
 import com.javalexer.parsing.parsers.InfixParser;
 
@@ -27,7 +27,7 @@ public class InfixExpressionTree {
     }
 
     public boolean isLeaf(AbsBinaryNode absBinaryNode) {
-        return (absBinaryNode instanceof OperandNode);
+        return (absBinaryNode instanceof NumberNode);
     }
 
     public boolean isParentheses(AbsBinaryNode absBinaryNode) {
@@ -55,8 +55,6 @@ public class InfixExpressionTree {
     }
 
     private double compute(Token operator, double a, double b) {
-
-        // Evaluate Operation
         switch (operator.type) {
             case PLUS: return a + b;
             case MINUS: return a - b;

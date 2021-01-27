@@ -24,12 +24,4 @@ public class ParenthesesExpressionNode extends AbsBinaryNode {
         return super.getExpression();
     }
 
-    @Override
-    public String toString() {
-        return String.format("%-14s %-10s %-5s",
-                "{ OperatorNode [ left:" + super.getLeft(),
-                "Operator: [ " + super.data() + " ] ",
-                "right:" + super.getRight() + " ] }");
-    }
-
 }

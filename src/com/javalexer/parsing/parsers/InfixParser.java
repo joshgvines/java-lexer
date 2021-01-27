@@ -14,13 +14,21 @@ import static com.javalexer.enums.TokenType.*;
  * Parse infix expressions into an expression tree.
  */
 public class InfixParser {
-    private final List<Token> tokens;
+    private List<Token> tokens;
     private List<String> diagnostics = new ArrayList<>();
     private int position = 0;
     private Token current;
 
     public InfixParser(final List<Token> tokens) {
-        this.tokens = tokens;
+        if (tokens.isEmpty()) {
+            throw new IllegalStateException("Cannot Parse Without Tokens.");
+        }
+        this.tokens = new ArrayList<>();
+        for (Token t : tokens) {
+            if (t.type != WHITESPACE) {
+                this.tokens.add(t);
+            }
+        }
     }
 
     public InfixExpressionTree parseForTree() {
@@ -32,55 +40,51 @@ public class InfixParser {
     }
 
     private AbsBinaryNode parseTerm() {
-        AbsBinaryNode left = parseFactor();
-        while(peek(1).type == PLUS || peek(1).type == MINUS) {
-            left = new OperatorNode(left, nextToken(), parseFactor());
+        AbsBinaryNode leftNode = parseFactor();
+        while(peek(0).type == PLUS || peek(0).type == MINUS) {
+            Token operatorToken = nextToken();
+            AbsBinaryNode rightNode = parseFactor();
+            leftNode = new OperatorNode(leftNode, operatorToken, rightNode);
         }
-        return left;
+        return leftNode;
     }
 
     private AbsBinaryNode parseFactor() {
-        AbsBinaryNode left = parsePrimaryExpression();
-        while(peek(1).type == FORWARD_SLASH || peek(1).type == STAR) {
-            left = new OperatorNode(left, nextToken(), parsePrimaryExpression());
+        AbsBinaryNode leftNode = parsePrimaryExpression();
+        while(peek(0).type == FORWARD_SLASH || peek(0).type == STAR) {
+            Token operatorToken = nextToken();
+            AbsBinaryNode rightNode = parsePrimaryExpression();
+            leftNode = new OperatorNode(leftNode, operatorToken, rightNode);
         }
-        return left;
+        return leftNode;
     }
 
     private AbsBinaryNode parsePrimaryExpression() {
-        if (getCurrent().type == OPEN_PAREN) {
+        if (peek(0).type == OPEN_PAREN) {
             return parseParentheses();
         }
         Token numberToken = match(NUMBER);
-        return new OperandNode(numberToken);
+        return new NumberNode(numberToken);
     }
 
     private AbsBinaryNode parseParentheses() {
-        AbsBinaryNode left = new OperandNode(nextToken());
-        AbsBinaryNode nestedExpressionRoot = parseTerm();
-        AbsBinaryNode right = new OperandNode(match(CLOSE_PAREN));
-        return new ParenthesesExpressionNode(left, nestedExpressionRoot, right);
+        AbsBinaryNode leftNode = new NumberNode(nextToken());
+        AbsBinaryNode expressionRootNode = parseTerm();
+        AbsBinaryNode rightNode = new NumberNode(match(CLOSE_PAREN));
+        return new ParenthesesExpressionNode(leftNode, expressionRootNode, rightNode);
     }
 
     private Token match(TokenType type) {
-        if (current.type == type) {
+        if (peek(0).type == type) {
             return nextToken();
         }
-        System.out.println(current);
-        return new Token(type, current.value, current.position);
-    }
-
-    private Token getCurrent() {
-        if (current == null) {
-            return nextToken();
-        }
-        return current;
+        return new Token(current.type, null, current.position);
     }
 
     private Token nextToken() {
-        while ((current = tokens.get(position++)).type == WHITESPACE);
+        current = peek(0);
+        position++;
         if (current.type == END) {
-            position = 0;
             return null;
         }
         return current;
