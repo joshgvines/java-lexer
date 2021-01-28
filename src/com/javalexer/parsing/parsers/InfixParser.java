@@ -1,5 +1,6 @@
 package com.javalexer.parsing.parsers;
 
+import com.javalexer.analyzers.Precedence;
 import com.javalexer.analyzers.Token;
 import com.javalexer.enums.TokenType;
 import com.javalexer.parsing.nodes.*;
@@ -32,28 +33,26 @@ public class InfixParser {
     }
 
     public InfixExpressionTree parseForTree() {
-        return new InfixExpressionTree(parseTerm());
+        return new InfixExpressionTree(parseExpression(0));
     }
 
     public AbsBinaryNode parseForRoot() {
-        return parseTerm();
+        return parseExpression(0);
     }
 
-    private AbsBinaryNode parseTerm() {
-        AbsBinaryNode leftNode = parseFactor();
-        while(peek(0).type == PLUS || peek(0).type == MINUS) {
-            Token operatorToken = nextToken();
-            AbsBinaryNode rightNode = parseFactor();
-            leftNode = new OperatorNode(leftNode, operatorToken, rightNode);
+    public AbsBinaryNode parseExpression(int newPrecedence) {
+        int parentPrecedence = 0;
+        if (newPrecedence != 0) {
+            parentPrecedence = newPrecedence;
         }
-        return leftNode;
-    }
-
-    private AbsBinaryNode parseFactor() {
         AbsBinaryNode leftNode = parsePrimaryExpression();
-        while(peek(0).type == FORWARD_SLASH || peek(0).type == STAR) {
+        while(true) {
+            int precedence = Precedence.precedence(peek(0).type);
+            if (precedence == 0 || precedence <= parentPrecedence) {
+                break;
+            }
             Token operatorToken = nextToken();
-            AbsBinaryNode rightNode = parsePrimaryExpression();
+            AbsBinaryNode rightNode = parseExpression(precedence);
             leftNode = new OperatorNode(leftNode, operatorToken, rightNode);
         }
         return leftNode;
@@ -64,13 +63,13 @@ public class InfixParser {
             return parseParentheses();
         }
         Token numberToken = match(NUMBER);
-        return new NumberNode(numberToken);
+        return new LiteralNode(numberToken);
     }
 
     private AbsBinaryNode parseParentheses() {
-        AbsBinaryNode leftNode = new NumberNode(nextToken());
-        AbsBinaryNode expressionRootNode = parseTerm();
-        AbsBinaryNode rightNode = new NumberNode(match(CLOSE_PAREN));
+        AbsBinaryNode leftNode = new LiteralNode(nextToken());
+        AbsBinaryNode expressionRootNode = parseExpression(0);
+        AbsBinaryNode rightNode = new LiteralNode(match(CLOSE_PAREN));
         return new ParenthesesExpressionNode(leftNode, expressionRootNode, rightNode);
     }
 

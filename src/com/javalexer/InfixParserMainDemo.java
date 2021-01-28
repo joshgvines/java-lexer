@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Note: Still learning, these solutions could be MISLEADING or WRONG!!!
+ * Note: Still learning, these solutions could be MISLEADING
  */
 public class InfixParserMainDemo {
 
@@ -18,14 +18,15 @@ public class InfixParserMainDemo {
         String expression = "2 - 3 * 4 + 5 + 43";
         // TODO: Traversal demos are not working with parentheses yet.
         //String expression = "2 - 3 * (4 + 5) + 43";
-        Lexer la = new Lexer();
-        List<Token> tokenList = la.lex(expression);
+        Lexer lex = new Lexer();
+        List<Token> tokenList = lex.lex(expression);
 
         InfixParser infixParser = new InfixParser(tokenList);
         AbsBinaryNode root = infixParser.parseForRoot();
 
         System.out.println("\nInfix:");
         traverseInfix(root);
+
         System.out.println("\nPostfix:");
         traversePostfix(root);
 

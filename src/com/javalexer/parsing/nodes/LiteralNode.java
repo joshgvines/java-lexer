@@ -5,10 +5,10 @@ import com.javalexer.analyzers.Token;
 /**
  * An OperandNode cannot have a right or left node, it must always be a leaf.
  */
-public class NumberNode extends AbsBinaryNode {
+public class LiteralNode extends AbsBinaryNode {
 
-    public NumberNode(Token number) {
-        super(number);
+    public LiteralNode(Token literal) {
+        super(literal);
     }
 
     @Override

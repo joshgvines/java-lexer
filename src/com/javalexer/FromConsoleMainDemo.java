@@ -16,8 +16,13 @@ public class FromConsoleMainDemo {
             if (input.equals("/exit")) {
                 System.exit(0);
             }
-            pc.runJavaLexer(input);
-            System.out.println(input);
+            try {
+                pc.runJavaLexer(input);
+                System.out.println(input);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.println("Invalid input, please input an expression or '/exit'.\n");
+            }
         }
     }
 
