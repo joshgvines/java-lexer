@@ -13,6 +13,11 @@ public abstract class AbsBinaryNode {
         this.data = data;
     }
 
+    public AbsBinaryNode(Token data, AbsBinaryNode operand) {
+        this.data = data;
+        this.expression = operand;
+    }
+
     public AbsBinaryNode(AbsBinaryNode left, Token data, AbsBinaryNode right) {
         this.right = right;
         this.data = data;

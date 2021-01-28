@@ -49,6 +49,7 @@ public class Lexer {
             case '+': tokens.add(new Token(PLUS, "+", position++)); break;
             case '/': tokens.add(new Token(FORWARD_SLASH, "/", position++)); break;
             case '*': tokens.add(new Token(STAR, "*", position++)); break;
+            case '%': tokens.add(new Token(MODULO, "%", position++)); break;
             case '-': tokens.add(new Token(MINUS, "-", position++)); break;
             case '(': tokens.add(new Token(OPEN_PAREN, "(", position++)); break;
             case ')': tokens.add(new Token(CLOSE_PAREN, ")", position++)); break;

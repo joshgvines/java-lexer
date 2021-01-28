@@ -1,9 +1,11 @@
 package com.javalexer.parsing.trees;
 
 import com.javalexer.analyzers.Token;
+import com.javalexer.enums.TokenType;
 import com.javalexer.parsing.nodes.AbsBinaryNode;
 import com.javalexer.parsing.nodes.LiteralNode;
 import com.javalexer.parsing.nodes.ParenthesesExpressionNode;
+import com.javalexer.parsing.nodes.UnaryNode;
 import com.javalexer.parsing.parsers.InfixParser;
 
 import java.util.List;
@@ -34,6 +36,10 @@ public class InfixExpressionTree {
         return (absBinaryNode instanceof ParenthesesExpressionNode);
     }
 
+    public boolean isUnary(AbsBinaryNode absBinaryNode) {
+        return (absBinaryNode instanceof UnaryNode);
+    }
+
     public double evaluate() {
         return evaluate(root);
     }
@@ -42,6 +48,11 @@ public class InfixExpressionTree {
         double result;
         if (node == null) {
             result = 0;
+        } else if (isUnary(node)) {
+            result = evaluate(node.getExpression());
+            if (node.data().type == TokenType.MINUS) {
+                result = -result;
+            }
         } else if (isParentheses(node)) {
             result = evaluate(node.getExpression());
         } else if (isLeaf(node)) {
@@ -59,6 +70,7 @@ public class InfixExpressionTree {
             case PLUS: return a + b;
             case MINUS: return a - b;
             case STAR: return a * b;
+            case MODULO: return a % b;
             case FORWARD_SLASH:
                 if (b == 0) {
                     throw new UnsupportedOperationException("Cannot divide by zero");

@@ -45,9 +45,18 @@ public class InfixParser {
         if (newPrecedence != 0) {
             parentPrecedence = newPrecedence;
         }
-        AbsBinaryNode leftNode = parsePrimaryExpression();
+
+        AbsBinaryNode leftNode;
+
+        int unaryPrecedence = Precedence.unaryPrecedence(peek(0).type);
+        if (unaryPrecedence != 0 && unaryPrecedence > parentPrecedence) {
+            leftNode = parseUnaryExpression(unaryPrecedence);
+        } else {
+            leftNode = parsePrimaryExpression();
+        }
+
         while(true) {
-            int precedence = Precedence.precedence(peek(0).type);
+            int precedence = Precedence.binaryPrecedence(peek(0).type);
             if (precedence == 0 || precedence <= parentPrecedence) {
                 break;
             }
@@ -56,6 +65,12 @@ public class InfixParser {
             leftNode = new OperatorNode(leftNode, operatorToken, rightNode);
         }
         return leftNode;
+    }
+
+    private AbsBinaryNode parseUnaryExpression(int unaryPrecedence) {
+        Token operatorToken = nextToken();
+        AbsBinaryNode operandNode = parseExpression(unaryPrecedence);
+        return new UnaryNode(operatorToken, operandNode);
     }
 
     private AbsBinaryNode parsePrimaryExpression() {
