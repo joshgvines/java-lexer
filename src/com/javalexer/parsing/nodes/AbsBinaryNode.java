@@ -46,8 +46,4 @@ public abstract class AbsBinaryNode {
         return right;
     }
 
-    public void setData(Token data) {
-        this.data = data;
-    }
-
 }

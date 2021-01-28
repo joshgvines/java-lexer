@@ -5,7 +5,7 @@ import com.javalexer.analyzers.Token;
 /**
  * An OperandNode cannot have a right or left node, it must always be a leaf.
  */
-public class LiteralNode extends AbsBinaryNode {
+public final class LiteralNode extends AbsBinaryNode {
 
     public LiteralNode(Token literal) {
         super(literal);

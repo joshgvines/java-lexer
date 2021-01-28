@@ -5,7 +5,7 @@ import com.javalexer.analyzers.Token;
 /**
  * An OperatorNode has a right and left node, both of which can be an OperandNode or another OperatorNode.
  */
-public class OperatorNode extends AbsBinaryNode {
+public final class OperatorNode extends AbsBinaryNode {
 
     public OperatorNode(AbsBinaryNode left, Token operator, AbsBinaryNode right) {
         super(left, operator, right);
