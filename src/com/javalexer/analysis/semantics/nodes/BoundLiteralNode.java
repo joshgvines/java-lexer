@@ -1,13 +1,13 @@
-package com.javalexer.parsing.nodes;
+package com.javalexer.analysis.semantics.nodes;
 
-import com.javalexer.analyzers.Token;
+import com.javalexer.analysis.lexing.Token;
 
 /**
  * An OperandNode cannot have a right or left node, it must always be a leaf.
  */
-public final class LiteralNode extends AbsBinaryNode {
+public final class BoundLiteralNode extends AbsBoundBinaryNode {
 
-    public LiteralNode(Token literal) {
+    public BoundLiteralNode(Token literal) {
         super(literal);
     }
 

@@ -1,6 +1,6 @@
-package com.javalexer.parsing.trees;
+package com.javalexer.analysis.parsing.trees;
 
-import com.javalexer.analyzers.Token;
+import com.javalexer.analysis.lexing.Token;
 
 public class ExperimentalExpressionTree {
     private ExpressionNode root;
@@ -74,7 +74,7 @@ public class ExperimentalExpressionTree {
         }
 
         String getData() {
-            return data.value;
+            return data.getValue();
         }
 
         boolean isLeaf() {

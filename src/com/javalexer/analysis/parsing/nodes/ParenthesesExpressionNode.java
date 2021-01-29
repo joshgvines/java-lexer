@@ -1,4 +1,4 @@
-package com.javalexer.parsing.nodes;
+package com.javalexer.analysis.parsing.nodes;
 
 /**
  * An OperatorNode has a right and left node, both of which can be an OperandNode or another OperatorNode.

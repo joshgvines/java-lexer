@@ -1,6 +1,6 @@
-package com.javalexer.parsing.nodes;
+package com.javalexer.analysis.parsing.nodes;
 
-import com.javalexer.analyzers.Token;
+import com.javalexer.analysis.lexing.Token;
 
 public abstract class AbsBinaryNode {
 

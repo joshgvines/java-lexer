@@ -1,6 +1,6 @@
-package com.javalexer.parsing.nodes;
+package com.javalexer.analysis.parsing.nodes;
 
-import com.javalexer.analyzers.Token;
+import com.javalexer.analysis.lexing.Token;
 
 /**
  * An OperatorNode has a right and left node, both of which can be an OperandNode or another OperatorNode.

@@ -1,10 +1,9 @@
-package com.javalexer.parsing.parsers;
+package com.javalexer.analysis.parsing;
 
-import com.javalexer.analyzers.Precedence;
-import com.javalexer.analyzers.Token;
+import com.javalexer.analysis.lexing.Token;
 import com.javalexer.enums.TokenType;
-import com.javalexer.parsing.nodes.*;
-import com.javalexer.parsing.trees.InfixExpressionTree;
+import com.javalexer.analysis.parsing.nodes.*;
+import com.javalexer.analysis.parsing.trees.InfixExpressionTree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +24,9 @@ public class InfixParser {
             throw new IllegalStateException("Cannot Parse Without Tokens.");
         }
         this.tokens = new ArrayList<>();
-        for (Token t : tokens) {
-            if (t.type != WHITESPACE) {
-                this.tokens.add(t);
+        for (Token token : tokens) {
+            if (token.getType() != WHITESPACE) {
+                this.tokens.add(token);
             }
         }
     }
@@ -40,23 +39,19 @@ public class InfixParser {
         return parseExpression(0);
     }
 
-    public AbsBinaryNode parseExpression(int newPrecedence) {
+    private int defaultPrecedence(int newPrecedence) {
         int parentPrecedence = 0;
         if (newPrecedence != 0) {
             parentPrecedence = newPrecedence;
         }
+        return parentPrecedence;
+    }
 
-        AbsBinaryNode leftNode;
-
-        int unaryPrecedence = Precedence.unaryPrecedence(peek(0).type);
-        if (unaryPrecedence != 0 && unaryPrecedence > parentPrecedence) {
-            leftNode = parseUnaryExpression(unaryPrecedence);
-        } else {
-            leftNode = parsePrimaryExpression();
-        }
-
-        while(true) {
-            int precedence = Precedence.binaryPrecedence(peek(0).type);
+    public AbsBinaryNode parseExpression(int newPrecedence) {
+        int parentPrecedence = defaultPrecedence(newPrecedence);
+        AbsBinaryNode leftNode = decideExpressionType(parentPrecedence);
+        while (true) {
+            int precedence = Precedence.binaryPrecedence(peek(0).getType());
             if (precedence == 0 || precedence <= parentPrecedence) {
                 break;
             }
@@ -67,18 +62,27 @@ public class InfixParser {
         return leftNode;
     }
 
-    private AbsBinaryNode parseUnaryExpression(int unaryPrecedence) {
-        Token operatorToken = nextToken();
-        AbsBinaryNode operandNode = parseExpression(unaryPrecedence);
-        return new UnaryNode(operatorToken, operandNode);
+    private AbsBinaryNode decideExpressionType(int parentPrecedence) {
+        int unaryPrecedence = Precedence.unaryPrecedence(peek(0).getType());
+        if (unaryPrecedence != 0 && unaryPrecedence > parentPrecedence) {
+            return parseUnaryExpression(unaryPrecedence);
+        } else {
+            return parsePrimaryExpression();
+        }
     }
 
     private AbsBinaryNode parsePrimaryExpression() {
-        if (peek(0).type == OPEN_PAREN) {
+        if (peek(0).getType() == OPEN_PAREN) {
             return parseParentheses();
         }
         Token numberToken = match(NUMBER);
         return new LiteralNode(numberToken);
+    }
+
+    private AbsBinaryNode parseUnaryExpression(int unaryPrecedence) {
+        Token operatorToken = nextToken();
+        AbsBinaryNode operandNode = parseExpression(unaryPrecedence);
+        return new UnaryNode(operatorToken, operandNode);
     }
 
     private AbsBinaryNode parseParentheses() {
@@ -89,16 +93,16 @@ public class InfixParser {
     }
 
     private Token match(TokenType type) {
-        if (peek(0).type == type) {
+        if (peek(0).getType() == type) {
             return nextToken();
         }
-        return new Token(current.type, null, current.position);
+        return new Token(current.getType(), null, current.getPosition());
     }
 
     private Token nextToken() {
         current = peek(0);
         position++;
-        if (current.type == END) {
+        if (current.getType() == END) {
             return null;
         }
         return current;

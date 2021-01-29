@@ -1,12 +1,12 @@
-package com.javalexer.analyzers;
+package com.javalexer.analysis.lexing;
 
 import com.javalexer.enums.TokenType;
 
 public class Token {
 
-    public TokenType type;
-    public String value;
-    public int position;
+    private TokenType type;
+    private String value;
+    private int position;
 
     public Token(TokenType type, String value, int position) {
         this.type = type;
@@ -14,10 +14,22 @@ public class Token {
         this.position = position;
     }
 
+    public TokenType getType() {
+        return type;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
     @Override
     public String toString() {
         return String.format("%-14s %-10s %-5s",
-                "Typ: "+ type.toString(),
+                "Typ: "+ type,
                 "Pos: "+position,
                 "Val: "+ value);
     }

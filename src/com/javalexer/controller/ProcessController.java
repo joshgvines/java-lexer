@@ -1,9 +1,10 @@
 package com.javalexer.controller;
 
-import com.javalexer.analyzers.Lexer;
-import com.javalexer.analyzers.Token;
+import com.javalexer.analysis.Evaluator;
+import com.javalexer.analysis.lexing.Lexer;
+import com.javalexer.analysis.lexing.Token;
 import com.javalexer.diagnostics.Diagnostics;
-import com.javalexer.parsing.trees.InfixExpressionTree;
+import com.javalexer.analysis.parsing.trees.InfixExpressionTree;
 
 import java.util.List;
 
@@ -29,7 +30,8 @@ public class ProcessController {
     private void runParserTree(List<Token> tokens) throws Exception {
         InfixExpressionTree infixExpressionTree = new InfixExpressionTree();
         if (infixExpressionTree.buildTree(tokens)) {
-            System.out.println(infixExpressionTree.evaluate());
+            Evaluator evaluator = new Evaluator(infixExpressionTree);
+            evaluator.evaluate();
         }
         Diagnostics.printDiagnostics();
     }

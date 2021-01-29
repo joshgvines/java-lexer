@@ -1,4 +1,4 @@
-package com.javalexer.analyzers;
+package com.javalexer.analysis.parsing;
 
 import com.javalexer.enums.TokenType;
 
@@ -23,7 +23,5 @@ public class Precedence {
                 return 0;
         }
     }
-
-
 
 }

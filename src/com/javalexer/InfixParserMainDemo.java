@@ -1,10 +1,10 @@
 package com.javalexer;
 
-import com.javalexer.analyzers.Lexer;
-import com.javalexer.analyzers.Token;
+import com.javalexer.analysis.lexing.Lexer;
+import com.javalexer.analysis.lexing.Token;
 import com.javalexer.enums.TokenType;
-import com.javalexer.parsing.nodes.AbsBinaryNode;
-import com.javalexer.parsing.parsers.InfixParser;
+import com.javalexer.analysis.parsing.nodes.AbsBinaryNode;
+import com.javalexer.analysis.parsing.InfixParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,11 +85,11 @@ public class InfixParserMainDemo {
         List<Token> reversedTokens = new ArrayList<>();
         Token tempEnd = null;
         for (int i = tokens.size()-1; i >= 0; i--) {
-            Token t = tokens.get(i);
-            if (t.type != TokenType.END) {
-                reversedTokens.add(t);
+            Token token = tokens.get(i);
+            if (token.getType() != TokenType.END) {
+                reversedTokens.add(token);
             } else {
-                tempEnd = t;
+                tempEnd = token;
             }
         }
         reversedTokens.add(tempEnd);

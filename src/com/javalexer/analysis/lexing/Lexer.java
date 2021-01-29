@@ -1,4 +1,4 @@
-package com.javalexer.analyzers;
+package com.javalexer.analysis.lexing;
 
 import com.javalexer.diagnostics.Diagnostics;
 
