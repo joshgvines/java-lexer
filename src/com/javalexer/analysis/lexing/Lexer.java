@@ -1,15 +1,13 @@
 package com.javalexer.analysis.lexing;
 
 import com.javalexer.diagnostics.Diagnostics;
-
-import static com.javalexer.enums.TokenType.*;
-
 import com.javalexer.enums.TokenType;
 
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.javalexer.enums.TokenType.*;
 import static com.javalexer.enums.CodeFilter.*;
 
 public class Lexer {
@@ -33,7 +31,7 @@ public class Lexer {
         return tokens;
     }
 
-    private String  removeComments(String fileAsString) {
+    private String removeComments(String fileAsString) {
         fileAsString = fileAsString.replaceAll(MULTI_COMMENT.get(), "");
         return fileAsString.replaceAll(SINGLE_COMMENT.get() + NEW_LINE, "");
     }
@@ -65,6 +63,7 @@ public class Lexer {
 
     /**
      * You are going to need a peek() function and better error handling eventually, don't forget.
+     *
      * @throws Exception
      */
     private void appendNumberUntil() throws Exception {

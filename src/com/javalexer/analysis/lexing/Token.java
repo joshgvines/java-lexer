@@ -2,6 +2,9 @@ package com.javalexer.analysis.lexing;
 
 import com.javalexer.enums.TokenType;
 
+/**
+ * Tokens represent a character or sequence of characters which have meaning in the source.
+ */
 public class Token {
 
     private TokenType type;
@@ -29,9 +32,9 @@ public class Token {
     @Override
     public String toString() {
         return String.format("%-14s %-10s %-5s",
-                "Typ: "+ type,
-                "Pos: "+position,
-                "Val: "+ value);
+                "Typ: " + type,
+                "Pos: " + position,
+                "Val: " + value);
     }
 
 }
