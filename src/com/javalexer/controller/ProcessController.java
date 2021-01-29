@@ -22,16 +22,17 @@ public class ProcessController {
         runLexicalAnalysis(toLex);
     }
 
-    private void runLexicalAnalysis(String fileAsString) throws Exception {
-        Lexer la = new Lexer();
-        runParserTree(la.lex(fileAsString));
+    private void runLexicalAnalysis(String stringToLex) throws Exception {
+        Lexer lex = new Lexer();
+        runParserTree(lex.lex(stringToLex));
     }
 
-    private void runParserTree(List<Token> tokens) throws Exception {
+    private void runParserTree(List<Token> tokens) {
         InfixExpressionTree infixExpressionTree = new InfixExpressionTree();
+        System.out.println(infixExpressionTree);
         if (infixExpressionTree.buildTree(tokens)) {
             Evaluator evaluator = new Evaluator(infixExpressionTree);
-            evaluator.evaluate();
+            System.out.println(evaluator.evaluate());
         }
         Diagnostics.printDiagnostics();
     }
