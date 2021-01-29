@@ -12,9 +12,9 @@ import static com.javalexer.enums.CodeFilter.*;
 
 public class Lexer {
     private static final String NEW_LINE = System.getProperty("line.separator");
-    private char c = ' ';
-    private int charInt = -1;
-    private StringReader sr = null;
+    private char _char;
+    private int charInt;
+    private StringReader sr;
     private StringBuilder tokenString;
     private List<Token> tokens = new ArrayList<>();
     private int position = 0;
@@ -23,7 +23,7 @@ public class Lexer {
         fileAsString = removeComments(fileAsString);
         sr = new StringReader(fileAsString);
         while ((charInt = sr.read()) != -1) {
-            c = (char) charInt;
+            _char = (char) charInt;
             characterTokenFilter();
         }
         tokens.add(new Token(END, "/0", -1));
@@ -37,7 +37,7 @@ public class Lexer {
     }
 
     private void characterTokenFilter() throws Exception {
-        switch (c) {
+        switch (_char) {
             case '"': appendUntil("\"", STRING); break;
             case '\'': appendUntil("'", CHAR); break;
             case ' ': tokens.add(new Token(WHITESPACE, " ", position++)); break;
@@ -52,7 +52,7 @@ public class Lexer {
             case '(': tokens.add(new Token(OPEN_PAREN, "(", position++)); break;
             case ')': tokens.add(new Token(CLOSE_PAREN, ")", position++)); break;
             default:
-                if (Character.isDigit(c)) {
+                if (Character.isDigit(_char)) {
                     appendNumberUntil();
                 } else {
                     tokens.add(new Token(UNKNOWN, null, position++));
@@ -68,39 +68,39 @@ public class Lexer {
      */
     private void appendNumberUntil() throws Exception {
         tokenString = new StringBuilder();
-        tokenString.append(c);
+        tokenString.append(_char);
         boolean isDouble = false;
         while ((charInt = sr.read()) != -1) {
-            c = (char) charInt;
-            if (!Character.isDigit(c) && c != '.') {
+            _char = (char) charInt;
+            if (!Character.isDigit(_char) && _char != '.') {
                 tokens.add(new Token(NUMBER, tokenString.toString(), position++));
                 characterTokenFilter();
                 return;
             }
-            if (c == '.') {
+            if (_char == '.') {
                 isDouble = true;
             }
             if ((tokenString.length() > 8 && !isDouble)
                     || (tokenString.length() > 12 && isDouble)) {
                 throw new Exception("Number was to large");
             }
-            tokenString.append(c);
+            tokenString.append(_char);
         }
         tokens.add(new Token(NUMBER, tokenString.toString(), position++));
     }
 
     private boolean appendUntil(String key, TokenType tokenType) throws Exception {
         tokenString = new StringBuilder();
-        tokenString.append(c);
+        tokenString.append(_char);
         while ((charInt = sr.read()) != -1) {
-            c = (char) charInt;
-            if (key.equals(c) || (";").equals(c)) {
-                tokenString.append(c);
+            _char = (char) charInt;
+            if (key.equals(_char) || (";").equals(_char)) {
+                tokenString.append(_char);
                 return tokens.add(new Token(tokenType, tokenString.toString(), position++));
-            } else if ((" ").equals(c)) {
+            } else if ((" ").equals(_char)) {
                 tokens.add(new Token(WHITESPACE, " ", position++));
             }
-            tokenString.append(c);
+            tokenString.append(_char);
         }
         return tokens.add(new Token(tokenType, tokenString.toString(), position++));
     }
