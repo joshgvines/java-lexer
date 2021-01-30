@@ -35,34 +35,26 @@ public class InfixParser {
         return new InfixExpressionTree(parseExpression(0));
     }
 
-    public AbsBinaryNode parseForRoot() {
+    public AbsNode parseForRoot() {
         return parseExpression(0);
     }
 
-    private int defaultPrecedence(int newPrecedence) {
-        int parentPrecedence = 0;
-        if (newPrecedence != 0) {
-            parentPrecedence = newPrecedence;
-        }
-        return parentPrecedence;
-    }
-
-    public AbsBinaryNode parseExpression(int newPrecedence) {
-        int parentPrecedence = defaultPrecedence(newPrecedence);
-        AbsBinaryNode leftNode = decideExpressionType(parentPrecedence);
+    public AbsNode parseExpression(int newPrecedence) {
+        int parentPrecedence = Precedence.defaultPrecedence(newPrecedence);
+        AbsNode leftNode = decideExpressionType(parentPrecedence);
         while (true) {
             int precedence = Precedence.binaryPrecedence(peek(0).getType());
             if (precedence == 0 || precedence <= parentPrecedence) {
                 break;
             }
             Token operatorToken = nextToken();
-            AbsBinaryNode rightNode = parseExpression(precedence);
-            leftNode = new OperatorNode(leftNode, operatorToken, rightNode);
+            AbsNode rightNode = parseExpression(precedence);
+            leftNode = new BinaryNode(leftNode, operatorToken, rightNode);
         }
         return leftNode;
     }
 
-    private AbsBinaryNode decideExpressionType(int parentPrecedence) {
+    private AbsNode decideExpressionType(int parentPrecedence) {
         int unaryPrecedence = Precedence.unaryPrecedence(peek(0).getType());
         if (unaryPrecedence != 0 && unaryPrecedence > parentPrecedence) {
             return parseUnaryExpression(unaryPrecedence);
@@ -71,7 +63,7 @@ public class InfixParser {
         }
     }
 
-    private AbsBinaryNode parsePrimaryExpression() {
+    private AbsNode parsePrimaryExpression() {
         if (peek(0).getType() == OPEN_PAREN) {
             return parseParentheses();
         }
@@ -79,17 +71,17 @@ public class InfixParser {
         return new LiteralNode(numberToken);
     }
 
-    private AbsBinaryNode parseUnaryExpression(int unaryPrecedence) {
+    private AbsNode parseUnaryExpression(int unaryPrecedence) {
         Token operatorToken = nextToken();
-        AbsBinaryNode operandNode = parseExpression(unaryPrecedence);
+        AbsNode operandNode = parseExpression(unaryPrecedence);
         return new UnaryNode(operatorToken, operandNode);
     }
 
-    private AbsBinaryNode parseParentheses() {
-        AbsBinaryNode leftNode = new LiteralNode(nextToken());
-        AbsBinaryNode expressionRootNode = parseExpression(0);
-        AbsBinaryNode rightNode = new LiteralNode(match(CLOSE_PAREN));
-        return new ParenthesesExpressionNode(leftNode, expressionRootNode, rightNode);
+    private AbsNode parseParentheses() {
+        AbsNode leftNode = new LiteralNode(nextToken());
+        AbsNode expressionRootNode = parseExpression(0);
+        AbsNode rightNode = new LiteralNode(match(CLOSE_PAREN));
+        return new ExpressionNode(leftNode, expressionRootNode, rightNode);
     }
 
     private Token match(TokenType type) {

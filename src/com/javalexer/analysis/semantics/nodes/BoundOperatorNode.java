@@ -5,17 +5,17 @@ import com.javalexer.analysis.lexing.Token;
 /**
  * An OperatorNode has a right and left node, both of which can be an OperandNode or another OperatorNode.
  */
-public final class BoundOperatorNode extends AbsBoundBinaryNode {
+public final class BoundOperatorNode extends AbsBoundNode {
 
-    public BoundOperatorNode(AbsBoundBinaryNode left, Token operator, AbsBoundBinaryNode right) {
+    public BoundOperatorNode(AbsBoundNode left, Token operator, AbsBoundNode right) {
         super(left, operator, right);
     }
 
-    public AbsBoundBinaryNode getRight() {
+    public AbsBoundNode getRight() {
         return super.getRight();
     }
 
-    public AbsBoundBinaryNode getLeft() {
+    public AbsBoundNode getLeft() {
         return super.getLeft();
     }
 

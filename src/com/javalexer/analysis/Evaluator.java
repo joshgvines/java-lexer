@@ -2,7 +2,7 @@ package com.javalexer.analysis;
 
 import com.javalexer.analysis.lexing.Token;
 import com.javalexer.enums.TokenType;
-import com.javalexer.analysis.parsing.nodes.AbsBinaryNode;
+import com.javalexer.analysis.parsing.nodes.AbsNode;
 import com.javalexer.analysis.parsing.trees.InfixExpressionTree;
 
 public class Evaluator {
@@ -17,7 +17,7 @@ public class Evaluator {
         return evaluate(expressionTree.getRoot());
     }
 
-    private double evaluate(AbsBinaryNode node) {
+    private double evaluate(AbsNode node) {
         double result;
         if (node == null) {
             result = 0;

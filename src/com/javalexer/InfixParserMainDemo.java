@@ -3,7 +3,7 @@ package com.javalexer;
 import com.javalexer.analysis.lexing.Lexer;
 import com.javalexer.analysis.lexing.Token;
 import com.javalexer.enums.TokenType;
-import com.javalexer.analysis.parsing.nodes.AbsBinaryNode;
+import com.javalexer.analysis.parsing.nodes.AbsNode;
 import com.javalexer.analysis.parsing.InfixParser;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class InfixParserMainDemo {
         List<Token> tokenList = lex.lex(expression);
 
         InfixParser infixParser = new InfixParser(tokenList);
-        AbsBinaryNode root = infixParser.parseForRoot();
+        AbsNode root = infixParser.parseForRoot();
 
         System.out.println("\nInfix:");
         traverseInfix(root);
@@ -32,7 +32,7 @@ public class InfixParserMainDemo {
 
         System.out.println("\nPrefix:");
         infixParser = new InfixParser(reverseForPrefixDemo(tokenList));
-        AbsBinaryNode rootForPrefix = infixParser.parseForRoot();
+        AbsNode rootForPrefix = infixParser.parseForRoot();
         traversePrefix(rootForPrefix);
     }
 
@@ -41,7 +41,7 @@ public class InfixParserMainDemo {
      *
      * @param node
      */
-    private static void traverseInfix(AbsBinaryNode node) {
+    private static void traverseInfix(AbsNode node) {
         if (node != null) {
             traverseInfix(node.getLeft());
             System.out.println(node.data());
@@ -54,7 +54,7 @@ public class InfixParserMainDemo {
      *
      * @param node
      */
-    private static void traversePostfix(AbsBinaryNode node) {
+    private static void traversePostfix(AbsNode node) {
         if (node != null) {
             traversePostfix(node.getLeft());
             traversePostfix(node.getRight());
@@ -73,7 +73,7 @@ public class InfixParserMainDemo {
      * https://www.web4college.com/converters/infix-to-postfix-prefix.php
      * @param node
      */
-    private static void traversePrefix(AbsBinaryNode node) {
+    private static void traversePrefix(AbsNode node) {
         if (node != null) {
             System.out.println(node.data());
             traversePrefix(node.getRight());

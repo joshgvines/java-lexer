@@ -1,36 +1,38 @@
 package com.javalexer.analysis.parsing.nodes;
 
 import com.javalexer.analysis.lexing.Token;
+import com.javalexer.enums.NodeType;
 
-public abstract class AbsBinaryNode {
+public abstract class AbsNode {
 
     private Token data;
-    private AbsBinaryNode expression;
-    private AbsBinaryNode left;
-    private AbsBinaryNode right;
+    public NodeType type;
+    private AbsNode expression;
+    private AbsNode left;
+    private AbsNode right;
 
-    public AbsBinaryNode(Token data) {
+    public AbsNode(Token data) {
         this.data = data;
     }
 
-    public AbsBinaryNode(Token data, AbsBinaryNode operand) {
+    public AbsNode(Token data, AbsNode operand) {
         this.data = data;
         this.expression = operand;
     }
 
-    public AbsBinaryNode(AbsBinaryNode left, Token data, AbsBinaryNode right) {
+    public AbsNode(AbsNode left, Token data, AbsNode right) {
         this.right = right;
         this.data = data;
         this.left = left;
     }
 
-    public AbsBinaryNode(AbsBinaryNode left, AbsBinaryNode expression, AbsBinaryNode right) {
+    public AbsNode(AbsNode left, AbsNode expression, AbsNode right) {
         this.right = right;
         this.expression = expression;
         this.left = left;
     }
 
-    public AbsBinaryNode getExpression() {
+    public AbsNode getExpression() {
         return expression;
     }
 
@@ -38,11 +40,11 @@ public abstract class AbsBinaryNode {
         return data;
     }
 
-    public AbsBinaryNode getLeft() {
+    public AbsNode getLeft() {
         return left;
     }
 
-    public AbsBinaryNode getRight() {
+    public AbsNode getRight() {
         return right;
     }
 

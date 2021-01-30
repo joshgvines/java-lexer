@@ -3,22 +3,24 @@ package com.javalexer.analysis.parsing.nodes;
 /**
  * An OperatorNode has a right and left node, both of which can be an OperandNode or another OperatorNode.
  */
-public class ParenthesesExpressionNode extends AbsBinaryNode {
+public class ExpressionNode extends AbsNode {
 
-    public ParenthesesExpressionNode(AbsBinaryNode left, AbsBinaryNode expression, AbsBinaryNode right) {
+    public ExpressionNode(AbsNode left, AbsNode expression, AbsNode right) {
         super(left, expression, right);
     }
 
-    public AbsBinaryNode getRight() {
+    @Override
+    public AbsNode getRight() {
         return super.getRight();
     }
 
-    public AbsBinaryNode getLeft() {
+    @Override
+    public AbsNode getLeft() {
         return super.getLeft();
     }
 
     @Override
-    public AbsBinaryNode getExpression() {
+    public AbsNode getExpression() {
         return super.getExpression();
     }
 

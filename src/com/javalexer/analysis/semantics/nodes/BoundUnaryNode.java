@@ -5,9 +5,9 @@ import com.javalexer.analysis.lexing.Token;
 /**
  * An OperandNode cannot have a right or left node, it must always be a leaf.
  */
-public final class BoundUnaryNode extends AbsBoundBinaryNode {
+public final class BoundUnaryNode extends AbsBoundNode {
 
-    public BoundUnaryNode(Token operator, AbsBoundBinaryNode operand) {
+    public BoundUnaryNode(Token operator, AbsBoundNode operand) {
         super(operator, operand);
     }
 
@@ -17,7 +17,7 @@ public final class BoundUnaryNode extends AbsBoundBinaryNode {
     }
 
     @Override
-    public AbsBoundBinaryNode getExpression() {
+    public AbsBoundNode getExpression() {
         return super.getExpression();
     }
 

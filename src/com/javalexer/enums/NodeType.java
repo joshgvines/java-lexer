@@ -3,11 +3,15 @@ package com.javalexer.enums;
 /**
  * Defines Bound Node Types Used In Second Tree Type Binding.
  */
-public enum BoundNodeType {
+public enum NodeType {
     WHITESPACE_NODE,
 
     STRING, CHAR,
-    NUMBER_NODE, INTEGER, DOUBLE,
+    NUMBER, INTEGER, DOUBLE,
+
+    UNARY_EXPRESSION,
+    BINARY_EXPRESSION,
+    LITERAL_EXPRESSION,
 
     ASSIGNMENT_NODE,
     PLUS, MINUS, STAR, MODULO,

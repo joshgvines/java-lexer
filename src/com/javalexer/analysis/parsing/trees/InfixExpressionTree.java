@@ -1,9 +1,9 @@
 package com.javalexer.analysis.parsing.trees;
 
 import com.javalexer.analysis.lexing.Token;
-import com.javalexer.analysis.parsing.nodes.AbsBinaryNode;
+import com.javalexer.analysis.parsing.nodes.AbsNode;
 import com.javalexer.analysis.parsing.nodes.LiteralNode;
-import com.javalexer.analysis.parsing.nodes.ParenthesesExpressionNode;
+import com.javalexer.analysis.parsing.nodes.ExpressionNode;
 import com.javalexer.analysis.parsing.nodes.UnaryNode;
 import com.javalexer.analysis.parsing.InfixParser;
 
@@ -11,13 +11,13 @@ import java.util.List;
 
 public class InfixExpressionTree {
 
-    private AbsBinaryNode root;
+    private AbsNode root;
 
     public InfixExpressionTree() {
         this.root = null;
     }
 
-    public InfixExpressionTree(AbsBinaryNode root) {
+    public InfixExpressionTree(AbsNode root) {
         this.root = root;
     }
 
@@ -27,20 +27,20 @@ public class InfixExpressionTree {
         return (root != null);
     }
 
-    public AbsBinaryNode getRoot() {
+    public AbsNode getRoot() {
         return root;
     }
 
-    public boolean isLeaf(AbsBinaryNode absBinaryNode) {
-        return (absBinaryNode instanceof LiteralNode);
+    public boolean isLeaf(AbsNode absNode) {
+        return (absNode instanceof LiteralNode);
     }
 
-    public boolean isParentheses(AbsBinaryNode absBinaryNode) {
-        return (absBinaryNode instanceof ParenthesesExpressionNode);
+    public boolean isParentheses(AbsNode absNode) {
+        return (absNode instanceof ExpressionNode);
     }
 
-    public boolean isUnary(AbsBinaryNode absBinaryNode) {
-        return (absBinaryNode instanceof UnaryNode);
+    public boolean isUnary(AbsNode absNode) {
+        return (absNode instanceof UnaryNode);
     }
 
 }

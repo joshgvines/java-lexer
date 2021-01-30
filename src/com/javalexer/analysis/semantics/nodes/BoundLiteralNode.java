@@ -5,7 +5,7 @@ import com.javalexer.analysis.lexing.Token;
 /**
  * An OperandNode cannot have a right or left node, it must always be a leaf.
  */
-public final class BoundLiteralNode extends AbsBoundBinaryNode {
+public final class BoundLiteralNode extends AbsBoundNode {
 
     public BoundLiteralNode(Token literal) {
         super(literal);
