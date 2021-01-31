@@ -49,7 +49,7 @@ public class InfixParser {
             }
             Token operatorToken = nextToken();
             AbsNode rightNode = parseExpression(precedence);
-            leftNode = new BinaryNode(leftNode, operatorToken, rightNode);
+            leftNode = new BinaryExpressionNode(leftNode, operatorToken , rightNode);
         }
         return leftNode;
     }
@@ -74,14 +74,14 @@ public class InfixParser {
     private AbsNode parseUnaryExpression(int unaryPrecedence) {
         Token operatorToken = nextToken();
         AbsNode operandNode = parseExpression(unaryPrecedence);
-        return new UnaryNode(operatorToken, operandNode);
+        return new UnaryExpressionNode(operatorToken, operandNode);
     }
 
     private AbsNode parseParentheses() {
         AbsNode leftNode = new LiteralNode(nextToken());
         AbsNode expressionRootNode = parseExpression(0);
         AbsNode rightNode = new LiteralNode(match(CLOSE_PAREN));
-        return new ExpressionNode(leftNode, expressionRootNode, rightNode);
+        return new ParenthesizedExpressionNode(leftNode, expressionRootNode, rightNode);
     }
 
     private Token match(TokenType type) {

@@ -43,9 +43,9 @@ public class InfixParserMainDemo {
      */
     private static void traverseInfix(AbsNode node) {
         if (node != null) {
-            traverseInfix(node.getLeft());
-            System.out.println(node.data());
-            traverseInfix(node.getRight());
+//            traverseInfix(node.getLeft());
+//            System.out.println(node.getData());
+//            traverseInfix(node.getRight());
         }
     }
 
@@ -56,9 +56,9 @@ public class InfixParserMainDemo {
      */
     private static void traversePostfix(AbsNode node) {
         if (node != null) {
-            traversePostfix(node.getLeft());
-            traversePostfix(node.getRight());
-            System.out.println(node.data());
+//            traversePostfix(node.getLeft());
+//            traversePostfix(node.getRight());
+//            System.out.println(node.getData());
         }
     }
 
@@ -75,9 +75,9 @@ public class InfixParserMainDemo {
      */
     private static void traversePrefix(AbsNode node) {
         if (node != null) {
-            System.out.println(node.data());
-            traversePrefix(node.getRight());
-            traversePrefix(node.getLeft());
+//            System.out.println(node.getData());
+//            traversePrefix(node.getRight());
+//            traversePrefix(node.getLeft());
         }
     }
 

@@ -8,48 +8,70 @@ import com.javalexer.enums.NodeType;
  * The nodes and structure become 'bound' after type checking.
  */
 public abstract class AbsBoundNode {
-
-    private Token data;
     private NodeType type;
-    private AbsBoundNode expression;
-    private AbsBoundNode left;
-    private AbsBoundNode right;
 
     public AbsBoundNode(NodeType type) {
         this.type = type;
     }
 
-    public AbsBoundNode(Token data, AbsBoundNode operand) {
-        this.data = data;
-        this.expression = operand;
+    public NodeType getType() {
+        return type;
     }
 
-    public AbsBoundNode(AbsBoundNode left, Token data, AbsBoundNode right) {
-        this.right = right;
-        this.data = data;
+}
+
+abstract class AbsBoundBinaryNode extends AbsBoundNode {
+    private AbsBoundNode left;
+    private AbsBoundNode right;
+    private AbsBoundNode expression;
+    private Token data;
+
+    protected AbsBoundBinaryNode(NodeType type, AbsBoundNode left, Token data, AbsBoundNode right) {
+        super(type);
         this.left = left;
+        this.data = data;
+        this.right = right;
     }
 
-    public AbsBoundNode(AbsBoundNode left, AbsBoundNode expression, AbsBoundNode right) {
-        this.right = right;
+    protected AbsBoundBinaryNode(NodeType type, AbsBoundNode left, AbsBoundNode expression, AbsBoundNode right) {
+        super(type);
+        this.left = left;
         this.expression = expression;
-        this.left = left;
+        this.right = right;
     }
 
-    public AbsBoundNode getExpression() {
-        return expression;
-    }
-
-    public Token data() {
-        return data;
-    }
-
-    public AbsBoundNode getLeft() {
+    AbsBoundNode getLeft() {
         return left;
     }
 
-    public AbsBoundNode getRight() {
-        return right;
+    Token getData() {
+        return data;
     }
 
+    AbsBoundNode getExpression() {
+        return expression;
+    }
+
+    AbsBoundNode getRight() {
+        return right;
+    }
+}
+
+abstract class AbsBoundUnaryNode extends AbsBoundNode {
+    private Token operator;
+    private AbsBoundNode operand;
+
+    protected AbsBoundUnaryNode(NodeType type, Token operator, AbsBoundNode operand) {
+        super(type);
+        this.operator = operator;
+        this.operand = operand;
+    }
+
+    Token getOperator() {
+        return operator;
+    }
+
+    AbsBoundNode getOperand() {
+        return operand;
+    }
 }
