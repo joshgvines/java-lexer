@@ -1,18 +1,17 @@
 package com.javalexer.enums;
 
 /**
- * Defines Bound Node Types Used In Second Tree Type Binding.
+ * Defines Node types used in type checking and evaluation.
  */
 public enum NodeType {
     WHITESPACE_NODE,
 
+    LITERAL,
     STRING, CHAR,
     NUMBER, INTEGER, DOUBLE,
 
     UNARY_EXPRESSION,
-    BINARY_EXPRESSION,
-    LITERAL,
-    PARENTHESES_EXPRESSION,
+    BINARY_EXPRESSION, PARENTHESES_EXPRESSION,
     OPERATOR,
 
     ASSIGNMENT_NODE,

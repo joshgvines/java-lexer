@@ -14,18 +14,19 @@ public class Evaluator {
         this.expressionTree = expressionTree;
     }
 
-    public double evaluate() {
+    public double evaluate() throws Exception {
         return evaluate(expressionTree.getRoot());
     }
 
-    private double evaluate(AbsBoundNode node) {
+    private double evaluate(AbsBoundNode node) throws Exception {
         double result;
         if (node == null) {
-            return 0;
+            throw new Exception("Expression node was null: ");
         }
         switch (node.getType()) {
-            case LITERAL:
-                return toDouble((BoundLiteralNode) node);
+            case LITERAL: return toDouble((BoundLiteralNode) node);
+            case BINARY_EXPRESSION: return buildBinaryComputation(node);
+            case PARENTHESES_EXPRESSION: return evaluate(((BoundParenthesizedExpressionNode) node).getExpression());
             case UNARY_EXPRESSION:
                 BoundUnaryExpressionNode unaryExpression = (BoundUnaryExpressionNode) node;
                 result = evaluate(unaryExpression.getOperand());
@@ -33,17 +34,17 @@ public class Evaluator {
                     result = -result;
                 }
                 return result;
-            case BINARY_EXPRESSION:
-                BoundBinaryExpressionNode binaryExpression = (BoundBinaryExpressionNode) node;
-                BoundOperatorType operatorType = binaryExpression.getData();
-                double a = evaluate(binaryExpression.getLeft());
-                double b = evaluate(binaryExpression.getRight());
-                return compute(operatorType, a, b);
-            case PARENTHESES_EXPRESSION:
-                return evaluate(((BoundParenthesizedExpressionNode) node).getExpression());
             default:
-                return 0;
+                throw new UnsupportedOperationException("Unknown node type: " + node.getType());
         }
+    }
+
+    private double buildBinaryComputation(AbsBoundNode node) throws Exception {
+        BoundBinaryExpressionNode binaryExpression = (BoundBinaryExpressionNode) node;
+        BoundOperatorType operatorType = binaryExpression.getData();
+        double a = evaluate(binaryExpression.getLeft());
+        double b = evaluate(binaryExpression.getRight());
+        return compute(operatorType, a, b);
     }
 
     private double compute(BoundOperatorType operator, double a, double b) {

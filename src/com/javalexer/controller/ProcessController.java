@@ -9,6 +9,9 @@ import com.javalexer.analysis.parsing.trees.InfixExpressionTree;
 
 import java.util.List;
 
+/**
+ * This controller is temporary for experimentation
+ */
 public class ProcessController {
 
     public void runJavaFromFileLexer(String filePath) throws Exception {
@@ -23,21 +26,29 @@ public class ProcessController {
         runLexicalAnalysis(toLex);
     }
 
-    private void runLexicalAnalysis(String stringToLex) throws Exception {
+    public void runLexicalAnalysis(String stringToLex) throws Exception {
         Lexer lex = new Lexer();
-        runParserTree(lex.lex(stringToLex));
+        runParser(lex.lex(stringToLex));
     }
 
-    private void runParserTree(List<Token> tokens) throws Exception {
+    public void runParser(List<Token> tokens) throws Exception {
         InfixExpressionTree infixExpressionTree = new InfixExpressionTree();
-        System.out.println(infixExpressionTree);
         if (infixExpressionTree.buildTree(tokens)) {
-            BoundInfixExpressionTree boundInfixExpressionTree = new BoundInfixExpressionTree();
-            boundInfixExpressionTree.buildTree(infixExpressionTree.getRoot());
-            Evaluator evaluator = new Evaluator(boundInfixExpressionTree);
-            System.out.println(evaluator.evaluate());
+            runTypeCheck(infixExpressionTree);
         }
         Diagnostics.printDiagnostics();
+    }
+
+    public void runTypeCheck(InfixExpressionTree infixExpressionTree) throws Exception {
+        BoundInfixExpressionTree boundInfixExpressionTree = new BoundInfixExpressionTree();
+        if (boundInfixExpressionTree.buildTree(infixExpressionTree.getRoot())) {
+            runEvaluator(boundInfixExpressionTree);
+        }
+    }
+
+    public void runEvaluator(BoundInfixExpressionTree boundInfixExpressionTree) throws Exception {
+        Evaluator evaluator = new Evaluator(boundInfixExpressionTree);
+        System.out.println(evaluator.evaluate());
     }
 
 }

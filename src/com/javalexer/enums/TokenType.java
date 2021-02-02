@@ -1,7 +1,7 @@
 package com.javalexer.enums;
 
 /**
- * Defines Token Types Used In Lexers And Parsers.
+ * Defines Token types used in lexing and parsing phases.
  */
 public enum TokenType {
     WHITESPACE,

@@ -56,7 +56,7 @@ public class Lexer {
                     appendNumberUntil();
                 } else {
                     tokens.add(new Token(UNKNOWN, null, position++));
-                    Diagnostics.addLexicalDiagnostic("Found Unknown Token: " + tokens.get(tokens.size()));
+                    Diagnostics.addLexicalDiagnostic("Found Unknown Token: " + tokens.get(tokens.size() - 1));
                 }
         }
     }

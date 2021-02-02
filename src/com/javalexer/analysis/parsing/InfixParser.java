@@ -3,7 +3,6 @@ package com.javalexer.analysis.parsing;
 import com.javalexer.analysis.lexing.Token;
 import com.javalexer.enums.TokenType;
 import com.javalexer.analysis.parsing.nodes.*;
-import com.javalexer.analysis.parsing.trees.InfixExpressionTree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,16 +30,11 @@ public class InfixParser {
         }
     }
 
-    public InfixExpressionTree parseForTree() {
-        return new InfixExpressionTree(parseExpression(0));
-    }
-
     public AbsNode parseForRoot() {
         return parseExpression(0);
     }
 
-    public AbsNode parseExpression(int newPrecedence) {
-        int parentPrecedence = Precedence.defaultPrecedence(newPrecedence);
+    public AbsNode parseExpression(int parentPrecedence) {
         AbsNode leftNode = decideExpressionType(parentPrecedence);
         while (true) {
             int precedence = Precedence.binaryPrecedence(peek(0).getType());
