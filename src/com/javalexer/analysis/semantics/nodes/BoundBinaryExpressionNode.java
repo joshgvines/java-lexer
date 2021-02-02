@@ -1,14 +1,14 @@
 package com.javalexer.analysis.semantics.nodes;
 
-import com.javalexer.analysis.lexing.Token;
+import com.javalexer.enums.BoundOperatorType;
 import com.javalexer.enums.NodeType;
 
 /**
  * An OperatorNode has a right and left node, both of which can be an OperandNode or another OperatorNode.
  */
-public final class BinaryBoundExpressionNode extends AbsBoundBinaryNode {
+public final class BoundBinaryExpressionNode extends AbsBoundBinaryNode {
 
-    public BinaryBoundExpressionNode(AbsBoundBinaryNode left, Token operator, AbsBoundBinaryNode right) {
+    public BoundBinaryExpressionNode(AbsBoundNode left, BoundOperatorType operator, AbsBoundNode right) {
         super(NodeType.BINARY_EXPRESSION, left, operator, right);
     }
 
@@ -21,7 +21,7 @@ public final class BinaryBoundExpressionNode extends AbsBoundBinaryNode {
         return super.getLeft();
     }
 
-    public Token getData() {
+    public BoundOperatorType getData() {
         return super.getData();
     }
 

@@ -1,57 +1,72 @@
-//package com.javalexer.analysis;
-//
-//import com.javalexer.analysis.lexing.Token;
-//import com.javalexer.analysis.parsing.nodes.UnaryExpressionNode;
-//import com.javalexer.enums.TokenType;
-//import com.javalexer.analysis.parsing.nodes.AbsNode;
-//import com.javalexer.analysis.parsing.trees.InfixExpressionTree;
-//
-//public class Evaluator {
-//
-//    private InfixExpressionTree expressionTree;
-//
-//    public Evaluator(InfixExpressionTree expressionTree) {
-//        this.expressionTree = expressionTree;
-//    }
-//
-//    public double evaluate() {
-//        return evaluate(expressionTree.getRoot());
-//    }
-//
-//    private double evaluate(AbsNode node) {
-//        double result;
-//        if (node == null) {
-//            result = 0;
-//        } else if (expressionTree.isUnary(node)) {
-//            result = evaluate(((UnaryExpressionNode) node).getOperand());
-//            if (((UnaryExpressionNode) node).getOperator().getType() == TokenType.MINUS) {
-//                result = -result;
-//            }
-//        } else if (expressionTree.isParentheses(node)) {
-//            result = evaluate(node.getExpression());
-//        } else if (expressionTree.isLeaf(node)) {
-//            result = Double.parseDouble(node.data().getValue());
-//        } else {
-//            double a = evaluate(node.getLeft());
-//            double b = evaluate(node.getRight());
-//            result = compute(node.data(), a, b);
-//        }
-//        return result;
-//    }
-//
-//    private double compute(Token operator, double a, double b) {
-//        switch (operator.getType()) {
-//            case PLUS: return a + b;
-//            case MINUS: return a - b;
-//            case STAR: return a * b;
-//            case MODULO: return a % b;
-//            case FORWARD_SLASH:
-//                if (b == 0) {
-//                    throw new UnsupportedOperationException("Cannot divide by zero");
-//                }
-//                return a / b;
-//        }
-//        return 0;
-//    }
-//
-//}
+package com.javalexer.analysis;
+
+import com.javalexer.analysis.lexing.Token;
+import com.javalexer.analysis.parsing.trees.BoundInfixExpressionTree;
+import com.javalexer.analysis.semantics.nodes.*;
+import com.javalexer.enums.BoundOperatorType;
+import com.javalexer.enums.TokenType;
+
+public class Evaluator {
+
+    private BoundInfixExpressionTree expressionTree;
+
+    public Evaluator(BoundInfixExpressionTree expressionTree) {
+        this.expressionTree = expressionTree;
+    }
+
+    public double evaluate() {
+        return evaluate(expressionTree.getRoot());
+    }
+
+    private double evaluate(AbsBoundNode node) {
+        double result;
+        if (node == null) {
+            return 0;
+        }
+        switch (node.getType()) {
+            case LITERAL:
+                return toDouble((BoundLiteralNode) node);
+            case UNARY_EXPRESSION:
+                BoundUnaryExpressionNode unaryExpression = (BoundUnaryExpressionNode) node;
+                result = evaluate(unaryExpression.getOperand());
+                if (unaryExpression.getOperator() == BoundOperatorType.SUBTRACTION) {
+                    result = -result;
+                }
+                return result;
+            case BINARY_EXPRESSION:
+                BoundBinaryExpressionNode binaryExpression = (BoundBinaryExpressionNode) node;
+                BoundOperatorType operatorType = binaryExpression.getData();
+                double a = evaluate(binaryExpression.getLeft());
+                double b = evaluate(binaryExpression.getRight());
+                return compute(operatorType, a, b);
+            case PARENTHESES_EXPRESSION:
+                return evaluate(((BoundParenthesizedExpressionNode) node).getExpression());
+            default:
+                return 0;
+        }
+    }
+
+    private double compute(BoundOperatorType operator, double a, double b) {
+        switch (operator) {
+            case ADDITION: return a + b;
+            case SUBTRACTION: return a - b;
+            case MULTIPLICATION: return a * b;
+            case MODULO: return a % b;
+            case DIVISION:
+                if (b == 0) {
+                    throw new UnsupportedOperationException("Cannot divide by zero");
+                }
+                return a / b;
+        }
+        return 0;
+    }
+
+    private double toDouble(BoundLiteralNode literalNode) {
+        Token token = literalNode.getData();
+        if (token.getType() == TokenType.NUMBER) {
+            return Double.parseDouble(token.getValue());
+        }
+        throw new UnsupportedOperationException("Token was not a number: " + token);
+    }
+
+}

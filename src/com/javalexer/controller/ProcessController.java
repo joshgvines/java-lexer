@@ -3,6 +3,7 @@ package com.javalexer.controller;
 import com.javalexer.analysis.Evaluator;
 import com.javalexer.analysis.lexing.Lexer;
 import com.javalexer.analysis.lexing.Token;
+import com.javalexer.analysis.parsing.trees.BoundInfixExpressionTree;
 import com.javalexer.diagnostics.Diagnostics;
 import com.javalexer.analysis.parsing.trees.InfixExpressionTree;
 
@@ -27,11 +28,13 @@ public class ProcessController {
         runParserTree(lex.lex(stringToLex));
     }
 
-    private void runParserTree(List<Token> tokens) {
+    private void runParserTree(List<Token> tokens) throws Exception {
         InfixExpressionTree infixExpressionTree = new InfixExpressionTree();
         System.out.println(infixExpressionTree);
         if (infixExpressionTree.buildTree(tokens)) {
-            Evaluator evaluator = new Evaluator(infixExpressionTree);
+            BoundInfixExpressionTree boundInfixExpressionTree = new BoundInfixExpressionTree();
+            boundInfixExpressionTree.buildTree(infixExpressionTree.getRoot());
+            Evaluator evaluator = new Evaluator(boundInfixExpressionTree);
             System.out.println(evaluator.evaluate());
         }
         Diagnostics.printDiagnostics();

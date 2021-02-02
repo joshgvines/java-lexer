@@ -2,16 +2,17 @@ package com.javalexer.analysis.semantics.nodes;
 
 import com.javalexer.analysis.lexing.Token;
 import com.javalexer.analysis.parsing.nodes.AbsNode;
+import com.javalexer.enums.BoundOperatorType;
 import com.javalexer.enums.NodeType;
 
 public final class BoundUnaryExpressionNode extends AbsBoundUnaryNode {
 
-    public BoundUnaryExpressionNode(Token operator, AbsBoundNode operand) {
-        super(NodeType.UNARY_EXPRESSION, operator, operand);
+    public BoundUnaryExpressionNode(BoundOperatorType operatorType, AbsBoundNode operand) {
+        super(NodeType.UNARY_EXPRESSION, operatorType, operand);
     }
 
     @Override
-    public Token getOperator() {
+    public BoundOperatorType getOperator() {
         return super.getOperator();
     }
 

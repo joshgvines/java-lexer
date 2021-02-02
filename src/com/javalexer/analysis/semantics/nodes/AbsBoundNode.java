@@ -1,6 +1,7 @@
 package com.javalexer.analysis.semantics.nodes;
 
 import com.javalexer.analysis.lexing.Token;
+import com.javalexer.enums.BoundOperatorType;
 import com.javalexer.enums.NodeType;
 
 /**
@@ -24,9 +25,9 @@ abstract class AbsBoundBinaryNode extends AbsBoundNode {
     private AbsBoundNode left;
     private AbsBoundNode right;
     private AbsBoundNode expression;
-    private Token data;
+    private BoundOperatorType data;
 
-    protected AbsBoundBinaryNode(NodeType type, AbsBoundNode left, Token data, AbsBoundNode right) {
+    protected AbsBoundBinaryNode(NodeType type, AbsBoundNode left, BoundOperatorType data, AbsBoundNode right) {
         super(type);
         this.left = left;
         this.data = data;
@@ -44,7 +45,7 @@ abstract class AbsBoundBinaryNode extends AbsBoundNode {
         return left;
     }
 
-    Token getData() {
+    BoundOperatorType getData() {
         return data;
     }
 
@@ -58,17 +59,17 @@ abstract class AbsBoundBinaryNode extends AbsBoundNode {
 }
 
 abstract class AbsBoundUnaryNode extends AbsBoundNode {
-    private Token operator;
+    private BoundOperatorType operatorType;
     private AbsBoundNode operand;
 
-    protected AbsBoundUnaryNode(NodeType type, Token operator, AbsBoundNode operand) {
+    protected AbsBoundUnaryNode(NodeType type, BoundOperatorType operatorType, AbsBoundNode operand) {
         super(type);
-        this.operator = operator;
+        this.operatorType = operatorType;
         this.operand = operand;
     }
 
-    Token getOperator() {
-        return operator;
+    BoundOperatorType getOperator() {
+        return operatorType;
     }
 
     AbsBoundNode getOperand() {
