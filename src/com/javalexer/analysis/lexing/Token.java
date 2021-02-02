@@ -1,23 +1,22 @@
 package com.javalexer.analysis.lexing;
 
-import com.javalexer.enums.TokenType;
+import com.javalexer.enums.SyntaxType;
 
 /**
  * Tokens represent a character or sequence of characters which have meaning in the source.
  */
 public class Token {
-
-    private TokenType type;
+    private SyntaxType type;
     private String value;
     private int position;
 
-    public Token(TokenType type, String value, int position) {
+    public Token(SyntaxType type, String value, int position) {
         this.type = type;
         this.value = value;
         this.position = position;
     }
 
-    public TokenType getType() {
+    public SyntaxType getSyntaxType() {
         return type;
     }
 

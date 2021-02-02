@@ -36,7 +36,6 @@ public class ProcessController {
         if (infixExpressionTree.buildTree(tokens)) {
             runTypeCheck(infixExpressionTree);
         }
-        Diagnostics.printDiagnostics();
     }
 
     public void runTypeCheck(InfixExpressionTree infixExpressionTree) throws Exception {
@@ -48,7 +47,8 @@ public class ProcessController {
 
     public void runEvaluator(BoundInfixExpressionTree boundInfixExpressionTree) throws Exception {
         Evaluator evaluator = new Evaluator(boundInfixExpressionTree);
-        System.out.println(evaluator.evaluate());
+        System.out.println("ANS= " + evaluator.evaluate());
+        Diagnostics.printDiagnostics();
     }
 
 }

@@ -19,11 +19,11 @@ public class Diagnostics {
     public static void printDiagnostics() {
         System.out.println("Lexer:");
         for (String diagnostic : lexicalDiagnostics) {
-            System.err.println(diagnostic);
+            System.out.println(diagnostic);
         }
-        System.out.println("\nParser:");
+        System.out.println("Parser:");
         for (String diagnostic : parsingDiagnostics) {
-            System.err.println(diagnostic);
+            System.out.println(diagnostic);
         }
     }
 

@@ -2,7 +2,7 @@ package com.javalexer;
 
 import com.javalexer.analysis.lexing.Lexer;
 import com.javalexer.analysis.lexing.Token;
-import com.javalexer.enums.TokenType;
+import com.javalexer.enums.SyntaxType;
 import com.javalexer.analysis.parsing.nodes.AbsNode;
 import com.javalexer.analysis.parsing.InfixParser;
 
@@ -86,7 +86,7 @@ public class InfixParserMainDemo {
         Token tempEnd = null;
         for (int i = tokens.size()-1; i >= 0; i--) {
             Token token = tokens.get(i);
-            if (token.getType() != TokenType.END) {
+            if (token.getSyntaxType() != SyntaxType.END) {
                 reversedTokens.add(token);
             } else {
                 tempEnd = token;

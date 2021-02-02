@@ -4,7 +4,7 @@ import com.javalexer.analysis.lexing.Token;
 import com.javalexer.analysis.parsing.trees.BoundInfixExpressionTree;
 import com.javalexer.analysis.semantics.nodes.*;
 import com.javalexer.enums.BoundOperatorType;
-import com.javalexer.enums.TokenType;
+import com.javalexer.enums.SyntaxType;
 
 public class Evaluator {
 
@@ -14,36 +14,44 @@ public class Evaluator {
         this.expressionTree = expressionTree;
     }
 
-    public double evaluate() throws Exception {
+    public Object evaluate() throws Exception {
         return evaluate(expressionTree.getRoot());
     }
 
-    private double evaluate(AbsBoundNode node) throws Exception {
+    private Object evaluate(AbsBoundNode node) throws Exception {
         double result;
         if (node == null) {
             throw new Exception("Expression node was null: ");
         }
-        switch (node.getType()) {
-            case LITERAL: return toDouble((BoundLiteralNode) node);
-            case BINARY_EXPRESSION: return buildBinaryComputation(node);
-            case PARENTHESES_EXPRESSION: return evaluate(((BoundParenthesizedExpressionNode) node).getExpression());
+        switch (node.getBoundNodeType()) {
+            case LITERAL:
+                BoundLiteralNode boundLiteralNode = (BoundLiteralNode) node;
+                switch (boundLiteralNode.getSyntaxType()) {
+                    case NUMBER:
+                        return toDouble((BoundLiteralNode) node);
+                    default:
+                        return boundLiteralNode.getData().getValue();
+                }
+            case BINARY_EXPRESSION:
+                return buildBinaryComputation((BoundBinaryExpressionNode) node);
+            case PARENTHESES_EXPRESSION:
+                return evaluate(((BoundParenthesizedExpressionNode) node).getExpression());
             case UNARY_EXPRESSION:
                 BoundUnaryExpressionNode unaryExpression = (BoundUnaryExpressionNode) node;
-                result = evaluate(unaryExpression.getOperand());
+                result = (double) evaluate(unaryExpression.getOperand());
                 if (unaryExpression.getOperator() == BoundOperatorType.SUBTRACTION) {
                     result = -result;
                 }
                 return result;
             default:
-                throw new UnsupportedOperationException("Unknown node type: " + node.getType());
+                throw new UnsupportedOperationException("Unknown node type: " + node.getBoundNodeType());
         }
     }
 
-    private double buildBinaryComputation(AbsBoundNode node) throws Exception {
-        BoundBinaryExpressionNode binaryExpression = (BoundBinaryExpressionNode) node;
+    private double buildBinaryComputation(BoundBinaryExpressionNode binaryExpression) throws Exception {
         BoundOperatorType operatorType = binaryExpression.getData();
-        double a = evaluate(binaryExpression.getLeft());
-        double b = evaluate(binaryExpression.getRight());
+        double a = (double) evaluate(binaryExpression.getLeft());
+        double b = (double) evaluate(binaryExpression.getRight());
         return compute(operatorType, a, b);
     }
 
@@ -64,7 +72,7 @@ public class Evaluator {
 
     private double toDouble(BoundLiteralNode literalNode) {
         Token token = literalNode.getData();
-        if (token.getType() == TokenType.NUMBER) {
+        if (token.getSyntaxType() == SyntaxType.NUMBER) {
             return Double.parseDouble(token.getValue());
         }
         throw new UnsupportedOperationException("Token was not a number: " + token);

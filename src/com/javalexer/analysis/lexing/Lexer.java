@@ -1,13 +1,13 @@
 package com.javalexer.analysis.lexing;
 
 import com.javalexer.diagnostics.Diagnostics;
-import com.javalexer.enums.TokenType;
+import com.javalexer.enums.SyntaxType;
 
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.javalexer.enums.TokenType.*;
+import static com.javalexer.enums.SyntaxType.*;
 import static com.javalexer.enums.CodeFilter.*;
 
 public class Lexer {
@@ -24,7 +24,9 @@ public class Lexer {
         sr = new StringReader(fileAsString);
         while ((charInt = sr.read()) != -1) {
             _char = (char) charInt;
-            characterTokenFilter();
+            if (!keywordTokenFilter()) {
+                characterTokenFilter();
+            }
         }
         tokens.add(new Token(END, "/0", -1));
         sr.close();
@@ -34,6 +36,29 @@ public class Lexer {
     private String removeComments(String fileAsString) {
         fileAsString = fileAsString.replaceAll(MULTI_COMMENT.get(), "");
         return fileAsString.replaceAll(SINGLE_COMMENT.get() + NEW_LINE, "");
+    }
+
+    private boolean keywordTokenFilter() throws Exception {
+        if (Character.isLetter(_char)) {
+            tokenString = new StringBuilder().append(_char);
+            while (Character.isLetter(_char) && (charInt = sr.read()) != -1) {
+                _char = (char) charInt;
+                if (Character.isLetter(_char)) {
+                    tokenString.append(_char);
+                }
+            }
+            return buildKeywordToken();
+        }
+        return false;
+    }
+
+    private boolean buildKeywordToken() throws Exception {
+        SyntaxType type = KeywordUtil.getKeyword(tokenString.toString());
+        if (type == null) {
+            return false;
+        }
+        tokens.add(new Token(type, tokenString.toString(), position++));
+        return true;
     }
 
     private void characterTokenFilter() throws Exception {
@@ -89,19 +114,19 @@ public class Lexer {
         tokens.add(new Token(NUMBER, tokenString.toString(), position++));
     }
 
-    private boolean appendUntil(String key, TokenType tokenType) throws Exception {
+    private boolean appendUntil(String key, SyntaxType syntaxType) throws Exception {
         tokenString = new StringBuilder();
         tokenString.append(_char);
         while ((charInt = sr.read()) != -1) {
             _char = (char) charInt;
             if (key.equals(_char) || (";").equals(_char)) {
                 tokenString.append(_char);
-                return tokens.add(new Token(tokenType, tokenString.toString(), position++));
+                return tokens.add(new Token(syntaxType, tokenString.toString(), position++));
             } else if ((" ").equals(_char)) {
                 tokens.add(new Token(WHITESPACE, " ", position++));
             }
             tokenString.append(_char);
         }
-        return tokens.add(new Token(tokenType, tokenString.toString(), position++));
+        return tokens.add(new Token(syntaxType, tokenString.toString(), position++));
     }
 }

@@ -1,10 +1,10 @@
 package com.javalexer.analysis.parsing;
 
-import com.javalexer.enums.TokenType;
+import com.javalexer.enums.SyntaxType;
 
-public class Precedence {
+public class PrecedenceUtil {
 
-    public static int binaryPrecedence(TokenType type) {
+    public static int binaryPrecedence(SyntaxType type) {
         switch (type) {
             case PLUS: case MINUS:
                 return 1;
@@ -15,7 +15,7 @@ public class Precedence {
         }
     }
 
-    public static int unaryPrecedence(TokenType type) {
+    public static int unaryPrecedence(SyntaxType type) {
         switch (type) {
             case PLUS: case MINUS:
                 return 3;

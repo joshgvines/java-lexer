@@ -14,7 +14,7 @@ public abstract class AbsBoundNode {
         this.type = type;
     }
 
-    public NodeType getType() {
+    public NodeType getBoundNodeType() {
         return type;
     }
 

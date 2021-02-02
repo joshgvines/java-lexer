@@ -21,7 +21,7 @@ public class InfixExpressionTree {
         this.root = root;
     }
 
-    public boolean buildTree(List<Token> tokenList) {
+    public boolean buildTree(List<Token> tokenList) throws Exception {
         InfixParser parser = new InfixParser(tokenList);
         root = parser.parseForRoot();
         return (root != null);
@@ -33,14 +33,6 @@ public class InfixExpressionTree {
 
     public boolean isLeaf(AbsNode absNode) {
         return (absNode instanceof LiteralNode);
-    }
-
-    public boolean isParentheses(AbsNode absNode) {
-        return (absNode instanceof ParenthesizedExpressionNode);
-    }
-
-    public boolean isUnary(AbsNode absNode) {
-        return (absNode instanceof UnaryExpressionNode);
     }
 
 }

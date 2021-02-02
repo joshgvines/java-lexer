@@ -1,8 +1,8 @@
 package com.javalexer.analysis.semantics.nodes;
 
 import com.javalexer.analysis.lexing.Token;
-import com.javalexer.analysis.parsing.nodes.AbsNode;
 import com.javalexer.enums.NodeType;
+import com.javalexer.enums.SyntaxType;
 
 /**
  * An OperandNode cannot have a right or left node, it must always be a leaf.
@@ -17,12 +17,16 @@ public final class BoundLiteralNode extends AbsBoundNode {
     }
 
     @Override
-    public NodeType getType() {
-        return super.getType();
+    public NodeType getBoundNodeType() {
+        return super.getBoundNodeType();
     }
 
     public Token getData() {
         return data;
+    }
+
+    public SyntaxType getSyntaxType() {
+        return data.getSyntaxType();
     }
 
 }

@@ -4,7 +4,7 @@ import com.javalexer.analysis.lexing.Token;
 import com.javalexer.analysis.parsing.nodes.*;
 import com.javalexer.analysis.semantics.nodes.*;
 import com.javalexer.enums.BoundOperatorType;
-import com.javalexer.enums.TokenType;
+import com.javalexer.enums.SyntaxType;
 
 /**
  * Orchestrates basic type checking for AST expressions and nodes.
@@ -37,18 +37,18 @@ public class NodeTypeBinder {
 
     private AbsBoundNode bindBinaryExpression(BinaryExpressionNode binaryExpressionNode) throws Exception {
         AbsBoundNode left = bind(binaryExpressionNode.getLeft());
-        BoundOperatorType operatorType = bindBinaryOperatorType(binaryExpressionNode.getData().getType());
+        BoundOperatorType operatorType = bindBinaryOperatorType(binaryExpressionNode.getData().getSyntaxType());
         AbsBoundNode right = bind(binaryExpressionNode.getRight());
         return new BoundBinaryExpressionNode(left, operatorType, right);
     }
 
     private AbsBoundNode bindUnaryExpression(UnaryExpressionNode unaryExpressionNode) throws Exception {
-        BoundOperatorType operatorType = bindUnaryOperatorType(unaryExpressionNode.getOperator().getType());
+        BoundOperatorType operatorType = bindUnaryOperatorType(unaryExpressionNode.getOperator().getSyntaxType());
         AbsBoundNode operand = bind(unaryExpressionNode.getOperand());
         return new BoundUnaryExpressionNode(operatorType, operand);
     }
 
-    private BoundOperatorType bindUnaryOperatorType(TokenType type) throws Exception {
+    private BoundOperatorType bindUnaryOperatorType(SyntaxType type) throws Exception {
         switch (type) {
             case PLUS: return BoundOperatorType.ADDITION;
             case MINUS: return BoundOperatorType.SUBTRACTION;
@@ -57,7 +57,7 @@ public class NodeTypeBinder {
         }
     }
 
-    private BoundOperatorType bindBinaryOperatorType(TokenType type) throws Exception {
+    private BoundOperatorType bindBinaryOperatorType(SyntaxType type) throws Exception {
         switch (type) {
             case PLUS: return BoundOperatorType.ADDITION;
             case MINUS: return BoundOperatorType.SUBTRACTION;

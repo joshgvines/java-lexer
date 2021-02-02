@@ -3,7 +3,7 @@ package com.javalexer.enums;
 /**
  * Defines Token types used in lexing and parsing phases.
  */
-public enum TokenType {
+public enum SyntaxType {
     WHITESPACE,
 
     STRING, CHAR,
@@ -15,6 +15,9 @@ public enum TokenType {
 
     OPEN_PAREN, CLOSE_PAREN,
     OPEN_BRACE, CLOSE_BRACE,
+
+    FALSE_KEYWORD, TRUE_KEYWORD,
+    PUBLIC_KEYWORD,
 
     UNKNOWN, END;
 }
