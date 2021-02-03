@@ -4,33 +4,47 @@ import com.javalexer.analysis.lexing.Token;
 import com.javalexer.enums.NodeType;
 
 public abstract class AbsNode {
-    private NodeType type;
+    private NodeType nodeType;
 
-    public AbsNode(NodeType type) {
-        this.type = type;
+    public AbsNode(NodeType nodeType) {
+        this.nodeType = nodeType;
     }
 
-    public NodeType getType() {
-        return type;
+    public NodeType getNodeType() {
+        return nodeType;
     }
-
 }
 
-abstract class AbsBinaryNode extends AbsNode {
+abstract class AbsExpression extends AbsNode {
+    private Token tokenData;
+    private AbsNode expressionData;
+
+    public AbsExpression(NodeType type, Token tokenData) {
+        super(type);
+        this.tokenData = tokenData;
+    }
+
+    public AbsExpression(NodeType type, AbsNode expressionData) {
+        super(type);
+        this.expressionData = expressionData;
+    }
+}
+
+abstract class AbsBinaryNode extends AbsExpression {
     private AbsNode left;
     private AbsNode right;
     private AbsNode expression;
     private Token data;
 
     protected AbsBinaryNode(NodeType type, AbsNode left, Token data, AbsNode right) {
-        super(type);
+        super(type, data);
         this.left = left;
         this.data = data;
         this.right = right;
     }
 
     protected AbsBinaryNode(NodeType type, AbsNode left, AbsNode expression, AbsNode right) {
-        super(type);
+        super(type, expression);
         this.left = left;
         this.expression = expression;
         this.right = right;
@@ -53,12 +67,12 @@ abstract class AbsBinaryNode extends AbsNode {
     }
 }
 
-abstract class AbsUnaryNode extends AbsNode {
+abstract class AbsUnaryNode extends AbsExpression {
     private Token operator;
     private AbsNode operand;
 
     protected AbsUnaryNode(NodeType type, Token operator, AbsNode operand) {
-        super(type);
+        super(type, operator);
         this.operator = operator;
         this.operand = operand;
     }

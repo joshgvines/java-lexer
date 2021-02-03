@@ -28,7 +28,6 @@ public class InfixParser {
         }
         this.tokens = new ArrayList<>();
         for (Token token : tokens) {
-            System.out.println(token);
             if ((token.getSyntaxType() != WHITESPACE) && (token.getSyntaxType() != UNKNOWN)) {
                 this.tokens.add(token);
             }

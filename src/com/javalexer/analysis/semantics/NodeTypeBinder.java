@@ -12,13 +12,13 @@ import com.javalexer.enums.SyntaxType;
 public class NodeTypeBinder {
 
     public AbsBoundNode bind(AbsNode node) throws Exception {
-        switch (node.getType()) {
+        switch (node.getNodeType()) {
             case LITERAL: return bindLiteralExpression((LiteralNode) node);
             case BINARY_EXPRESSION: return bindBinaryExpression((BinaryExpressionNode) node);
             case UNARY_EXPRESSION: return bindUnaryExpression((UnaryExpressionNode) node);
             case PARENTHESES_EXPRESSION: return bindParenthesesExpression((ParenthesizedExpressionNode) node);
             default:
-                throw new UnsupportedOperationException("Unexpected Expression Syntax:" + node.getType());
+                throw new UnsupportedOperationException("Unexpected Expression Syntax:" + node.getNodeType());
         }
     }
 
@@ -36,16 +36,31 @@ public class NodeTypeBinder {
     }
 
     private AbsBoundNode bindBinaryExpression(BinaryExpressionNode binaryExpressionNode) throws Exception {
-        AbsBoundNode left = bind(binaryExpressionNode.getLeft());
-        BoundOperatorType operatorType = bindBinaryOperatorType(binaryExpressionNode.getData().getSyntaxType());
-        AbsBoundNode right = bind(binaryExpressionNode.getRight());
-        return new BoundBinaryExpressionNode(left, operatorType, right);
+        AbsNode left = binaryExpressionNode.getLeft();
+        SyntaxType operatorType = binaryExpressionNode.getData().getSyntaxType();
+        AbsNode right = binaryExpressionNode.getRight();
+        if (!isLiteralBased(left) || !isLiteralBased(right)) {
+            System.out.println("Unsupported Nonnumerical Binary Expression: "
+                    + left.getNodeType() + " " + operatorType + " " + right.getNodeType());
+            return null;
+        }
+        AbsBoundNode boundLeft = bind(binaryExpressionNode.getLeft());
+        BoundOperatorType boundOperatorType = bindBinaryOperatorType(operatorType);
+        AbsBoundNode boundRight = bind(binaryExpressionNode.getRight());
+        return new BoundBinaryExpressionNode(boundLeft, boundOperatorType, boundRight);
     }
 
     private AbsBoundNode bindUnaryExpression(UnaryExpressionNode unaryExpressionNode) throws Exception {
-        BoundOperatorType operatorType = bindUnaryOperatorType(unaryExpressionNode.getOperator().getSyntaxType());
-        AbsBoundNode operand = bind(unaryExpressionNode.getOperand());
-        return new BoundUnaryExpressionNode(operatorType, operand);
+        Token operator = unaryExpressionNode.getOperator();
+        AbsNode operand = unaryExpressionNode.getOperand();
+        if (!isLiteralBased(operand)) {
+            System.out.println("Unsupported Nonnumerical Unary Expression: "
+                    + operator.getSyntaxType() + " " + operand.getNodeType());
+            return null;
+        }
+        AbsBoundNode boundOperand = bind(operand);
+        BoundOperatorType operatorType = bindUnaryOperatorType(operator.getSyntaxType());
+        return new BoundUnaryExpressionNode(operatorType, boundOperand);
     }
 
     private BoundOperatorType bindUnaryOperatorType(SyntaxType type) throws Exception {
@@ -66,6 +81,14 @@ public class NodeTypeBinder {
             default:
                 throw new Exception("Unexpected binary Operator: " + type);
         }
+    }
+
+    private boolean isLiteralBased(AbsNode operand) {
+        if (operand instanceof LiteralNode) {
+            LiteralNode literal = (LiteralNode) operand;
+            return literal.getData().getSyntaxType() == SyntaxType.NUMBER;
+        }
+        return operand instanceof BinaryExpressionNode;
     }
 
 }

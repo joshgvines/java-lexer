@@ -16,8 +16,8 @@ public final class LiteralNode extends AbsNode {
     }
 
     @Override
-    public NodeType getType() {
-        return super.getType();
+    public NodeType getNodeType() {
+        return super.getNodeType();
     }
 
     public Token getData() {

@@ -18,7 +18,7 @@ public class Evaluator {
         return evaluate(expressionTree.getRoot());
     }
 
-    private Object evaluate(AbsBoundNode node) throws Exception {
+    private double evaluate(AbsBoundNode node) throws Exception {
         double result;
         if (node == null) {
             throw new Exception("Expression node was null: ");
@@ -26,19 +26,14 @@ public class Evaluator {
         switch (node.getBoundNodeType()) {
             case LITERAL:
                 BoundLiteralNode boundLiteralNode = (BoundLiteralNode) node;
-                switch (boundLiteralNode.getSyntaxType()) {
-                    case NUMBER:
-                        return toDouble((BoundLiteralNode) node);
-                    default:
-                        return boundLiteralNode.getData().getValue();
-                }
+                return toDouble(boundLiteralNode.getData().getValue());
             case BINARY_EXPRESSION:
                 return buildBinaryComputation((BoundBinaryExpressionNode) node);
             case PARENTHESES_EXPRESSION:
                 return evaluate(((BoundParenthesizedExpressionNode) node).getExpression());
             case UNARY_EXPRESSION:
                 BoundUnaryExpressionNode unaryExpression = (BoundUnaryExpressionNode) node;
-                result = (double) evaluate(unaryExpression.getOperand());
+                result = evaluate(unaryExpression.getOperand());
                 if (unaryExpression.getOperator() == BoundOperatorType.SUBTRACTION) {
                     result = -result;
                 }
@@ -50,8 +45,8 @@ public class Evaluator {
 
     private double buildBinaryComputation(BoundBinaryExpressionNode binaryExpression) throws Exception {
         BoundOperatorType operatorType = binaryExpression.getData();
-        double a = (double) evaluate(binaryExpression.getLeft());
-        double b = (double) evaluate(binaryExpression.getRight());
+        double a = evaluate(binaryExpression.getLeft());
+        double b = evaluate(binaryExpression.getRight());
         return compute(operatorType, a, b);
     }
 
@@ -68,6 +63,13 @@ public class Evaluator {
                 return a / b;
         }
         return 0;
+    }
+
+    private double toDouble(String number) {
+        if (number == null) {
+            return 0;
+        }
+        return Double.parseDouble(number);
     }
 
     private double toDouble(BoundLiteralNode literalNode) {

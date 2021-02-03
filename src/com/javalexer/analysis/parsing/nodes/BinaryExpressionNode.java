@@ -13,8 +13,8 @@ public final class BinaryExpressionNode extends AbsBinaryNode {
     }
 
     @Override
-    public NodeType getType() {
-        return super.getType();
+    public NodeType getNodeType() {
+        return super.getNodeType();
     }
 
     public AbsNode getLeft() {
