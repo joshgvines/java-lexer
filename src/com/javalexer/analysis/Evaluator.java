@@ -26,6 +26,9 @@ public class Evaluator {
         switch (node.getBoundNodeType()) {
             case LITERAL:
                 BoundLiteralNode boundLiteralNode = (BoundLiteralNode) node;
+                if (boundLiteralNode.getSyntaxType() != SyntaxType.NUMBER) {
+                    return 0;
+                }
                 return toDouble(boundLiteralNode.getData().getValue());
             case BINARY_EXPRESSION:
                 return buildBinaryComputation((BoundBinaryExpressionNode) node);

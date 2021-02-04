@@ -16,6 +16,8 @@ public enum SyntaxType {
     OPEN_PAREN, CLOSE_PAREN,
     OPEN_BRACE, CLOSE_BRACE,
 
+    PIPE, AND, OR, BANG,
+
     FALSE_KEYWORD, TRUE_KEYWORD,
     PUBLIC_KEYWORD,
 

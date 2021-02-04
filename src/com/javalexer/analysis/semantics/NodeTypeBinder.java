@@ -39,7 +39,7 @@ public class NodeTypeBinder {
         AbsNode left = binaryExpressionNode.getLeft();
         SyntaxType operatorType = binaryExpressionNode.getData().getSyntaxType();
         AbsNode right = binaryExpressionNode.getRight();
-        if (!isLiteralBased(left) || !isLiteralBased(right)) {
+        if (!isNumericalBased(left) || !isNumericalBased(right)) {
             System.out.println("Unsupported Nonnumerical Binary Expression: "
                     + left.getNodeType() + " " + operatorType + " " + right.getNodeType());
             return null;
@@ -53,7 +53,7 @@ public class NodeTypeBinder {
     private AbsBoundNode bindUnaryExpression(UnaryExpressionNode unaryExpressionNode) throws Exception {
         Token operator = unaryExpressionNode.getOperator();
         AbsNode operand = unaryExpressionNode.getOperand();
-        if (!isLiteralBased(operand)) {
+        if (!isNumericalBased(operand)) {
             System.out.println("Unsupported Nonnumerical Unary Expression: "
                     + operator.getSyntaxType() + " " + operand.getNodeType());
             return null;
@@ -83,12 +83,12 @@ public class NodeTypeBinder {
         }
     }
 
-    private boolean isLiteralBased(AbsNode operand) {
+    private boolean isNumericalBased(AbsNode operand) {
         if (operand instanceof LiteralNode) {
             LiteralNode literal = (LiteralNode) operand;
             return literal.getData().getSyntaxType() == SyntaxType.NUMBER;
         }
-        return operand instanceof BinaryExpressionNode;
+        return operand instanceof AbsExpressionNode;
     }
 
 }

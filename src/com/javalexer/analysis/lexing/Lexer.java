@@ -3,7 +3,6 @@ package com.javalexer.analysis.lexing;
 import com.javalexer.diagnostics.Diagnostics;
 import com.javalexer.enums.SyntaxType;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,23 +12,26 @@ import static com.javalexer.enums.CodeFilter.*;
 public class Lexer {
     private static final String NEW_LINE = System.getProperty("line.separator");
     private char _char;
-    private int charInt;
-    private StringReader sr;
+    private char[] charArray;
     private StringBuilder tokenString;
     private List<Token> tokens = new ArrayList<>();
-    private int position = 0;
+    private int charArrayLength = 0;
+    private int tokenPosition = 0;
+    private int charPosition = 0;
 
     public List<Token> lex(String fileAsString) throws Exception {
         fileAsString = removeComments(fileAsString);
-        sr = new StringReader(fileAsString);
-        while ((charInt = sr.read()) != -1) {
-            _char = (char) charInt;
-            if (!keywordTokenFilter()) {
+        charArray = fileAsString.toCharArray();
+        charArrayLength = charArray.length;
+        while (charPosition < charArrayLength) {
+            _char = charArray[charPosition];
+
+            if (!keywordTokenFilter())
                 characterTokenFilter();
-            }
+
+            charPosition++;
         }
         tokens.add(new Token(END, "/0", -1));
-        sr.close();
         return tokens;
     }
 
@@ -41,11 +43,8 @@ public class Lexer {
     private boolean keywordTokenFilter() throws Exception {
         if (Character.isLetter(_char)) {
             tokenString = new StringBuilder().append(_char);
-            while (Character.isLetter(_char) && (charInt = sr.read()) != -1) {
-                _char = (char) charInt;
-                if (Character.isLetter(_char)) {
-                    tokenString.append(_char);
-                }
+            while ((charPosition < charArrayLength - 1) && Character.isLetter(peek(1))) {
+                    tokenString.append(charArray[++charPosition]);
             }
             return buildKeywordToken();
         }
@@ -57,7 +56,7 @@ public class Lexer {
         if (type == null) {
             return false;
         }
-        tokens.add(new Token(type, tokenString.toString(), position++));
+        tokens.add(new Token(type, tokenString.toString(), tokenPosition++));
         return true;
     }
 
@@ -65,25 +64,42 @@ public class Lexer {
         switch (_char) {
             case '"': appendUntil("\"", STRING); break;
             case '\'': appendUntil("'", CHAR); break;
-            case ' ': tokens.add(new Token(WHITESPACE, " ", position++)); break;
-            case '{': tokens.add(new Token(OPEN_BRACE, "{", position++)); break;
-            case '}': tokens.add(new Token(CLOSE_BRACE, "}", position++)); break;
-            case '=': tokens.add(new Token(ASSIGNMENT, "=", position++)); break;
-            case '+': tokens.add(new Token(PLUS, "+", position++)); break;
-            case '/': tokens.add(new Token(FORWARD_SLASH, "/", position++)); break;
-            case '*': tokens.add(new Token(STAR, "*", position++)); break;
-            case '%': tokens.add(new Token(MODULO, "%", position++)); break;
-            case '-': tokens.add(new Token(MINUS, "-", position++)); break;
-            case '(': tokens.add(new Token(OPEN_PAREN, "(", position++)); break;
-            case ')': tokens.add(new Token(CLOSE_PAREN, ")", position++)); break;
+            case ' ': tokens.add(new Token(WHITESPACE, " ", tokenPosition++)); break;
+            case '{': tokens.add(new Token(OPEN_BRACE, "{", tokenPosition++)); break;
+            case '}': tokens.add(new Token(CLOSE_BRACE, "}", tokenPosition++)); break;
+            case '=': tokens.add(new Token(ASSIGNMENT, "=", tokenPosition++)); break;
+            case '+': tokens.add(new Token(PLUS, "+", tokenPosition++)); break;
+            case '/': tokens.add(new Token(FORWARD_SLASH, "/", tokenPosition++)); break;
+            case '*': tokens.add(new Token(STAR, "*", tokenPosition++)); break;
+            case '%': tokens.add(new Token(MODULO, "%", tokenPosition++)); break;
+            case '-': tokens.add(new Token(MINUS, "-", tokenPosition++)); break;
+            case '(': tokens.add(new Token(OPEN_PAREN, "(", tokenPosition++)); break;
+            case ')': tokens.add(new Token(CLOSE_PAREN, ")", tokenPosition++)); break;
+            case '!': tokens.add(new Token(BANG, "!", tokenPosition++)); break;
+            case '|': buildDuplicateTokenType(OR); break;
+            case '&': buildDuplicateTokenType(AND); break;
             default:
                 if (Character.isDigit(_char)) {
                     appendNumberUntil();
                 } else {
-                    tokens.add(new Token(UNKNOWN, null, position++));
+                    tokens.add(new Token(UNKNOWN, null, tokenPosition++));
                     Diagnostics.addLexicalDiagnostic("Found Unknown Token: " + tokens.get(tokens.size() - 1));
                 }
         }
+    }
+
+    private void buildDuplicateTokenType(SyntaxType syntaxType) {
+        if (peek(1) == _char && charPosition < charArrayLength) {
+            tokens.add(new Token(syntaxType, String.valueOf(_char + _char), tokenPosition++));
+        }
+        tokens.add(new Token(UNKNOWN, String.valueOf(_char), tokenPosition++));
+    }
+
+    private char peek(int offset) {
+        if (charPosition + offset < charArrayLength) {
+             return charArray[charPosition + offset];
+        }
+        return _char;
     }
 
     /**
@@ -95,13 +111,7 @@ public class Lexer {
         tokenString = new StringBuilder();
         tokenString.append(_char);
         boolean isDouble = false;
-        while ((charInt = sr.read()) != -1) {
-            _char = (char) charInt;
-            if (!Character.isDigit(_char) && _char != '.') {
-                tokens.add(new Token(NUMBER, tokenString.toString(), position++));
-                characterTokenFilter();
-                return;
-            }
+        while (isNextNumberToken()) {
             if (_char == '.') {
                 isDouble = true;
             }
@@ -109,24 +119,35 @@ public class Lexer {
                     || (tokenString.length() > 12 && isDouble)) {
                 throw new Exception("Number was to large");
             }
-            tokenString.append(_char);
+            tokenString.append(charArray[++charPosition]);
         }
-        tokens.add(new Token(NUMBER, tokenString.toString(), position++));
+        tokens.add(new Token(NUMBER, tokenString.toString(), tokenPosition++));
     }
 
-    private boolean appendUntil(String key, SyntaxType syntaxType) throws Exception {
+    private boolean isNextNumberToken() {
+        return charPosition < charArrayLength - 1
+                && (Character.isDigit(peek(1)) || peek(0) == '.');
+    }
+
+    /**
+     * TODO: Fix random whitespace tokens
+     * @param key
+     * @param syntaxType
+     * @return
+     */
+    private boolean appendUntil(String key, SyntaxType syntaxType) {
         tokenString = new StringBuilder();
         tokenString.append(_char);
-        while ((charInt = sr.read()) != -1) {
-            _char = (char) charInt;
+        while (charPosition < charArrayLength) {
+            _char = charArray[++charPosition];
             if (key.equals(_char) || (";").equals(_char)) {
                 tokenString.append(_char);
-                return tokens.add(new Token(syntaxType, tokenString.toString(), position++));
+                return tokens.add(new Token(syntaxType, tokenString.toString(), tokenPosition++));
             } else if ((" ").equals(_char)) {
-                tokens.add(new Token(WHITESPACE, " ", position++));
+                tokens.add(new Token(WHITESPACE, " ", tokenPosition++));
             }
             tokenString.append(_char);
         }
-        return tokens.add(new Token(syntaxType, tokenString.toString(), position++));
+        return tokens.add(new Token(syntaxType, tokenString.toString(), tokenPosition++));
     }
 }
