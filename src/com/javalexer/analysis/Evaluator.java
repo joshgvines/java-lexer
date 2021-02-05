@@ -1,6 +1,5 @@
 package com.javalexer.analysis;
 
-import com.javalexer.analysis.lexing.Token;
 import com.javalexer.analysis.parsing.trees.BoundInfixExpressionTree;
 import com.javalexer.analysis.semantics.nodes.*;
 import com.javalexer.enums.BoundOperatorType;
@@ -18,7 +17,13 @@ public class Evaluator {
         return evaluate(expressionTree.getRoot());
     }
 
-    private double evaluate(AbsBoundNode node) throws Exception {
+    /**
+     * Takes root node, traverses the tree recursively to evaluate expressions.
+     * @param node
+     * @return solution
+     * @throws Exception
+     */
+    private Object evaluate(AbsBoundNode node) throws Exception {
         double result;
         if (node == null) {
             throw new Exception("Expression node was null: ");
@@ -27,7 +32,7 @@ public class Evaluator {
             case LITERAL:
                 BoundLiteralNode boundLiteralNode = (BoundLiteralNode) node;
                 if (boundLiteralNode.getSyntaxType() != SyntaxType.NUMBER) {
-                    return 0;
+                    return boundLiteralNode.getData().getValue();
                 }
                 return toDouble(boundLiteralNode.getData().getValue());
             case BINARY_EXPRESSION:
@@ -35,35 +40,48 @@ public class Evaluator {
             case PARENTHESES_EXPRESSION:
                 return evaluate(((BoundParenthesizedExpressionNode) node).getExpression());
             case UNARY_EXPRESSION:
-                BoundUnaryExpressionNode unaryExpression = (BoundUnaryExpressionNode) node;
-                result = evaluate(unaryExpression.getOperand());
-                if (unaryExpression.getOperator() == BoundOperatorType.SUBTRACTION) {
-                    result = -result;
-                }
-                return result;
+                return buildUnaryComputation((BoundUnaryExpressionNode) node);
             default:
                 throw new UnsupportedOperationException("Unknown node type: " + node.getBoundNodeType());
         }
     }
 
-    private double buildBinaryComputation(BoundBinaryExpressionNode binaryExpression) throws Exception {
-        BoundOperatorType operatorType = binaryExpression.getData();
-        double a = evaluate(binaryExpression.getLeft());
-        double b = evaluate(binaryExpression.getRight());
-        return compute(operatorType, a, b);
+    private Object buildUnaryComputation(BoundUnaryExpressionNode boundUnaryExpression) throws Exception {
+        BoundOperatorType operatorType = boundUnaryExpression.getOperator();
+        Object operand = evaluate(boundUnaryExpression.getOperand());
+        return computeUnary(operatorType, operand);
     }
 
-    private double compute(BoundOperatorType operator, double a, double b) {
+    private Object buildBinaryComputation(BoundBinaryExpressionNode binaryExpression) throws Exception {
+        BoundOperatorType operatorType = binaryExpression.getData();
+        Object a = evaluate(binaryExpression.getLeft());
+        Object b = evaluate(binaryExpression.getRight());
+        return computeBinary(operatorType, a, b);
+    }
+
+    private Object computeUnary(BoundOperatorType operator, Object operand) {
         switch (operator) {
-            case ADDITION: return a + b;
-            case SUBTRACTION: return a - b;
-            case MULTIPLICATION: return a * b;
-            case MODULO: return a % b;
+            case ADDITION: return +((double) operand);
+            case SUBTRACTION: return -((double) operand);
+            case LOGIC_NOT:
+                return !Boolean.parseBoolean(String.valueOf(operand));
+        }
+        return 0;
+    }
+
+    private Object computeBinary(BoundOperatorType operator, Object a, Object b) {
+        switch (operator) {
+            case ADDITION: return ((double) a) + ((double) b);
+            case SUBTRACTION: return ((double) a) - ((double) b);
+            case MULTIPLICATION: return ((double) a) * ((double) b);
+            case MODULO: return ((double) a) % ((double) b);
             case DIVISION:
-                if (b == 0) {
+                if ((double) b == 0) {
                     throw new UnsupportedOperationException("Cannot divide by zero");
                 }
-                return a / b;
+                return ((double) a) / ((double) b);
+            case LOGIC_AND: return ((boolean) a) && ((boolean) b);
+            case LOGIC_OR: return ((boolean) a) || ((boolean) b);
         }
         return 0;
     }
@@ -73,14 +91,6 @@ public class Evaluator {
             return 0;
         }
         return Double.parseDouble(number);
-    }
-
-    private double toDouble(BoundLiteralNode literalNode) {
-        Token token = literalNode.getData();
-        if (token.getSyntaxType() == SyntaxType.NUMBER) {
-            return Double.parseDouble(token.getValue());
-        }
-        throw new UnsupportedOperationException("Token was not a number: " + token);
     }
 
 }

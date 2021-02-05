@@ -17,7 +17,7 @@ public class PrecedenceUtil {
 
     public static int unaryPrecedence(SyntaxType type) {
         switch (type) {
-            case PLUS: case MINUS:
+            case PLUS: case MINUS: case BANG:
                 return 3;
             default:
                 return 0;

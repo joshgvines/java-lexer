@@ -2,6 +2,7 @@ package com.javalexer.analysis.parsing.nodes;
 
 import com.javalexer.analysis.lexing.Token;
 import com.javalexer.enums.NodeType;
+import com.javalexer.enums.SyntaxType;
 
 /**
  * An OperatorNode has a right and left node, both of which can be an OperandNode or another OperatorNode.

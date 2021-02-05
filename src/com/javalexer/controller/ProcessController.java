@@ -27,6 +27,7 @@ public class ProcessController {
     }
 
     public void runLexicalAnalysis(String stringToLex) throws Exception {
+        Diagnostics.clear();
         Lexer lex = new Lexer();
         runParser(lex.lex(stringToLex));
     }

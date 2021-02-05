@@ -6,6 +6,8 @@ import com.javalexer.analysis.semantics.nodes.*;
 import com.javalexer.enums.BoundOperatorType;
 import com.javalexer.enums.SyntaxType;
 
+import static com.javalexer.enums.SyntaxType.*;
+
 /**
  * Orchestrates basic type checking for AST expressions and nodes.
  */
@@ -39,7 +41,7 @@ public class NodeTypeBinder {
         AbsNode left = binaryExpressionNode.getLeft();
         SyntaxType operatorType = binaryExpressionNode.getData().getSyntaxType();
         AbsNode right = binaryExpressionNode.getRight();
-        if (!isNumericalBased(left) || !isNumericalBased(right)) {
+        if (isBooleanOperator(operatorType) && (isNumericalBased(left) || isNumericalBased(right))) {
             System.out.println("Unsupported Nonnumerical Binary Expression: "
                     + left.getNodeType() + " " + operatorType + " " + right.getNodeType());
             return null;
@@ -52,21 +54,23 @@ public class NodeTypeBinder {
 
     private AbsBoundNode bindUnaryExpression(UnaryExpressionNode unaryExpressionNode) throws Exception {
         Token operator = unaryExpressionNode.getOperator();
+        SyntaxType operatorType = operator.getSyntaxType();
         AbsNode operand = unaryExpressionNode.getOperand();
-        if (!isNumericalBased(operand)) {
+        if (isBooleanOperator(operatorType) && isNumericalBased(operand)) {
             System.out.println("Unsupported Nonnumerical Unary Expression: "
                     + operator.getSyntaxType() + " " + operand.getNodeType());
             return null;
         }
         AbsBoundNode boundOperand = bind(operand);
-        BoundOperatorType operatorType = bindUnaryOperatorType(operator.getSyntaxType());
-        return new BoundUnaryExpressionNode(operatorType, boundOperand);
+        BoundOperatorType boundOperatorType = bindUnaryOperatorType(operator.getSyntaxType());
+        return new BoundUnaryExpressionNode(boundOperatorType, boundOperand);
     }
 
     private BoundOperatorType bindUnaryOperatorType(SyntaxType type) throws Exception {
         switch (type) {
             case PLUS: return BoundOperatorType.ADDITION;
             case MINUS: return BoundOperatorType.SUBTRACTION;
+            case BANG: return BoundOperatorType.LOGIC_NOT;
             default:
                 throw new Exception("Unexpected unary Operator: " + type);
         }
@@ -78,17 +82,24 @@ public class NodeTypeBinder {
             case MINUS: return BoundOperatorType.SUBTRACTION;
             case STAR: return BoundOperatorType.MULTIPLICATION;
             case FORWARD_SLASH: return BoundOperatorType.DIVISION;
+            case AND: return BoundOperatorType.LOGIC_AND;
+            case OR: return BoundOperatorType.LOGIC_OR;
             default:
                 throw new Exception("Unexpected binary Operator: " + type);
         }
     }
 
+    private boolean isBooleanOperator(SyntaxType operatorType) {
+        return (operatorType == AND || operatorType == OR || operatorType == BANG);
+    }
+
     private boolean isNumericalBased(AbsNode operand) {
         if (operand instanceof LiteralNode) {
             LiteralNode literal = (LiteralNode) operand;
-            return literal.getData().getSyntaxType() == SyntaxType.NUMBER;
+            return (literal.getData().getSyntaxType() == SyntaxType.NUMBER);
         }
-        return operand instanceof AbsExpressionNode;
+        // TODO: this could causes issues later on, don't forget about it.
+        return (operand instanceof AbsExpressionNode);
     }
 
 }

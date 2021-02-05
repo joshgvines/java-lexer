@@ -9,5 +9,7 @@ public enum BoundOperatorType {
 
     MULTIPLICATION,
     DIVISION,
-    MODULO
+    MODULO,
+
+    LOGIC_AND, LOGIC_OR, LOGIC_NOT
 }

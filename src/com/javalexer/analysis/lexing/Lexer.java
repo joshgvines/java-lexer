@@ -14,12 +14,13 @@ public class Lexer {
     private char _char;
     private char[] charArray;
     private StringBuilder tokenString;
-    private List<Token> tokens = new ArrayList<>();
+    private List<Token> tokens = null;
     private int charArrayLength = 0;
     private int tokenPosition = 0;
     private int charPosition = 0;
 
     public List<Token> lex(String fileAsString) throws Exception {
+        tokens = new ArrayList<>();
         fileAsString = removeComments(fileAsString);
         charArray = fileAsString.toCharArray();
         charArrayLength = charArray.length;
@@ -76,8 +77,8 @@ public class Lexer {
             case '(': tokens.add(new Token(OPEN_PAREN, "(", tokenPosition++)); break;
             case ')': tokens.add(new Token(CLOSE_PAREN, ")", tokenPosition++)); break;
             case '!': tokens.add(new Token(BANG, "!", tokenPosition++)); break;
-            case '|': buildDuplicateTokenType(OR); break;
-            case '&': buildDuplicateTokenType(AND); break;
+            case '|': checkDuplicateTokenType(OR); break;
+            case '&': checkDuplicateTokenType(AND); break;
             default:
                 if (Character.isDigit(_char)) {
                     appendNumberUntil();
@@ -88,7 +89,7 @@ public class Lexer {
         }
     }
 
-    private void buildDuplicateTokenType(SyntaxType syntaxType) {
+    private void checkDuplicateTokenType(SyntaxType syntaxType) {
         if (peek(1) == _char && charPosition < charArrayLength) {
             tokens.add(new Token(syntaxType, String.valueOf(_char + _char), tokenPosition++));
         }
