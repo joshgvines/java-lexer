@@ -24,7 +24,6 @@ public class Evaluator {
      * @throws Exception
      */
     private Object evaluate(AbsBoundNode node) throws Exception {
-        double result;
         if (node == null) {
             throw new Exception("Expression node was null: ");
         }

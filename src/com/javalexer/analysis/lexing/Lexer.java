@@ -26,10 +26,9 @@ public class Lexer {
         charArrayLength = charArray.length;
         while (charPosition < charArrayLength) {
             _char = charArray[charPosition];
-
-            if (!keywordTokenFilter())
+            if (!keywordTokenFilter()) {
                 characterTokenFilter();
-
+            }
             charPosition++;
         }
         tokens.add(new Token(END, "/0", -1));
@@ -68,7 +67,6 @@ public class Lexer {
             case ' ': tokens.add(new Token(WHITESPACE, " ", tokenPosition++)); break;
             case '{': tokens.add(new Token(OPEN_BRACE, "{", tokenPosition++)); break;
             case '}': tokens.add(new Token(CLOSE_BRACE, "}", tokenPosition++)); break;
-            case '=': tokens.add(new Token(ASSIGNMENT, "=", tokenPosition++)); break;
             case '+': tokens.add(new Token(PLUS, "+", tokenPosition++)); break;
             case '/': tokens.add(new Token(FORWARD_SLASH, "/", tokenPosition++)); break;
             case '*': tokens.add(new Token(STAR, "*", tokenPosition++)); break;
@@ -79,6 +77,11 @@ public class Lexer {
             case '!': tokens.add(new Token(BANG, "!", tokenPosition++)); break;
             case '|': checkDuplicateTokenType(OR); break;
             case '&': checkDuplicateTokenType(AND); break;
+            case '=':
+                if (!checkDuplicateTokenType(EQUALS_COMPARE)) {
+                    tokens.add(new Token(ASSIGNMENT, "=", tokenPosition++));
+                }
+                break;
             default:
                 if (Character.isDigit(_char)) {
                     appendNumberUntil();
@@ -89,11 +92,14 @@ public class Lexer {
         }
     }
 
-    private void checkDuplicateTokenType(SyntaxType syntaxType) {
-        if (peek(1) == _char && charPosition < charArrayLength) {
-            tokens.add(new Token(syntaxType, String.valueOf(_char + _char), tokenPosition++));
+    private boolean checkDuplicateTokenType(SyntaxType syntaxType) {
+        if (peek(1) == _char && charPosition < charArrayLength - 1) {
+            String value = Character.toString(_char);
+            tokens.add(new Token(syntaxType,value + value, tokenPosition++));
+            return true;
         }
         tokens.add(new Token(UNKNOWN, String.valueOf(_char), tokenPosition++));
+        return false;
     }
 
     private char peek(int offset) {

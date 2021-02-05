@@ -1,7 +1,6 @@
 package com.javalexer.analysis.parsing;
 
 import com.javalexer.analysis.lexing.Token;
-import com.javalexer.enums.NodeType;
 import com.javalexer.enums.SyntaxType;
 import com.javalexer.analysis.parsing.nodes.*;
 
@@ -15,7 +14,6 @@ import static com.javalexer.enums.SyntaxType.*;
  */
 public class InfixParser {
     private List<Token> tokens;
-    private List<String> diagnostics = new ArrayList<>();
     private int position = 0;
     private Token current;
 
@@ -29,7 +27,6 @@ public class InfixParser {
         }
         this.tokens = new ArrayList<>();
         for (Token token : tokens) {
-            //System.out.println(token);
             if ((token.getSyntaxType() != WHITESPACE) && (token.getSyntaxType() != UNKNOWN)) {
                 this.tokens.add(token);
             }
@@ -77,7 +74,6 @@ public class InfixParser {
 
     private AbsNode parseUnaryExpression(int unaryPrecedence) throws Exception {
         Token operatorToken = nextToken();
-        System.out.println(">>>" + operatorToken);
         AbsNode operandNode = parseExpression(unaryPrecedence);
         return new UnaryExpressionNode(operatorToken, operandNode);
     }
