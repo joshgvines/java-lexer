@@ -77,35 +77,42 @@ public class Lexer {
             case NUMBER:
                 appendNumberUntil();
                 return;
+            case BANG:
+                if (checkNextCharacter('=')) {
+                    syntaxType = BANG_NOT_EQUALS;
+                    tokenValueString = tokenValueString + "=";
+                }
+                break;
             case PIPE:
-                if (checkDuplicateCharacter()) {
+                if (checkNextCharacter(_char)) {
                     syntaxType = OR;
                     tokenValueString = tokenValueString + tokenValueString;
                 }
                 break;
             case AMPERSAND:
-                if (checkDuplicateCharacter()) {
+                if (checkNextCharacter(_char)) {
                     syntaxType = AND;
                     tokenValueString = tokenValueString + tokenValueString;
                 }
                 break;
             case EQUALS:
-                if (checkDuplicateCharacter()) {
+                if (checkNextCharacter(_char)) {
                     syntaxType = EQUALS_COMPARE;
                     tokenValueString = tokenValueString + tokenValueString;
                 }
                 break;
             case BACKSLASH:
-                if (checkDuplicateCharacter()) {
+                if (checkNextCharacter(_char)) {
                     syntaxType = MULTI_BACKSLASH;
                     tokenValueString = tokenValueString + tokenValueString;
                 }
+                break;
         }
         tokens.add(new Token(syntaxType, tokenValueString, tokenPosition++));
     }
 
-    private boolean checkDuplicateCharacter() {
-        if (peek(1) == _char && charPosition < charArraySize) {
+    private boolean checkNextCharacter(char expected) {
+        if (peek(1) == expected && charPosition < charArraySize) {
             charPosition++;
             return true;
         }

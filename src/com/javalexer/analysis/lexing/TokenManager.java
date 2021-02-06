@@ -35,6 +35,8 @@ public final class TokenManager {
 
             put(';', SEMICOLON); put(':', COLON);
 
+            put('=', EQUALS);
+
             put('\"', STRING);
             put('\'', CHARACTER);
 

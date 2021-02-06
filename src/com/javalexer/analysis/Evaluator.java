@@ -81,6 +81,16 @@ public class Evaluator {
                 return ((double) a) / ((double) b);
             case LOGIC_AND: return ((boolean) a) && ((boolean) b);
             case LOGIC_OR: return ((boolean) a) || ((boolean) b);
+            case LOGIC_NOT_EQUALS:
+                if (a instanceof Double) {
+                    return (double)a != (double)b;
+                }
+                return (a != b);
+            case LOGIC_EQUALS_COMPARE:
+                if (a instanceof Double) {
+                    return (double)a == (double)b;
+                }
+                return (a == b);
         }
         return 0;
     }

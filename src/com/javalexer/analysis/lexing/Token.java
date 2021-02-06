@@ -30,7 +30,7 @@ public class Token {
 
     @Override
     public String toString() {
-        return String.format("%-19s %-11s %-6s",
+        return String.format("%-22s %-11s %-6s",
                 "Typ: " + type,
                 "Pos: " + position,
                 "Val: " + value);

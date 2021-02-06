@@ -6,6 +6,7 @@ import com.javalexer.analysis.semantics.nodes.*;
 import com.javalexer.enums.BoundOperatorType;
 import com.javalexer.enums.SyntaxType;
 
+import static com.javalexer.enums.BoundOperatorType.*;
 import static com.javalexer.enums.SyntaxType.*;
 
 /**
@@ -78,20 +79,22 @@ public class NodeTypeBinder {
 
     private BoundOperatorType bindBinaryOperatorType(SyntaxType type) throws Exception {
         switch (type) {
-            case PLUS: return BoundOperatorType.ADDITION;
-            case MINUS: return BoundOperatorType.SUBTRACTION;
-            case STAR: return BoundOperatorType.MULTIPLICATION;
-            case FORWARD_SLASH: return BoundOperatorType.DIVISION;
-            case AND: return BoundOperatorType.LOGIC_AND;
-            case OR: return BoundOperatorType.LOGIC_OR;
+            case PLUS: return ADDITION;
+            case MINUS: return SUBTRACTION;
+            case STAR: return MULTIPLICATION;
+            case FORWARD_SLASH: return DIVISION;
+            case AND: return LOGIC_AND;
+            case OR: return LOGIC_OR;
+            case BANG_NOT_EQUALS: return LOGIC_NOT_EQUALS;
+            case EQUALS_COMPARE: return LOGIC_EQUALS_COMPARE;
             default:
                 throw new Exception("Unexpected binary Operator: " + type);
         }
     }
 
     private boolean validBinaryExpression(SyntaxType operatorType, AbsNode left, AbsNode right) {
-        return (!isBooleanOperator(operatorType)
-                && (possibleNumericalOperand(left) || possibleNumericalOperand(right)));
+        return (!isBooleanOperator(operatorType) && (possibleNumericalOperand(left) || possibleNumericalOperand(right)))
+                || (isAnyOperator(operatorType));
     }
 
     private boolean validUnaryExpression(SyntaxType operatorType, AbsNode operand) {
@@ -100,6 +103,10 @@ public class NodeTypeBinder {
 
     private boolean isBooleanOperator(SyntaxType operatorType) {
         return (operatorType == AND || operatorType == OR || operatorType == BANG);
+    }
+
+    private boolean isAnyOperator(SyntaxType operatorType) {
+        return (operatorType == EQUALS_COMPARE || operatorType == BANG_NOT_EQUALS);
     }
 
     private boolean possibleNumericalOperand(AbsNode operand) {

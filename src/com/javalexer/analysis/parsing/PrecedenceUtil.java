@@ -8,7 +8,11 @@ public class PrecedenceUtil {
         switch (type) {
             case PLUS: case MINUS:
                 return 1;
-            case FORWARD_SLASH: case STAR: case MODULO:
+            case FORWARD_SLASH:
+            case STAR:
+            case MODULO:
+            case BANG_NOT_EQUALS:
+            case EQUALS_COMPARE:
                 return 2;
             default:
                 return 0;
