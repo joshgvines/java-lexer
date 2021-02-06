@@ -63,15 +63,16 @@ public class Lexer {
 
     private void characterTokenFilter() throws Exception {
         SyntaxType syntaxType = tokenManager.getTypeFromCharacter(_char);
+        String tokenValueString = String.valueOf(_char);
         if (syntaxType == null) {
-            tokens.add(new Token(UNKNOWN, null, tokenPosition++));
+            tokens.add(new Token(UNKNOWN, tokenValueString, tokenPosition++));
             Diagnostics.addLexicalDiagnostic("Found Unknown Token: " + tokens.get(tokens.size() - 1));
             return;
         }
         switch (syntaxType) {
             case STRING:
             case CHARACTER:
-                appendUntil(String.valueOf(_char), syntaxType);
+                appendUntil(tokenValueString, syntaxType);
                 return;
             case NUMBER:
                 appendNumberUntil();
@@ -79,29 +80,36 @@ public class Lexer {
             case PIPE:
                 if (checkDuplicateCharacter()) {
                     syntaxType = OR;
+                    tokenValueString = tokenValueString + tokenValueString;
                 }
                 break;
             case AMPERSAND:
                 if (checkDuplicateCharacter()) {
                     syntaxType = AND;
+                    tokenValueString = tokenValueString + tokenValueString;
                 }
                 break;
             case EQUALS:
                 if (checkDuplicateCharacter()) {
                     syntaxType = EQUALS_COMPARE;
+                    tokenValueString = tokenValueString + tokenValueString;
                 }
                 break;
             case BACKSLASH:
                 if (checkDuplicateCharacter()) {
                     syntaxType = MULTI_BACKSLASH;
+                    tokenValueString = tokenValueString + tokenValueString;
                 }
-                break;
         }
-        tokens.add(new Token(syntaxType, String.valueOf(_char), tokenPosition++));
+        tokens.add(new Token(syntaxType, tokenValueString, tokenPosition++));
     }
 
     private boolean checkDuplicateCharacter() {
-        return (peek(1) == _char && charPosition < charArraySize);
+        if (peek(1) == _char && charPosition < charArraySize) {
+            charPosition++;
+            return true;
+        }
+        return false;
     }
 
     private char peek(int offset) {
