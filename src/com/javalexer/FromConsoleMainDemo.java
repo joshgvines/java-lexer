@@ -10,20 +10,24 @@ public class FromConsoleMainDemo {
     private static ProcessController pc = new ProcessController();
 
     public static void main(String[] args) {
+        boolean readTokens = false;
         while (true) {
             System.out.print("> ");
             String input = sc.nextLine();
             if (input.equals("/exit")) {
                 System.exit(0);
+            } else if (input.equals("/readtokens")) {
+                readTokens = !readTokens;
+            } else {
+                runPrototypeProcess(input, readTokens);
             }
-            runPrototypeProcess(input);
         }
     }
 
-    private static void runPrototypeProcess(String input) {
+    private static void runPrototypeProcess(String input, boolean readTokens) {
         try {
             if (input != null && !input.isEmpty()) {
-                pc.runJavaLexer(input);
+                pc.runJavaLexer(input, readTokens);
                 System.out.println(input);
             }
         } catch (Exception ex) {

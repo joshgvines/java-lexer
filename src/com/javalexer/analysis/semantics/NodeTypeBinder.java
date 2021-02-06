@@ -26,38 +26,38 @@ public class NodeTypeBinder {
 
     private AbsBoundNode bindParenthesesExpression(
             ParenthesizedExpressionNode parenthesizedExpressionNode) throws Exception {
-        AbsBoundNode left = bind(parenthesizedExpressionNode.getLeft());
+        AbsBoundNode left = bind(parenthesizedExpressionNode.getLeftNode());
         AbsBoundNode expression = bind(parenthesizedExpressionNode.getExpression());
-        AbsBoundNode right = bind(parenthesizedExpressionNode.getRight());
+        AbsBoundNode right = bind(parenthesizedExpressionNode.getRightNode());
         return new BoundParenthesizedExpressionNode(left, expression, right);
     }
 
     private AbsBoundNode bindLiteralExpression(LiteralNode literalNode) {
-        Token value = literalNode.getData();
+        Token value = literalNode.getToken();
         return new BoundLiteralNode(value);
     }
 
     private AbsBoundNode bindBinaryExpression(BinaryExpressionNode binaryExpressionNode) throws Exception {
-        AbsNode left = binaryExpressionNode.getLeft();
-        SyntaxType operatorType = binaryExpressionNode.getData().getSyntaxType();
-        AbsNode right = binaryExpressionNode.getRight();
-        if (isBooleanOperator(operatorType) && (isNumericalBased(left) || isNumericalBased(right))) {
-            System.out.println("Unsupported Nonnumerical Binary Expression: "
+        AbsNode left = binaryExpressionNode.getLeftNode();
+        SyntaxType operatorType = binaryExpressionNode.getToken().getSyntaxType();
+        AbsNode right = binaryExpressionNode.getRightNode();
+        if (!validBinaryExpression(operatorType, left, right)) {
+            System.out.println("Unsupported Binary Expression: "
                     + left.getNodeType() + " " + operatorType + " " + right.getNodeType());
             return null;
         }
-        AbsBoundNode boundLeft = bind(binaryExpressionNode.getLeft());
+        AbsBoundNode boundLeft = bind(binaryExpressionNode.getLeftNode());
         BoundOperatorType boundOperatorType = bindBinaryOperatorType(operatorType);
-        AbsBoundNode boundRight = bind(binaryExpressionNode.getRight());
+        AbsBoundNode boundRight = bind(binaryExpressionNode.getRightNode());
         return new BoundBinaryExpressionNode(boundLeft, boundOperatorType, boundRight);
     }
 
     private AbsBoundNode bindUnaryExpression(UnaryExpressionNode unaryExpressionNode) throws Exception {
-        Token operator = unaryExpressionNode.getOperator();
+        Token operator = unaryExpressionNode.getOperatorToken();
         SyntaxType operatorType = operator.getSyntaxType();
-        AbsNode operand = unaryExpressionNode.getOperand();
-        if (isBooleanOperator(operatorType) && isNumericalBased(operand)) {
-            System.out.println("Unsupported Nonnumerical Unary Expression: "
+        AbsNode operand = unaryExpressionNode.getOperandNode();
+        if (!validUnaryExpression(operatorType, operand)) {
+            System.out.println("Unsupported Unary Expression: "
                     + operator.getSyntaxType() + " " + operand.getNodeType());
             return null;
         }
@@ -89,14 +89,23 @@ public class NodeTypeBinder {
         }
     }
 
+    private boolean validBinaryExpression(SyntaxType operatorType, AbsNode left, AbsNode right) {
+        return (!isBooleanOperator(operatorType)
+                && (possibleNumericalOperand(left) || possibleNumericalOperand(right)));
+    }
+
+    private boolean validUnaryExpression(SyntaxType operatorType, AbsNode operand) {
+        return (!isBooleanOperator(operatorType) && possibleNumericalOperand(operand));
+    }
+
     private boolean isBooleanOperator(SyntaxType operatorType) {
         return (operatorType == AND || operatorType == OR || operatorType == BANG);
     }
 
-    private boolean isNumericalBased(AbsNode operand) {
+    private boolean possibleNumericalOperand(AbsNode operand) {
         if (operand instanceof LiteralNode) {
             LiteralNode literal = (LiteralNode) operand;
-            return (literal.getData().getSyntaxType() == SyntaxType.NUMBER);
+            return (literal.getToken().getSyntaxType() == SyntaxType.NUMBER);
         }
         // TODO: this could causes issues later on, don't forget about it.
         return (operand instanceof AbsExpressionNode);

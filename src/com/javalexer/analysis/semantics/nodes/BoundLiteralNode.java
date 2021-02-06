@@ -9,11 +9,11 @@ import com.javalexer.enums.SyntaxType;
  */
 public final class BoundLiteralNode extends AbsBoundNode {
 
-    private Token data;
+    private Token token;
 
-    public BoundLiteralNode(Token data) {
+    public BoundLiteralNode(Token token) {
         super(NodeType.LITERAL);
-        this.data = data;
+        this.token = token;
     }
 
     @Override
@@ -21,12 +21,12 @@ public final class BoundLiteralNode extends AbsBoundNode {
         return super.getBoundNodeType();
     }
 
-    public Token getData() {
-        return data;
+    public Token getToken() {
+        return token;
     }
 
     public SyntaxType getSyntaxType() {
-        return data.getSyntaxType();
+        return token.getSyntaxType();
     }
 
 }

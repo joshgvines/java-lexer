@@ -31,13 +31,13 @@ public class Evaluator {
             case LITERAL:
                 BoundLiteralNode boundLiteralNode = (BoundLiteralNode) node;
                 if (boundLiteralNode.getSyntaxType() != SyntaxType.NUMBER) {
-                    return boundLiteralNode.getData().getValue();
+                    return boundLiteralNode.getToken().getValue();
                 }
-                return toDouble(boundLiteralNode.getData().getValue());
+                return toDouble(boundLiteralNode.getToken().getValue());
             case BINARY_EXPRESSION:
                 return buildBinaryComputation((BoundBinaryExpressionNode) node);
             case PARENTHESES_EXPRESSION:
-                return evaluate(((BoundParenthesizedExpressionNode) node).getExpression());
+                return evaluate(((BoundParenthesizedExpressionNode) node).getExpressionNode());
             case UNARY_EXPRESSION:
                 return buildUnaryComputation((BoundUnaryExpressionNode) node);
             default:
@@ -46,15 +46,15 @@ public class Evaluator {
     }
 
     private Object buildUnaryComputation(BoundUnaryExpressionNode boundUnaryExpression) throws Exception {
-        BoundOperatorType operatorType = boundUnaryExpression.getOperator();
-        Object operand = evaluate(boundUnaryExpression.getOperand());
+        BoundOperatorType operatorType = boundUnaryExpression.getOperatorType();
+        Object operand = evaluate(boundUnaryExpression.getOperandNode());
         return computeUnary(operatorType, operand);
     }
 
     private Object buildBinaryComputation(BoundBinaryExpressionNode binaryExpression) throws Exception {
-        BoundOperatorType operatorType = binaryExpression.getData();
-        Object a = evaluate(binaryExpression.getLeft());
-        Object b = evaluate(binaryExpression.getRight());
+        BoundOperatorType operatorType = binaryExpression.getOperatorType();
+        Object a = evaluate(binaryExpression.getLeftNode());
+        Object b = evaluate(binaryExpression.getRightNode());
         return computeBinary(operatorType, a, b);
     }
 

@@ -21,9 +21,14 @@ public class InfixParser {
      * TODO: Do not forget to check your are not getting extra token with off by one errors!
      * @param tokens
      */
-    public InfixParser(final List<Token> tokens) {
+    public InfixParser(final List<Token> tokens, boolean readTokens) {
         if (tokens.isEmpty()) {
             throw new IllegalStateException("Cannot Parse Without Tokens.");
+        }
+        if (readTokens) {
+            for (Token token : tokens) {
+                System.out.println(token);
+            }
         }
         this.tokens = new ArrayList<>();
         for (Token token : tokens) {
@@ -68,7 +73,7 @@ public class InfixParser {
             case NUMBER:
                 return new LiteralNode(match(NUMBER));
             default:
-                throw new Exception("Unknown Token Found: " + peek(0));
+                throw new Exception("Unexpected Or Missing Token Found: " + peek(0));
         }
     }
 

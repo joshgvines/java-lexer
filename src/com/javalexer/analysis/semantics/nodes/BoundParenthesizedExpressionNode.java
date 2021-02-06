@@ -9,18 +9,18 @@ public class BoundParenthesizedExpressionNode extends AbsBoundBinaryNode {
     }
 
     @Override
-    public AbsBoundNode getRight() {
-        return super.getRight();
+    public AbsBoundNode getRightNode() {
+        return super.getRightNode();
     }
 
     @Override
-    public AbsBoundNode getExpression() {
-        return super.getExpression();
+    public AbsBoundNode getExpressionNode() {
+        return super.getExpressionNode();
     }
 
     @Override
-    public AbsBoundNode getLeft() {
-        return super.getRight();
+    public AbsBoundNode getLeftNode() {
+        return super.getRightNode();
     }
 
 }

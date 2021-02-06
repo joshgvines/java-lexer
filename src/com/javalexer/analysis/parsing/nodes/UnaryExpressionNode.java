@@ -2,7 +2,6 @@ package com.javalexer.analysis.parsing.nodes;
 
 import com.javalexer.analysis.lexing.Token;
 import com.javalexer.enums.NodeType;
-import com.javalexer.enums.SyntaxType;
 
 public final class UnaryExpressionNode extends AbsUnaryNode {
 
@@ -11,13 +10,13 @@ public final class UnaryExpressionNode extends AbsUnaryNode {
     }
 
     @Override
-    public Token getOperator() {
-        return super.getOperator();
+    public Token getOperatorToken() {
+        return super.getOperatorToken();
     }
 
     @Override
-    public AbsNode getOperand() {
-        return super.getOperand();
+    public AbsNode getOperandNode() {
+        return super.getOperandNode();
     }
 
 }

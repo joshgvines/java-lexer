@@ -21,8 +21,8 @@ public class InfixExpressionTree {
         this.root = root;
     }
 
-    public boolean buildTree(List<Token> tokenList) throws Exception {
-        InfixParser parser = new InfixParser(tokenList);
+    public boolean buildTree(List<Token> tokenList, boolean readTokens) throws Exception {
+        InfixParser parser = new InfixParser(tokenList, readTokens);
         root = parser.parseForRoot();
         return (root != null);
     }

@@ -14,16 +14,21 @@ public class Lexer {
     private char _char;
     private char[] charArray;
     private StringBuilder tokenString;
-    private List<Token> tokens = null;
-    private int charArrayLength = 0;
-    private int tokenPosition = 0;
-    private int charPosition = 0;
+    private List<Token> tokens;
+    private TokenManager tokenManager;
+    private int charArrayLength, charArraySize;
+    private int tokenPosition, charPosition = 0;
+
+    public Lexer() {
+        tokens = new ArrayList<>();
+        tokenManager = new TokenManager();
+    }
 
     public List<Token> lex(String fileAsString) throws Exception {
-        tokens = new ArrayList<>();
         fileAsString = removeComments(fileAsString);
         charArray = fileAsString.toCharArray();
         charArrayLength = charArray.length;
+        charArraySize = charArrayLength - 1;
         while (charPosition < charArrayLength) {
             _char = charArray[charPosition];
             if (!keywordTokenFilter()) {
@@ -40,77 +45,74 @@ public class Lexer {
         return fileAsString.replaceAll(SINGLE_COMMENT.get() + NEW_LINE, "");
     }
 
-    private boolean keywordTokenFilter() throws Exception {
+    private boolean keywordTokenFilter() {
         if (Character.isLetter(_char)) {
             tokenString = new StringBuilder().append(_char);
-            while ((charPosition < charArrayLength - 1) && Character.isLetter(peek(1))) {
-                    tokenString.append(charArray[++charPosition]);
+            while (isNextLetter()) {
+                tokenString.append(charArray[++charPosition]);
             }
-            return buildKeywordToken();
+            SyntaxType syntaxType = tokenManager.getTypeFromKeyword(tokenString.toString());
+            return tokens.add(new Token(syntaxType, tokenString.toString(), tokenPosition++));
         }
         return false;
     }
 
-    private boolean buildKeywordToken() throws Exception {
-        SyntaxType type = KeywordUtil.getKeyword(tokenString.toString());
-        if (type == null) {
-            return false;
-        }
-        tokens.add(new Token(type, tokenString.toString(), tokenPosition++));
-        return true;
+    private boolean isNextLetter() {
+        return (charPosition < charArraySize && Character.isLetter(peek(1)));
     }
 
     private void characterTokenFilter() throws Exception {
-        switch (_char) {
-            case '"': appendUntil("\"", STRING); break;
-            case '\'': appendUntil("'", CHAR); break;
-            case ' ': tokens.add(new Token(WHITESPACE, " ", tokenPosition++)); break;
-            case '{': tokens.add(new Token(OPEN_BRACE, "{", tokenPosition++)); break;
-            case '}': tokens.add(new Token(CLOSE_BRACE, "}", tokenPosition++)); break;
-            case '+': tokens.add(new Token(PLUS, "+", tokenPosition++)); break;
-            case '/': tokens.add(new Token(FORWARD_SLASH, "/", tokenPosition++)); break;
-            case '*': tokens.add(new Token(STAR, "*", tokenPosition++)); break;
-            case '%': tokens.add(new Token(MODULO, "%", tokenPosition++)); break;
-            case '-': tokens.add(new Token(MINUS, "-", tokenPosition++)); break;
-            case '(': tokens.add(new Token(OPEN_PAREN, "(", tokenPosition++)); break;
-            case ')': tokens.add(new Token(CLOSE_PAREN, ")", tokenPosition++)); break;
-            case '!': tokens.add(new Token(BANG, "!", tokenPosition++)); break;
-            case '|': checkDuplicateTokenType(OR); break;
-            case '&': checkDuplicateTokenType(AND); break;
-            case '=':
-                if (!checkDuplicateTokenType(EQUALS_COMPARE)) {
-                    tokens.add(new Token(ASSIGNMENT, "=", tokenPosition++));
+        SyntaxType syntaxType = tokenManager.getTypeFromCharacter(_char);
+        if (syntaxType == null) {
+            tokens.add(new Token(UNKNOWN, null, tokenPosition++));
+            Diagnostics.addLexicalDiagnostic("Found Unknown Token: " + tokens.get(tokens.size() - 1));
+            return;
+        }
+        switch (syntaxType) {
+            case STRING:
+            case CHARACTER:
+                appendUntil(String.valueOf(_char), syntaxType);
+                return;
+            case NUMBER:
+                appendNumberUntil();
+                return;
+            case PIPE:
+                if (checkDuplicateCharacter()) {
+                    syntaxType = OR;
                 }
                 break;
-            default:
-                if (Character.isDigit(_char)) {
-                    appendNumberUntil();
-                } else {
-                    tokens.add(new Token(UNKNOWN, null, tokenPosition++));
-                    Diagnostics.addLexicalDiagnostic("Found Unknown Token: " + tokens.get(tokens.size() - 1));
+            case AMPERSAND:
+                if (checkDuplicateCharacter()) {
+                    syntaxType = AND;
                 }
+                break;
+            case EQUALS:
+                if (checkDuplicateCharacter()) {
+                    syntaxType = EQUALS_COMPARE;
+                }
+                break;
+            case BACKSLASH:
+                if (checkDuplicateCharacter()) {
+                    syntaxType = MULTI_BACKSLASH;
+                }
+                break;
         }
+        tokens.add(new Token(syntaxType, String.valueOf(_char), tokenPosition++));
     }
 
-    private boolean checkDuplicateTokenType(SyntaxType syntaxType) {
-        if (peek(1) == _char && charPosition < charArrayLength - 1) {
-            String value = Character.toString(_char);
-            tokens.add(new Token(syntaxType,value + value, tokenPosition++));
-            return true;
-        }
-        tokens.add(new Token(UNKNOWN, String.valueOf(_char), tokenPosition++));
-        return false;
+    private boolean checkDuplicateCharacter() {
+        return (peek(1) == _char && charPosition < charArraySize);
     }
 
     private char peek(int offset) {
         if (charPosition + offset < charArrayLength) {
-             return charArray[charPosition + offset];
+            return charArray[charPosition + offset];
         }
         return _char;
     }
 
     /**
-     * You are going to need a peek() function and better error handling eventually, don't forget.
+     * TODO: Better error when integer is too large.
      *
      * @throws Exception
      */
@@ -132,29 +134,19 @@ public class Lexer {
     }
 
     private boolean isNextNumberToken() {
-        return charPosition < charArrayLength - 1
-                && (Character.isDigit(peek(1)) || peek(0) == '.');
+        return (charPosition < charArraySize && (Character.isDigit(peek(1)) || peek(1) == '.'));
     }
 
-    /**
-     * TODO: Fix random whitespace tokens
-     * @param key
-     * @param syntaxType
-     * @return
-     */
     private boolean appendUntil(String key, SyntaxType syntaxType) {
         tokenString = new StringBuilder();
         tokenString.append(_char);
-        while (charPosition < charArrayLength) {
-            _char = charArray[++charPosition];
-            if (key.equals(_char) || (";").equals(_char)) {
-                tokenString.append(_char);
-                return tokens.add(new Token(syntaxType, tokenString.toString(), tokenPosition++));
-            } else if ((" ").equals(_char)) {
-                tokens.add(new Token(WHITESPACE, " ", tokenPosition++));
-            }
-            tokenString.append(_char);
+        while (isNextCharacterToken(key)) {
+            tokenString.append(charArray[++charPosition]);
         }
         return tokens.add(new Token(syntaxType, tokenString.toString(), tokenPosition++));
+    }
+
+    private boolean isNextCharacterToken(String key) {
+        return charPosition < charArraySize && !key.equals(_char);
     }
 }

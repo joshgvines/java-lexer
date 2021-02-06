@@ -38,11 +38,11 @@ abstract class AbsBinaryNode extends AbsExpressionNode {
         this.right = right;
     }
 
-    AbsNode getLeft() {
+    AbsNode getLeftNode() {
         return left;
     }
 
-    Token getData() {
+    Token getToken() {
         return data;
     }
 
@@ -50,7 +50,7 @@ abstract class AbsBinaryNode extends AbsExpressionNode {
         return expression;
     }
 
-    AbsNode getRight() {
+    AbsNode getRightNode() {
         return right;
     }
 }
@@ -65,11 +65,11 @@ abstract class AbsUnaryNode extends AbsExpressionNode {
         this.operand = operand;
     }
 
-    Token getOperator() {
+    Token getOperatorToken() {
         return operator;
     }
 
-    AbsNode getOperand() {
+    AbsNode getOperandNode() {
         return operand;
     }
 }

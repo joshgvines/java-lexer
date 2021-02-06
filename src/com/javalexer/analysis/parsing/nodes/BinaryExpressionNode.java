@@ -2,7 +2,6 @@ package com.javalexer.analysis.parsing.nodes;
 
 import com.javalexer.analysis.lexing.Token;
 import com.javalexer.enums.NodeType;
-import com.javalexer.enums.SyntaxType;
 
 /**
  * An OperatorNode has a right and left node, both of which can be an OperandNode or another OperatorNode.
@@ -18,16 +17,16 @@ public final class BinaryExpressionNode extends AbsBinaryNode {
         return super.getNodeType();
     }
 
-    public AbsNode getLeft() {
-        return super.getLeft();
+    public AbsNode getLeftNode() {
+        return super.getLeftNode();
     }
 
-    public Token getData() {
-        return super.getData();
+    public Token getToken() {
+        return super.getToken();
     }
 
-    public AbsNode getRight() {
-        return super.getRight();
+    public AbsNode getRightNode() {
+        return super.getRightNode();
     }
 
 }

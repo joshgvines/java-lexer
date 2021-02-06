@@ -8,11 +8,11 @@ import com.javalexer.enums.NodeType;
  */
 public final class LiteralNode extends AbsNode {
 
-    private Token data;
+    private Token token;
 
-    public LiteralNode(Token data) {
+    public LiteralNode(Token token) {
         super(NodeType.LITERAL);
-        this.data = data;
+        this.token = token;
     }
 
     @Override
@@ -20,8 +20,8 @@ public final class LiteralNode extends AbsNode {
         return super.getNodeType();
     }
 
-    public Token getData() {
-        return data;
+    public Token getToken() {
+        return token;
     }
 
 }

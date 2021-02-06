@@ -12,8 +12,8 @@ public class ParenthesizedExpressionNode extends AbsBinaryNode {
     }
 
     @Override
-    public AbsNode getRight() {
-        return super.getRight();
+    public AbsNode getRightNode() {
+        return super.getRightNode();
     }
 
     @Override
@@ -22,8 +22,8 @@ public class ParenthesizedExpressionNode extends AbsBinaryNode {
     }
 
     @Override
-    public AbsNode getLeft() {
-        return super.getRight();
+    public AbsNode getLeftNode() {
+        return super.getRightNode();
     }
 
 }

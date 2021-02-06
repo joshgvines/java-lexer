@@ -14,27 +14,27 @@ import java.util.List;
  */
 public class ProcessController {
 
-    public void runJavaFromFileLexer(String filePath) throws Exception {
-        JavaFileStreamReader jfs = new JavaFileStreamReader();
-        String fileAsString = jfs.readFileToString(filePath);
-        if (!fileAsString.isEmpty()) {
-            runLexicalAnalysis(fileAsString);
-        }
+//    public void runJavaFromFileLexer(String filePath) throws Exception {
+//        JavaFileStreamReader jfs = new JavaFileStreamReader();
+//        String fileAsString = jfs.readFileToString(filePath);
+//        if (!fileAsString.isEmpty()) {
+//            runLexicalAnalysis(fileAsString);
+//        }
+//    }
+
+    public void runJavaLexer(String toLex, boolean readTokens) throws Exception {
+        runLexicalAnalysis(toLex, readTokens);
     }
 
-    public void runJavaLexer(String toLex) throws Exception {
-        runLexicalAnalysis(toLex);
-    }
-
-    public void runLexicalAnalysis(String stringToLex) throws Exception {
+    public void runLexicalAnalysis(String stringToLex, boolean readTokens) throws Exception {
         Diagnostics.clear();
         Lexer lex = new Lexer();
-        runParser(lex.lex(stringToLex));
+        runParser(lex.lex(stringToLex), readTokens);
     }
 
-    public void runParser(List<Token> tokens) throws Exception {
+    public void runParser(List<Token> tokens, boolean readTokens) throws Exception {
         InfixExpressionTree infixExpressionTree = new InfixExpressionTree();
-        if (infixExpressionTree.buildTree(tokens)) {
+        if (infixExpressionTree.buildTree(tokens, readTokens)) {
             runTypeCheck(infixExpressionTree);
         }
     }

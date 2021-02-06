@@ -17,16 +17,16 @@ public final class BoundBinaryExpressionNode extends AbsBoundBinaryNode {
         return super.getBoundNodeType();
     }
 
-    public AbsBoundNode getLeft() {
-        return super.getLeft();
+    public AbsBoundNode getLeftNode() {
+        return super.getLeftNode();
     }
 
-    public BoundOperatorType getData() {
-        return super.getData();
+    public BoundOperatorType getOperatorType() {
+        return super.getOperatorType();
     }
 
-    public AbsBoundNode getRight() {
-        return super.getRight();
+    public AbsBoundNode getRightNode() {
+        return super.getRightNode();
     }
 
 }

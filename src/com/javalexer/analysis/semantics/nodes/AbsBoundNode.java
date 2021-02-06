@@ -24,35 +24,41 @@ abstract class AbsBoundBinaryNode extends AbsBoundNode {
     private AbsBoundNode left;
     private AbsBoundNode right;
     private AbsBoundNode expression;
-    private BoundOperatorType data;
+    private BoundOperatorType operatorType;
 
-    protected AbsBoundBinaryNode(NodeType type, AbsBoundNode left, BoundOperatorType data, AbsBoundNode right) {
+    protected AbsBoundBinaryNode(NodeType type,
+                                 AbsBoundNode left,
+                                 BoundOperatorType operatorType,
+                                 AbsBoundNode right) {
         super(type);
         this.left = left;
-        this.data = data;
+        this.operatorType = operatorType;
         this.right = right;
     }
 
-    protected AbsBoundBinaryNode(NodeType type, AbsBoundNode left, AbsBoundNode expression, AbsBoundNode right) {
+    protected AbsBoundBinaryNode(NodeType type,
+                                 AbsBoundNode left,
+                                 AbsBoundNode expression,
+                                 AbsBoundNode right) {
         super(type);
         this.left = left;
         this.expression = expression;
         this.right = right;
     }
 
-    AbsBoundNode getLeft() {
+    AbsBoundNode getLeftNode() {
         return left;
     }
 
-    BoundOperatorType getData() {
-        return data;
+    BoundOperatorType getOperatorType() {
+        return operatorType;
     }
 
-    AbsBoundNode getExpression() {
+    AbsBoundNode getExpressionNode() {
         return expression;
     }
 
-    AbsBoundNode getRight() {
+    AbsBoundNode getRightNode() {
         return right;
     }
 }
@@ -67,11 +73,11 @@ abstract class AbsBoundUnaryNode extends AbsBoundNode {
         this.operand = operand;
     }
 
-    BoundOperatorType getOperator() {
+    BoundOperatorType getOperatorType() {
         return operatorType;
     }
 
-    AbsBoundNode getOperand() {
+    AbsBoundNode getOperandNode() {
         return operand;
     }
 }

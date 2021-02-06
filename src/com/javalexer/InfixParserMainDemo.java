@@ -21,7 +21,7 @@ public class InfixParserMainDemo {
         Lexer lex = new Lexer();
         List<Token> tokenList = lex.lex(expression);
 
-        InfixParser infixParser = new InfixParser(tokenList);
+        InfixParser infixParser = new InfixParser(tokenList, false);
         AbsNode root = infixParser.parseForRoot();
 
         System.out.println("\nInfix:");
@@ -31,7 +31,7 @@ public class InfixParserMainDemo {
         traversePostfix(root);
 
         System.out.println("\nPrefix:");
-        infixParser = new InfixParser(reverseForPrefixDemo(tokenList));
+        infixParser = new InfixParser(reverseForPrefixDemo(tokenList), false);
         AbsNode rootForPrefix = infixParser.parseForRoot();
         traversePrefix(rootForPrefix);
     }
