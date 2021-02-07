@@ -19,6 +19,7 @@ public class Evaluator {
 
     /**
      * Takes root node, traverses the tree recursively to evaluate expressions.
+     *
      * @param node
      * @return solution
      * @throws Exception
@@ -60,8 +61,10 @@ public class Evaluator {
 
     private Object computeUnary(BoundOperatorType operator, Object operand) {
         switch (operator) {
-            case ADDITION: return +((double) operand);
-            case SUBTRACTION: return -((double) operand);
+            case ADDITION:
+                return +((double) operand);
+            case SUBTRACTION:
+                return -((double) operand);
             case LOGIC_NOT:
                 return !Boolean.parseBoolean(String.valueOf(operand));
         }
@@ -70,36 +73,37 @@ public class Evaluator {
 
     private Object computeBinary(BoundOperatorType operator, Object a, Object b) {
         switch (operator) {
-            case ADDITION: return ((double) a) + ((double) b);
-            case SUBTRACTION: return ((double) a) - ((double) b);
-            case MULTIPLICATION: return ((double) a) * ((double) b);
-            case MODULO: return ((double) a) % ((double) b);
+            case ADDITION: return (double) a + (double) b;
+            case SUBTRACTION: return (double) a - (double) b;
+            case MULTIPLICATION: return (double) a * (double) b;
+            case MODULO: return (double) a % (double) b;
             case DIVISION:
                 if ((double) b == 0) {
                     throw new UnsupportedOperationException("Cannot divide by zero");
                 }
-                return ((double) a) / ((double) b);
-            case LOGIC_AND: return ((boolean) a) && ((boolean) b);
-            case LOGIC_OR: return ((boolean) a) || ((boolean) b);
+                return (double) a / (double) b;
+
+            case LOGIC_AND: return (boolean) a && (boolean) b;
+            case LOGIC_OR: return (boolean) a || (boolean) b;
             case LOGIC_NOT_EQUALS:
                 if (a instanceof Double) {
-                    return (double)a != (double)b;
+                    return (double) a != (double) b;
                 }
                 return (a != b);
             case LOGIC_EQUALS_COMPARE:
                 if (a instanceof Double) {
-                    return (double)a == (double)b;
+                    return (double) a == (double) b;
                 }
                 return (a == b);
         }
         return 0;
     }
 
-    private double toDouble(String number) {
-        if (number == null) {
+    private double toDouble(Object number) {
+        if (number == null || !(number instanceof String)) {
             return 0;
         }
-        return Double.parseDouble(number);
+        return Double.parseDouble((String) number);
     }
 
 }

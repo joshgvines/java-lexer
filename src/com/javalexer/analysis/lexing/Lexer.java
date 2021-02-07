@@ -45,6 +45,12 @@ public class Lexer {
         return fileAsString.replaceAll(SINGLE_COMMENT.get() + NEW_LINE, "");
     }
 
+    /**
+     * TODO: Refactor
+     *
+     * @return boolean
+     * successfully found and built a keyword token.
+     */
     private boolean keywordTokenFilter() {
         if (Character.isLetter(_char)) {
             tokenString = new StringBuilder().append(_char);
@@ -52,6 +58,11 @@ public class Lexer {
                 tokenString.append(charArray[++charPosition]);
             }
             SyntaxType syntaxType = tokenManager.getTypeFromKeyword(tokenString.toString());
+            if (syntaxType == FALSE_KEYWORD) {
+                return tokens.add(new Token(syntaxType, false, tokenPosition++));
+            } else if (syntaxType == TRUE_KEYWORD) {
+                return tokens.add(new Token(syntaxType, true, tokenPosition++));
+            }
             return tokens.add(new Token(syntaxType, tokenString.toString(), tokenPosition++));
         }
         return false;

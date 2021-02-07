@@ -7,10 +7,10 @@ import com.javalexer.enums.SyntaxType;
  */
 public class Token {
     private SyntaxType type;
-    private String value;
+    private Object value;
     private int position;
 
-    public Token(SyntaxType type, String value, int position) {
+    public Token(SyntaxType type, Object value, int position) {
         this.type = type;
         this.value = value;
         this.position = position;
@@ -20,7 +20,7 @@ public class Token {
         return type;
     }
 
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 
