@@ -14,6 +14,7 @@
 
 *.iml
 *.ipr
+*.iws
 
 .project
 .project/
