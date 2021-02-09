@@ -4,8 +4,12 @@ import com.javalexer.analysis.parsing.trees.BoundInfixExpressionTree;
 import com.javalexer.analysis.semantics.nodes.*;
 import com.javalexer.enums.BoundOperatorType;
 import com.javalexer.enums.SyntaxType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Evaluator {
+
+    private static Logger LOG = LogManager.getLogger();
 
     private BoundInfixExpressionTree expressionTree;
 
@@ -26,7 +30,8 @@ public class Evaluator {
      */
     private Object evaluate(AbsBoundNode node) throws Exception {
         if (node == null) {
-            throw new Exception("Expression node was null: ");
+            LOG.error("Bound Node was found null during evaluation.");
+            throw new Exception("Expression node was null");
         }
         switch (node.getBoundNodeType()) {
             case LITERAL:

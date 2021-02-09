@@ -2,7 +2,6 @@ package com.javalexer.analysis.parsing;
 
 import com.javalexer.analysis.parsing.nodes.*;
 import com.javalexer.analysis.lexing.Token;
-import com.javalexer.enums.SyntaxType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,7 @@ public class InfixParser {
     }
 
     public AbsNode parseExpression(int parentPrecedence) throws Exception {
-        AbsNode leftNode = decideExpressionType(parentPrecedence);
+        AbsNode leftNode = decideNodeType(parentPrecedence);
         while (true) {
             int precedence = PrecedenceUtil.binaryPrecedence(peek(0).getSyntaxType());
             if (precedence == 0 || precedence <= parentPrecedence) {
@@ -55,7 +54,7 @@ public class InfixParser {
         }
     }
 
-    private AbsNode decideExpressionType(int parentPrecedence) throws Exception {
+    private AbsNode decideNodeType(int parentPrecedence) throws Exception {
         int unaryPrecedence = PrecedenceUtil.unaryPrecedence(peek(0).getSyntaxType());
         if (unaryPrecedence != 0 && unaryPrecedence > parentPrecedence) {
             return parseUnaryExpression(unaryPrecedence);
@@ -68,10 +67,10 @@ public class InfixParser {
         switch (peek(0).getSyntaxType()) {
             case OPEN_PAREN:
                 return parseParentheses();
-            case FALSE_KEYWORD: case TRUE_KEYWORD:
-                return new LiteralNode(nextToken());
+            case FALSE_KEYWORD:
+            case TRUE_KEYWORD:
             case NUMBER:
-                return new LiteralNode(match(NUMBER));
+                return new LiteralNode(nextToken());
             default:
                 throw new Exception("Unexpected Or Missing Token Found: " + peek(0));
         }
@@ -86,15 +85,8 @@ public class InfixParser {
     private AbsNode parseParentheses() throws Exception {
         AbsNode leftNode = new LiteralNode(nextToken());
         AbsNode expressionRootNode = parseExpression(0);
-        AbsNode rightNode = new LiteralNode(match(CLOSE_PAREN));
+        AbsNode rightNode = new LiteralNode(nextToken());
         return new ParenthesizedExpressionNode(leftNode, expressionRootNode, rightNode);
-    }
-
-    private Token match(SyntaxType type) {
-        if (peek(0).getSyntaxType() == type) {
-            return nextToken();
-        }
-        return new Token(current.getSyntaxType(), null, current.getPosition());
     }
 
     private Token nextToken() {

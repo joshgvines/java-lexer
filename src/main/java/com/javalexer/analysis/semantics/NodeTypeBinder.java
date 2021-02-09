@@ -5,13 +5,18 @@ import com.javalexer.analysis.semantics.nodes.*;
 import com.javalexer.enums.BoundOperatorType;
 import com.javalexer.analysis.lexing.Token;
 import com.javalexer.enums.SyntaxType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import static com.javalexer.enums.BoundOperatorType.*;
 import static com.javalexer.enums.SyntaxType.*;
 
 /**
  * Orchestrates basic type checking for AST expressions and nodes.
  */
 public class NodeTypeBinder {
+
+    private static Logger LOG = LogManager.getLogger();
 
     public AbsBoundNode bind(AbsNode node) throws Exception {
         switch (node.getNodeType()) {
@@ -20,6 +25,7 @@ public class NodeTypeBinder {
             case UNARY_EXPRESSION: return bindUnaryExpression((UnaryExpressionNode) node);
             case PARENTHESES_EXPRESSION: return bindParenthesesExpression((ParenthesizedExpressionNode) node);
             default:
+                LOG.error("Node did not contain a recognized type.");
                 throw new UnsupportedOperationException("Unexpected Expression Syntax:" + node.getNodeType());
         }
     }
@@ -42,8 +48,8 @@ public class NodeTypeBinder {
         SyntaxType operatorType = binaryExpressionNode.getToken().getSyntaxType();
         AbsNode right = binaryExpressionNode.getRightNode();
         if (!validBinaryExpression(operatorType, left, right)) {
-            System.out.println("Unsupported Binary Expression: "
-                    + left.getNodeType() + " " + operatorType + " " + right.getNodeType());
+            LOG.warn("Unsupported Binary Expression: [ Left: {}, Operator: {}, Right: {} ]",
+                    left.getNodeType(), operatorType, right.getNodeType());
             return null;
         }
         AbsBoundNode boundLeft = bind(binaryExpressionNode.getLeftNode());
@@ -57,8 +63,8 @@ public class NodeTypeBinder {
         SyntaxType operatorType = operator.getSyntaxType();
         AbsNode operand = unaryExpressionNode.getOperandNode();
         if (!validUnaryExpression(operatorType, operand)) {
-            System.out.println("Unsupported Unary Expression: "
-                    + operator.getSyntaxType() + " " + operand.getNodeType());
+            LOG.warn("Unsupported Unary Expression: [ Operator: {}, Operand: {} ]",
+                    operatorType, operand.getNodeType());
             return null;
         }
         AbsBoundNode boundOperand = bind(operand);
@@ -68,47 +74,54 @@ public class NodeTypeBinder {
 
     private BoundOperatorType bindUnaryOperatorType(SyntaxType type) throws Exception {
         switch (type) {
-            case PLUS: return BoundOperatorType.ADDITION;
-            case MINUS: return BoundOperatorType.SUBTRACTION;
-            case BANG: return BoundOperatorType.LOGIC_NOT;
+            case PLUS: return ADDITION;
+            case MINUS: return SUBTRACTION;
+            case BANG: return LOGIC_NOT;
             default:
+                LOG.error("Unary Operator did not contain a recognized type: {}", type);
                 throw new Exception("Unexpected unary Operator: " + type);
         }
     }
 
     private BoundOperatorType bindBinaryOperatorType(SyntaxType type) throws Exception {
         switch (type) {
-            case PLUS: return BoundOperatorType.ADDITION;
-            case MINUS: return BoundOperatorType.SUBTRACTION;
-            case STAR: return BoundOperatorType.MULTIPLICATION;
-            case FORWARD_SLASH: return BoundOperatorType.DIVISION;
-            case AND: return BoundOperatorType.LOGIC_AND;
-            case OR: return BoundOperatorType.LOGIC_OR;
-            case BANG_NOT_EQUALS: return BoundOperatorType.LOGIC_NOT_EQUALS;
-            case EQUALS_COMPARE: return BoundOperatorType.LOGIC_EQUALS_COMPARE;
+            case PLUS: return ADDITION;
+            case MINUS: return SUBTRACTION;
+            case STAR: return MULTIPLICATION;
+            case FORWARD_SLASH: return DIVISION;
+            case AND: return LOGIC_AND;
+            case OR: return LOGIC_OR;
+            case BANG_NOT_EQUALS: return LOGIC_NOT_EQUALS;
+            case EQUALS_COMPARE: return LOGIC_EQUALS_COMPARE;
             default:
+                LOG.error(" Binary Operator did not contain a recognized type: {}", type);
                 throw new Exception("Unexpected binary Operator: " + type);
         }
     }
 
     private boolean validBinaryExpression(SyntaxType operatorType, AbsNode left, AbsNode right) {
-        return (!isBooleanOperator(operatorType) && (possibleNumericalOperand(left) || possibleNumericalOperand(right)))
-                || (isAnyOperator(operatorType));
+        if (anyOperator(operatorType)) {
+            return true;
+        }
+        if (booleanOperator(operatorType)) {
+            return (!numericalOperand(left) && !numericalOperand(right));
+        }
+        return (numericalOperand(left) && numericalOperand(right));
     }
 
     private boolean validUnaryExpression(SyntaxType operatorType, AbsNode operand) {
-        return (!isBooleanOperator(operatorType) && possibleNumericalOperand(operand));
+        return (!booleanOperator(operatorType) && numericalOperand(operand));
     }
 
-    private boolean isBooleanOperator(SyntaxType operatorType) {
+    private boolean booleanOperator(SyntaxType operatorType) {
         return (operatorType == AND || operatorType == OR || operatorType == BANG);
     }
 
-    private boolean isAnyOperator(SyntaxType operatorType) {
+    private boolean anyOperator(SyntaxType operatorType) {
         return (operatorType == EQUALS_COMPARE || operatorType == BANG_NOT_EQUALS);
     }
 
-    private boolean possibleNumericalOperand(AbsNode operand) {
+    private boolean numericalOperand(AbsNode operand) {
         if (operand instanceof LiteralNode) {
             LiteralNode literal = (LiteralNode) operand;
             return (literal.getToken().getSyntaxType() == SyntaxType.NUMBER);

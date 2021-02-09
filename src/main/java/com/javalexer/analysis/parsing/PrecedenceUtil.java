@@ -13,6 +13,7 @@ public class PrecedenceUtil {
             case MODULO:
             case BANG_NOT_EQUALS:
             case EQUALS_COMPARE:
+            case OR: case AND:
                 return 2;
             default:
                 return 0;

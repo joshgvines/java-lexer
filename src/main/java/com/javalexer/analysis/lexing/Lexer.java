@@ -3,6 +3,8 @@ package com.javalexer.analysis.lexing;
 import com.javalexer.enums.CodeFilter;
 import com.javalexer.diagnostics.Diagnostics;
 import com.javalexer.enums.SyntaxType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +12,9 @@ import java.util.List;
 import static com.javalexer.enums.SyntaxType.*;
 
 public class Lexer {
+
+    private static Logger LOG = LogManager.getLogger();
+
     private static final String NEW_LINE = System.getProperty("line.separator");
     private char _char;
     private char[] charArray;
@@ -77,6 +82,7 @@ public class Lexer {
         String tokenValueString = String.valueOf(_char);
         if (syntaxType == null) {
             tokens.add(new Token(UNKNOWN, tokenValueString, tokenPosition++));
+            LOG.info("Found Unknown Token: Token Object:  {}  ", tokens.get(tokens.size() - 1));
             Diagnostics.addLexicalDiagnostic("Found Unknown Token: " + tokens.get(tokens.size() - 1));
             return;
         }
