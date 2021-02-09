@@ -1,5 +1,6 @@
 package com.javalexer.analysis.semantics;
 
+import com.javalexer.analysis.lexing.Lexer;
 import com.javalexer.analysis.parsing.nodes.*;
 import com.javalexer.analysis.semantics.nodes.*;
 import com.javalexer.enums.BoundOperatorType;
@@ -16,7 +17,7 @@ import static com.javalexer.enums.SyntaxType.*;
  */
 public class NodeTypeBinder {
 
-    private static Logger LOG = LogManager.getLogger();
+    private static final Logger log = LogManager.getLogger(NodeTypeBinder.class);
 
     public AbsBoundNode bind(AbsNode node) throws Exception {
         switch (node.getNodeType()) {
@@ -25,7 +26,7 @@ public class NodeTypeBinder {
             case UNARY_EXPRESSION: return bindUnaryExpression((UnaryExpressionNode) node);
             case PARENTHESES_EXPRESSION: return bindParenthesesExpression((ParenthesizedExpressionNode) node);
             default:
-                LOG.error("Node did not contain a recognized type.");
+                log.error("Node did not contain a recognized type.");
                 throw new UnsupportedOperationException("Unexpected Expression Syntax:" + node.getNodeType());
         }
     }
@@ -48,7 +49,7 @@ public class NodeTypeBinder {
         SyntaxType operatorType = binaryExpressionNode.getToken().getSyntaxType();
         AbsNode right = binaryExpressionNode.getRightNode();
         if (!validBinaryExpression(operatorType, left, right)) {
-            LOG.warn("Unsupported Binary Expression: [ Left: {}, Operator: {}, Right: {} ]",
+            log.warn("Unsupported Binary Expression: [ Left: {}, Operator: {}, Right: {} ]",
                     left.getNodeType(), operatorType, right.getNodeType());
             return null;
         }
@@ -63,7 +64,7 @@ public class NodeTypeBinder {
         SyntaxType operatorType = operator.getSyntaxType();
         AbsNode operand = unaryExpressionNode.getOperandNode();
         if (!validUnaryExpression(operatorType, operand)) {
-            LOG.warn("Unsupported Unary Expression: [ Operator: {}, Operand: {} ]",
+            log.warn("Unsupported Unary Expression: [ Operator: {}, Operand: {} ]",
                     operatorType, operand.getNodeType());
             return null;
         }
@@ -78,7 +79,7 @@ public class NodeTypeBinder {
             case MINUS: return SUBTRACTION;
             case BANG: return LOGIC_NOT;
             default:
-                LOG.error("Unary Operator did not contain a recognized type: {}", type);
+                log.error("Unary Operator did not contain a recognized type: {}", type);
                 throw new Exception("Unexpected unary Operator: " + type);
         }
     }
@@ -94,7 +95,7 @@ public class NodeTypeBinder {
             case BANG_NOT_EQUALS: return LOGIC_NOT_EQUALS;
             case EQUALS_COMPARE: return LOGIC_EQUALS_COMPARE;
             default:
-                LOG.error(" Binary Operator did not contain a recognized type: {}", type);
+                log.error(" Binary Operator did not contain a recognized type: {}", type);
                 throw new Exception("Unexpected binary Operator: " + type);
         }
     }

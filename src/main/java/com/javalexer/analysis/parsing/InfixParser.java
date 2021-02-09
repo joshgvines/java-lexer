@@ -1,7 +1,10 @@
 package com.javalexer.analysis.parsing;
 
+import com.javalexer.analysis.lexing.Lexer;
 import com.javalexer.analysis.parsing.nodes.*;
 import com.javalexer.analysis.lexing.Token;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +15,9 @@ import static com.javalexer.enums.SyntaxType.*;
  * Parse infix expressions into an expression tree.
  */
 public class InfixParser {
+
+    private static final Logger log = LogManager.getLogger(InfixParser.class);
+
     private List<Token> tokens;
     private int position = 0;
     private Token current;
@@ -26,7 +32,7 @@ public class InfixParser {
         }
         if (readTokens) {
             for (Token token : tokens) {
-                System.out.println(token);
+                log.info(token);
             }
         }
         this.tokens = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.javalexer.analysis;
 
+import com.javalexer.analysis.lexing.Lexer;
 import com.javalexer.analysis.parsing.trees.BoundInfixExpressionTree;
 import com.javalexer.analysis.semantics.nodes.*;
 import com.javalexer.enums.BoundOperatorType;
@@ -9,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 public class Evaluator {
 
-    private static Logger LOG = LogManager.getLogger();
+    private static final Logger log = LogManager.getLogger(Evaluator.class);
 
     private BoundInfixExpressionTree expressionTree;
 
@@ -30,7 +31,7 @@ public class Evaluator {
      */
     private Object evaluate(AbsBoundNode node) throws Exception {
         if (node == null) {
-            LOG.error("Bound Node was found null during evaluation.");
+            log.error("Bound Node was found null during evaluation.");
             throw new Exception("Expression node was null");
         }
         switch (node.getBoundNodeType()) {

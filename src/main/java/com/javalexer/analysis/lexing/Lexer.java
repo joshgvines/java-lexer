@@ -13,7 +13,7 @@ import static com.javalexer.enums.SyntaxType.*;
 
 public class Lexer {
 
-    private static Logger LOG = LogManager.getLogger();
+    private static final Logger log = LogManager.getLogger(Lexer.class);
 
     private static final String NEW_LINE = System.getProperty("line.separator");
     private char _char;
@@ -82,7 +82,7 @@ public class Lexer {
         String tokenValueString = String.valueOf(_char);
         if (syntaxType == null) {
             tokens.add(new Token(UNKNOWN, tokenValueString, tokenPosition++));
-            LOG.info("Found Unknown Token: Token Object:  {}  ", tokens.get(tokens.size() - 1));
+            log.info("Found Unknown Token: Token Object:  {}  ", tokens.get(tokens.size() - 1));
             Diagnostics.addLexicalDiagnostic("Found Unknown Token: " + tokens.get(tokens.size() - 1));
             return;
         }
