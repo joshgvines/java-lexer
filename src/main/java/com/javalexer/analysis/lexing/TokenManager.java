@@ -1,15 +1,14 @@
 package com.javalexer.analysis.lexing;
 
+import com.google.common.collect.ImmutableMap;
 import com.javalexer.enums.SyntaxType;
-
-import java.util.HashMap;
 
 import static com.javalexer.enums.SyntaxType.*;
 
 public final class TokenManager {
 
-    private HashMap<Character, SyntaxType> tokenTypes;
-    private HashMap<String, SyntaxType> keywordTypes;
+    private ImmutableMap<Character, SyntaxType> tokenTypes;
+    private ImmutableMap<String, SyntaxType> keywordTypes;
 
     public TokenManager() {
         initCharacterTypes();
@@ -28,49 +27,46 @@ public final class TokenManager {
     }
 
     private void initCharacterTypes() {
-        tokenTypes = new HashMap<>() {{
-            put(' ', WHITESPACE);
-            put('{', OPEN_BRACE); put('}', CLOSE_BRACE);
-            put('(', OPEN_PAREN); put(')', CLOSE_PAREN);
+        tokenTypes = ImmutableMap.<Character, SyntaxType>builder()
+                .put(' ', WHITESPACE)
+                .put('{', OPEN_BRACE).put('}', CLOSE_BRACE)
+                .put('(', OPEN_PAREN).put(')', CLOSE_PAREN)
 
-            put(';', SEMICOLON); put(':', COLON);
+                .put(';', SEMICOLON).put(':', COLON)
+                .put('=', EQUALS)
+                .put('\"', STRING)
+                .put('\'', CHARACTER)
 
-            put('=', EQUALS);
+                .put('+', PLUS)
+                .put('-', MINUS)
+                .put('/', FORWARD_SLASH).put('\\', BACKSLASH)
+                .put('*', STAR)
+                .put('%', MODULO)
 
-            put('\"', STRING);
-            put('\'', CHARACTER);
-
-            put('+', PLUS);
-            put('-', MINUS);
-            put('/', FORWARD_SLASH); put('\\', BACKSLASH);
-            put('*', STAR);
-
-            put('&', AMPERSAND);
-            put('|', PIPE);
-
-            put('%', MODULO);
-            put('!', BANG);
-        }};
+                .put('&', AMPERSAND)
+                .put('|', PIPE)
+                .put('!', BANG)
+                .build();
     }
 
     private void initKeywordTypes() {
-        keywordTypes = new HashMap<>() {{
-            put("false", FALSE_KEYWORD);
-            put("true", TRUE_KEYWORD);
+        keywordTypes = ImmutableMap.<String, SyntaxType>builder()
+                .put("false", FALSE_KEYWORD)
+                .put("true", TRUE_KEYWORD)
 
-            put("public", PUBLIC_KEYWORD);
-            put("private", PRIVATE_KEYWORD);
-            put("protected", PROTECTED_KEYWORD);
+                .put("public", PUBLIC_KEYWORD)
+                .put("private", PRIVATE_KEYWORD)
+                .put("protected", PROTECTED_KEYWORD)
 
-            put("double", DOUBLE_KEYWORD);
-            put("float", FLOAT_KEYWORD);
-            put("int", INTEGER_KEYWORD);
-            put("byte", BYTE_KEYWORD);
-            put("char", CHARACTER_KEYWORD);
+                .put("double", DOUBLE_KEYWORD)
+                .put("float", FLOAT_KEYWORD)
+                .put("int", INTEGER_KEYWORD)
+                .put("byte", BYTE_KEYWORD)
+                .put("char", CHARACTER_KEYWORD)
 
-            put("void", VOID_KEYWORD);
-            put("return", RETURN_KEYWORD);
-        }};
+                .put("void", VOID_KEYWORD)
+                .put("return", RETURN_KEYWORD)
+                .build();
     }
 
 }

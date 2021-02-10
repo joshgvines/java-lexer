@@ -3,9 +3,12 @@ package com.javalexer.analysis.parsing;
 import com.javalexer.analysis.lexing.Lexer;
 import com.javalexer.analysis.parsing.nodes.*;
 import com.javalexer.analysis.lexing.Token;
+import com.javalexer.diagnostics.Diagnostics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +26,14 @@ public class InfixParser {
     private Token current;
 
     /**
-     * TODO: Do not forget to check your are not getting extra token with off by one errors!
+     * Constructor of the InfixParser accepts tokens created from the Lexer.
+     * TODO: Do not forget to check your are not getting extra token with off by one errors.
+     *
      * @param tokens
      */
     public InfixParser(final List<Token> tokens, boolean readTokens) {
         if (tokens.isEmpty()) {
-            throw new IllegalStateException("Cannot Parse Without Tokens.");
+            throw new IllegalStateException("Token list was empty or null, cannot parse without tokens.");
         }
         if (readTokens) {
             for (Token token : tokens) {
@@ -48,6 +53,11 @@ public class InfixParser {
     }
 
     public AbsNode parseExpression(int parentPrecedence) throws Exception {
+        if (peek(0).getSyntaxType() == null) {
+            log.debug("Invalid syntax: " + peek(0));
+            Diagnostics.addParsingDiagnostic("Invalid syntax: " + peek(0));
+            return null;
+        }
         AbsNode leftNode = decideNodeType(parentPrecedence);
         while (true) {
             int precedence = PrecedenceUtil.binaryPrecedence(peek(0).getSyntaxType());
@@ -56,7 +66,7 @@ public class InfixParser {
             }
             Token operatorToken = nextToken();
             AbsNode rightNode = parseExpression(precedence);
-            leftNode = new BinaryExpressionNode(leftNode, operatorToken , rightNode);
+            leftNode = new BinaryExpressionNode(leftNode, operatorToken, rightNode);
         }
     }
 
@@ -77,8 +87,13 @@ public class InfixParser {
             case TRUE_KEYWORD:
             case NUMBER:
                 return new LiteralNode(nextToken());
+            case END:
+                log.debug("End of tokens token reached.");
+                return null;
             default:
-                throw new Exception("Unexpected Or Missing Token Found: " + peek(0));
+                log.debug("Unexpected Or Missing Token Found: " + peek(0));
+                Diagnostics.addParsingDiagnostic("Unexpected Or Missing Token Found: " + peek(0));
+                return new LiteralNode(peek(0));
         }
     }
 

@@ -11,6 +11,9 @@ import java.util.List;
 
 import static com.javalexer.enums.SyntaxType.*;
 
+/**
+ * Lexical analysis of given String which is converted to tokens.
+ */
 public class Lexer {
 
     private static final Logger log = LogManager.getLogger(Lexer.class);
@@ -25,15 +28,29 @@ public class Lexer {
     private int tokenPosition, charPosition = 0;
 
     public Lexer() {
-        tokens = new ArrayList<>();
         tokenManager = new TokenManager();
     }
 
-    public List<Token> lex(String fileAsString) throws Exception {
-        fileAsString = removeComments(fileAsString);
-        charArray = fileAsString.toCharArray();
+    public List<Token> lex(String stringToLex) throws Exception {
+        if (stringToLex == null || stringToLex.isEmpty()) {
+            log.warn("Attempted to run lexer, but given sequence was null or empty.");
+            return null;
+        }
+        stringToLex = removeComments(stringToLex);
+        initCharacterArray(stringToLex);
+        runLexicalAnalysis();
+        tokens.add(new Token(END, "/0", -1));
+        return tokens;
+    }
+
+    private void initCharacterArray(String stringToLex) {
+        tokens = new ArrayList<>();
+        charArray = stringToLex.toCharArray();
         charArrayLength = charArray.length;
         charArraySize = charArrayLength - 1;
+    }
+
+    private void runLexicalAnalysis() throws Exception {
         while (charPosition < charArrayLength) {
             _char = charArray[charPosition];
             if (!keywordTokenFilter()) {
@@ -41,8 +58,6 @@ public class Lexer {
             }
             charPosition++;
         }
-        tokens.add(new Token(END, "/0", -1));
-        return tokens;
     }
 
     private String removeComments(String fileAsString) {
@@ -63,6 +78,10 @@ public class Lexer {
                 tokenString.append(charArray[++charPosition]);
             }
             SyntaxType syntaxType = tokenManager.getTypeFromKeyword(tokenString.toString());
+            if (syntaxType == null) {
+                buildUnknownToken(tokenString.toString());
+                return true;
+            }
             if (syntaxType == FALSE_KEYWORD) {
                 return tokens.add(new Token(syntaxType, false, tokenPosition++));
             } else if (syntaxType == TRUE_KEYWORD) {
@@ -81,9 +100,7 @@ public class Lexer {
         SyntaxType syntaxType = tokenManager.getTypeFromCharacter(_char);
         String tokenValueString = String.valueOf(_char);
         if (syntaxType == null) {
-            tokens.add(new Token(UNKNOWN, tokenValueString, tokenPosition++));
-            log.info("Found Unknown Token: Token Object:  {}  ", tokens.get(tokens.size() - 1));
-            Diagnostics.addLexicalDiagnostic("Found Unknown Token: " + tokens.get(tokens.size() - 1));
+            buildUnknownToken(tokenValueString);
             return;
         }
         switch (syntaxType) {
@@ -141,6 +158,12 @@ public class Lexer {
             return charArray[charPosition + offset];
         }
         return _char;
+    }
+
+    private void buildUnknownToken(String tokenValueString) {
+        tokens.add(new Token(UNKNOWN, tokenValueString, tokenPosition++));
+        log.debug("Found Unknown Token: Token Object: {}", tokens.get(tokens.size() - 1));
+        Diagnostics.addLexicalDiagnostic("Found Unknown Token: " + tokens.get(tokens.size() - 1));
     }
 
     /**

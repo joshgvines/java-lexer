@@ -1,6 +1,7 @@
 package com.javalexer;
 
 import com.javalexer.controller.ProcessController;
+import com.javalexer.diagnostics.Diagnostics;
 
 import java.util.Scanner;
 
@@ -12,6 +13,7 @@ public class FromConsoleMainDemo {
     public static void main(String[] args) {
         boolean readTokens = false;
         while (true) {
+            System.out.println();
             System.out.print(">> ");
             String input = sc.nextLine();
             if (input.equals("/exit")) {
@@ -34,6 +36,7 @@ public class FromConsoleMainDemo {
             ex.printStackTrace();
             System.out.println("Invalid input, please input an expression or '/exit'.\n");
         }
+        Diagnostics.printDiagnostics();
     }
 
 }

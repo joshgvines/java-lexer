@@ -49,7 +49,6 @@ public class ProcessController {
     public void runEvaluator(BoundInfixExpressionTree boundInfixExpressionTree) throws Exception {
         Evaluator evaluator = new Evaluator(boundInfixExpressionTree);
         System.out.println("ANS= " + evaluator.evaluate());
-        Diagnostics.printDiagnostics();
     }
 
 }
