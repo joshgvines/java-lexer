@@ -1,14 +1,11 @@
 package com.javalexer.analysis.parsing;
 
-import com.javalexer.analysis.lexing.Lexer;
 import com.javalexer.analysis.parsing.nodes.*;
 import com.javalexer.analysis.lexing.Token;
 import com.javalexer.diagnostics.Diagnostics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticCollector;
 import java.util.ArrayList;
 import java.util.List;
 

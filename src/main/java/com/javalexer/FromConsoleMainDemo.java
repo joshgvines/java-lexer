@@ -13,7 +13,6 @@ public class FromConsoleMainDemo {
     public static void main(String[] args) {
         boolean readTokens = false;
         while (true) {
-            System.out.println();
             System.out.print(">> ");
             String input = sc.nextLine();
             if (input.equals("/exit")) {

@@ -1,6 +1,5 @@
 package com.javalexer.analysis;
 
-import com.javalexer.analysis.lexing.Lexer;
 import com.javalexer.analysis.parsing.trees.BoundInfixExpressionTree;
 import com.javalexer.analysis.semantics.nodes.*;
 import com.javalexer.enums.BoundOperatorType;

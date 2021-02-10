@@ -60,8 +60,8 @@ public class LexerTest {
      */
     @Test
     public void testSignOperatorTokensCreated() throws Exception {
-        final String BOOLEAN_OUT_OPERATORS = "+ - * / %";
-        List<Token> tokenList = cut.lex(BOOLEAN_OUT_OPERATORS);
+        final String SIGN_OPERATORS = "+ - * / %";
+        List<Token> tokenList = cut.lex(SIGN_OPERATORS);
         assertTrue(tokenList.get(0).getSyntaxType() == PLUS);
         assertTrue(tokenList.get(1).getSyntaxType() == WHITESPACE);
         assertTrue(tokenList.get(2).getSyntaxType() == MINUS);
@@ -97,8 +97,8 @@ public class LexerTest {
      */
     @Test
     public void testUnknownTokenCreated() throws Exception {
-        final String RANDOM_CHARACTERS = "~ @ `";
-        List<Token> tokenList = cut.lex(RANDOM_CHARACTERS);
+        final String UNKNOWN_CHARACTERS = "~ @ `";
+        List<Token> tokenList = cut.lex(UNKNOWN_CHARACTERS);
         assertTrue(tokenList.get(0).getSyntaxType() == UNKNOWN);
         assertTrue(tokenList.get(2).getSyntaxType() == UNKNOWN);
         assertTrue(tokenList.get(4).getSyntaxType() == UNKNOWN);
